@@ -5,9 +5,9 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-public class WapLoginServlet extends HttpServlet 
+public class LoginServlet extends HttpServlet 
 {
-	private static final long serialVersionUID = 1315400829044423376L;
+	private static final long serialVersionUID = 1382075836716659538L;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse rsp)
 			throws IOException, ServletException 
@@ -27,22 +27,30 @@ public class WapLoginServlet extends HttpServlet
 		HttpSession session = req.getSession();
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		rsp.setContentType("text/plain; charset=UTF-8");
+		String role     = req.getParameter("role");
+		rsp.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = rsp.getWriter();
+		out.println("<html>");
+		out.println("<head>");
+		out.println("<title>µÇÂ¼</title>");
+		out.println("</head>");
+		out.println("<body>");
 		if (username != null && 
 			password != null &&
-			authenticate(username, password)) {
-			out.println("Login succeeded.");
+			role != null &&
+			authenticate(username, password, role)) {
+			out.println("µÇÂ¼³É¹¦.");
 			session.setAttribute("username", username);
 			session.setAttribute("password", password);
+			session.setAttribute("role", role);
 		} else {
-			out.println("Login failed.");
-//			session.setAttribute("username", "");
-//			session.setAttribute("password", "");
+			out.println("µÇÂ¼Ê§°Ü.");
 		}
+		out.println("</body>");
+		out.println("</html>");
 	}
 
-	private boolean authenticate(String username, String password)
+	private boolean authenticate(String username, String password, String role)
 	{
 		return username.equals("foo") && password.equals("bar");
 	}
