@@ -1,9 +1,12 @@
 package com.ajh.futurestar.servlet;
 
 import java.io.*;
+import java.sql.SQLException;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import com.ajh.futurestar.utils.Authenticate;
 
 public class WapLoginServlet extends HttpServlet 
 {
@@ -27,23 +30,25 @@ public class WapLoginServlet extends HttpServlet
 		HttpSession session = req.getSession();
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+		String role     = req.getParameter("role");
 		rsp.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = rsp.getWriter();
 		if (username != null && 
-			password != null &&
-			authenticate(username, password)) {
-			out.println("Login succeeded.");
-			session.setAttribute("username", username);
-			session.setAttribute("password", password);
+			password != null) {
+			try {
+				if (Authenticate.authenticate(username, password, role, session)) {
+					out.println("Login succeeded.");
+				}
+			} catch (ClassNotFoundException | SQLException e) {
+				out.println("Login failed.");
+				e.printStackTrace();
+			}
+//			session.setAttribute("username", username);
+//			session.setAttribute("password", password);
 		} else {
 			out.println("Login failed.");
 //			session.setAttribute("username", "");
 //			session.setAttribute("password", "");
 		}
-	}
-
-	private boolean authenticate(String username, String password)
-	{
-		return username.equals("foo") && password.equals("bar");
 	}
 }

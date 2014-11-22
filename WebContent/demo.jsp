@@ -5,7 +5,9 @@
 <title>Demo</title>
 </head>
 <body>
-用户名：<%= session.getAttribute("username") %><br/>
+用户类型：<%= session.getAttribute("role") %><br/>
+用户标识：<%= session.getAttribute("userid") %><br/>
+用户名称：<%= session.getAttribute("username") %><br/>
 <img src="images/250px-Camelia_svg.png" alt="Camelia" />
 </body>
 </html>

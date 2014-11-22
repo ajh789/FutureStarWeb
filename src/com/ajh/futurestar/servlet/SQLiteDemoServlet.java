@@ -53,9 +53,11 @@ public class SQLiteDemoServlet extends HttpServlet {
 	private void query(PrintWriter out, PrintWriter err) {
 		Connection c = null;
 	    Statement stmt = null;
+	    out.println(this.getServletContext().getRealPath("/"));
+	    out.println(this.getServletContext().getRealPath(""));
 	    try {
 	      Class.forName("org.sqlite.JDBC");
-	      String dburl = "C:\\Program Files\\Apache Software Foundation\\Tomcat 8.0\\webapps\\futurestar\\futurestar.db";
+	      String dburl = this.getServletContext().getRealPath("/") + "\\..\\..\\webapps_db\\futurestar.db";
 	      c = DriverManager.getConnection("jdbc:sqlite:" + dburl);
 	      c.setAutoCommit(false);
 	      out.println("Opened database successfully");

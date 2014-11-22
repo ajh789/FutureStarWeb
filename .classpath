@@ -10,5 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache-tomcat"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache-xmlrpc"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/sqlite-jdbc-3.8.7"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
