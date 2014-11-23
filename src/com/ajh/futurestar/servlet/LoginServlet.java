@@ -1,12 +1,7 @@
 package com.ajh.futurestar.servlet;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -44,22 +39,29 @@ public class LoginServlet extends HttpServlet
 		out.println("<title>µÇÂ¼</title>");
 		out.println("</head>");
 		out.println("<body>");
+//		out.println("username: " + username + "<br/>");
+//		out.println("password: " + password + "<br/>");
+//		out.println("role: " + role + "<br/>");
 		if (username != null && 
 			password != null &&
 			role != null) {
 			try {
+//				out.println("Try connecting to db and authenticate.<br/>");
 				if (Authenticate.authenticate(username, password, role, session)) {
 					out.println("µÇÂ¼³É¹¦.<br/>");
 					out.println("role    : " + session.getAttribute("role") + "<br/>");
 					out.println("id      : " + session.getAttribute("userid") + "<br/>");
 					out.println("name    : " + session.getAttribute("username") + "<br/>");
 					out.println("islocked: " + session.getAttribute("islocked") + "<br/>");
+				} else {
+					out.println("ÓÃ»§Ãû»òÃÜÂë´íÎó.<br/>");
 				}
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
+				out.println(e.getMessage() + "<br/>");
 			}
 		} else {
-			out.println("µÇÂ¼Ê§°Ü.");
+			out.println("µÇÂ¼Ê§°Ü.<br/>");
 		}
 		out.println("</body>");
 		out.println("</html>");
