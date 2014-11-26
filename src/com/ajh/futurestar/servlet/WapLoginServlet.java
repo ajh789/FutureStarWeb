@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.json.JSONObject;
+
 import com.ajh.futurestar.utils.Authenticate;
 
 public class WapLoginServlet extends HttpServlet 
@@ -30,25 +32,39 @@ public class WapLoginServlet extends HttpServlet
 		HttpSession session = req.getSession();
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		String role     = req.getParameter("role");
-		rsp.setContentType("text/plain; charset=UTF-8");
+		String userrole = req.getParameter("role");
+//		rsp.setContentType("text/plain; charset=UTF-8");
+		rsp.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = rsp.getWriter();
+		JSONObject jo = new JSONObject();
 		if (username != null && 
-			password != null) {
+			password != null &&
+			userrole != null) {
 			try {
-				if (Authenticate.authenticate(username, password, role, session)) {
-					out.println("Login succeeded.");
+				if (Authenticate.authenticate(username, password, userrole, session)) {
+//					out.println("Login succeeded.");
+					jo.put("retcode", 0);
+					jo.put("retinfo", "登录成功");
+				} else {
+					jo.put("retcode", 1);
+					jo.put("retinfo", "用户名或密码不正确");
 				}
 			} catch (ClassNotFoundException | SQLException e) {
-				out.println("Login failed.");
+//				out.println("Login failed.");
+				jo.put("retcode", 1);
+				jo.put("retinfo", "捕获异常: " + e.getMessage());
 				e.printStackTrace();
 			}
-//			session.setAttribute("username", username);
-//			session.setAttribute("password", password);
 		} else {
-			out.println("Login failed.");
-//			session.setAttribute("username", "");
-//			session.setAttribute("password", "");
+//			out.println("Login failed.");
+			jo.put("retcode", 1);
+			if (username == null)
+				jo.put("retinfo", "用户名为空");
+			else if (password == null)
+				jo.put("retinfo", "密码为空");
+			else
+				jo.put("retinfo", "用户角色为空");
 		}
+		out.println(jo.toString());
 	}
 }
