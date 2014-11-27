@@ -12,24 +12,21 @@ public class Authenticate {
 	private static String dburl = "C:\\Program Files\\Apache Software Foundation\\Tomcat 8.0\\webapps_db\\futurestar.db";
 	public static boolean authenticate(String username, String password, String role, HttpSession session) 
 			throws ClassNotFoundException, SQLException {
-		Connection c = null;
-		Statement stmt = null;
-
 		Class.forName("org.sqlite.JDBC");
-		c = DriverManager.getConnection("jdbc:sqlite:" + dburl);
+		Connection c = DriverManager.getConnection("jdbc:sqlite:" + dburl);
 		c.setAutoCommit(false);
 
-		stmt = c.createStatement();
+		Statement stmt = c.createStatement();
 		String query = null;
 		if (role.equalsIgnoreCase("admin")) {
-			// Admin logs in with NAME.
-			query = "SELECT * FROM T_ADMIN WHERE NAME='" + username + "';";
+			// Administrator logs in with NAME.
+			query = "SELECT * FROM T_ADMIN   WHERE NAME='" + username + "';";
 		} else if (role.equalsIgnoreCase("teacher")) {
-			// Teacher logs in with ID.
-			query = "SELECT * FROM T_TEACHER WHERE ID=" + username + ";";
+			// Teacher logs in with ID, i.e. mobile phone number.
+			query = "SELECT * FROM T_TEACHER WHERE NAME=" + username + ";";
 		} else if (role.equalsIgnoreCase("parent")) {
-			// Parent logs in with ID.
-			query = "SELECT * FROM T_PARENT WHERE ID=" + username + ";";
+			// Parent logs in with ID, i.e. mobile phone number.
+			query = "SELECT * FROM T_PARENT  WHERE NAME=" + username + ";";
 		} else {
 			throw new SQLException("Invalid user's role '" + role + "' got.");
 		}
@@ -39,16 +36,15 @@ public class Authenticate {
 			int id = rs.getInt("ID");
 			String name = rs.getString("NAME");
 			String passwd = rs.getString("PASSWORD");
-//			if (role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("teacher")) {
-//				int privilege = rs.getInt("PRIVILEGE");
-//			}
+			int privilege = rs.getInt("PRIVILEGE"); // Field PRIVILEGE is useless in T_PARENT at the moment.
 			boolean islocked = rs.getBoolean("ISLOCKED");
 			if (password.equals(passwd)) {
 				retcode = true;
 				session.setAttribute("role", role);
-				session.setAttribute("userid", id);
-				session.setAttribute("username", name);
-				session.setAttribute("islocked", islocked);
+				session.setAttribute("id", Integer.valueOf(id));
+				session.setAttribute("name", name);
+				session.setAttribute("privilege", Integer.valueOf(privilege));
+				session.setAttribute("islocked", Boolean.valueOf(islocked));
 			}
 		}
 		rs.close();

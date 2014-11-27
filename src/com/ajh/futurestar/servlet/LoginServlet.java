@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet
 			throws ServletException, IOException {
 //		HttpSession session = req.getSession(true); // It may return new session.
 		HttpSession session = req.getSession();
-		String username = req.getParameter("username");
+		String username = req.getParameter("name");
 		String password = req.getParameter("password");
 		String role     = req.getParameter("role");
 		rsp.setContentType("text/html; charset=UTF-8");
@@ -50,8 +50,8 @@ public class LoginServlet extends HttpServlet
 				if (Authenticate.authenticate(username, password, role, session)) {
 					out.println("登录成功.<br/>");
 					out.println("role    : " + session.getAttribute("role") + "<br/>");
-					out.println("id      : " + session.getAttribute("userid") + "<br/>");
-					out.println("name    : " + session.getAttribute("username") + "<br/>");
+					out.println("id      : " + session.getAttribute("id") + "<br/>");
+					out.println("name    : " + session.getAttribute("name") + "<br/>");
 					out.println("islocked: " + session.getAttribute("islocked") + "<br/>");
 				} else {
 					out.println("用户名或密码错误.<br/>");

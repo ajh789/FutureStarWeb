@@ -18,7 +18,7 @@ li {list-style:none;}
 </head>
 <body>
 <%
-if (session.getAttribute("username") == null) {
+if (session.getAttribute("name") == null) {
   response.sendRedirect("/futurestar/login.jsp");
 }
 else {
