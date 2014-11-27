@@ -23,10 +23,10 @@ public class Authenticate {
 			query = "SELECT * FROM T_ADMIN   WHERE NAME='" + username + "';";
 		} else if (role.equalsIgnoreCase("teacher")) {
 			// Teacher logs in with ID, i.e. mobile phone number.
-			query = "SELECT * FROM T_TEACHER WHERE NAME=" + username + ";";
+			query = "SELECT * FROM T_TEACHER WHERE NAME='" + username + "';";
 		} else if (role.equalsIgnoreCase("parent")) {
 			// Parent logs in with ID, i.e. mobile phone number.
-			query = "SELECT * FROM T_PARENT  WHERE NAME=" + username + ";";
+			query = "SELECT * FROM T_PARENT  WHERE NAME='" + username + "';";
 		} else {
 			throw new SQLException("Invalid user's role '" + role + "' got.");
 		}
