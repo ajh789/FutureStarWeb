@@ -34,4 +34,9 @@
     <servlet-name>XmlRpcServlet</servlet-name>
     <url-pattern>/xmlrpc</url-pattern>
   </servlet-mapping>
+
+  <!-- Session timeout value in minutes. -->
+  <session-config>
+    <session-timeout>1</session-timeout>
+  </session-config>
 </web-app>
