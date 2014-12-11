@@ -21,12 +21,14 @@ public class LoginServlet extends HttpServlet
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse rsp)
-			throws ServletException, IOException {
+			throws ServletException, IOException
+	{
 		process(req, rsp);
 	}
 
 	private void process(HttpServletRequest req, HttpServletResponse rsp)
-			throws ServletException, IOException {
+			throws ServletException, IOException
+	{
 //		HttpSession session = req.getSession(true); // It may return new session.
 		HttpSession session = req.getSession();
 		String username = req.getParameter("name");

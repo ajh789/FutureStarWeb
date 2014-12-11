@@ -4,6 +4,7 @@
   <description>
      Welcome to FutureStar
   </description>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -22,21 +23,7 @@
     <url-pattern>/waplogin</url-pattern>
   </servlet-mapping>
 
-  <servlet>
-    <servlet-name>XmlRpcServlet</servlet-name>
-    <servlet-class>com.ajh.futurestar.xmlrpc.MainServlet</servlet-class>
-    <init-param>
-      <param-name>enabledForExtensions</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>XmlRpcServlet</servlet-name>
-    <url-pattern>/xmlrpc</url-pattern>
-  </servlet-mapping>
-
-  <!-- Session timeout value in minutes. -->
   <session-config>
-    <session-timeout>1</session-timeout>
+    <session-timeout>10</session-timeout>
   </session-config>
 </web-app>

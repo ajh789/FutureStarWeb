@@ -31,13 +31,14 @@ public class WapLoginServlet extends HttpServlet
 	}
 
 	private void process(HttpServletRequest req, HttpServletResponse rsp)
-			throws ServletException, IOException {
+			throws ServletException, IOException
+	{
 //		HttpSession session = req.getSession(true); // It may return new session.
 		HttpSession session = req.getSession();
 		String action   = req.getParameter("action");
-		String username = req.getParameter("name");
+		String name     = req.getParameter("name");
 		String password = req.getParameter("password");
-		String userrole = req.getParameter("role");
+		String role     = req.getParameter("role");
 		rsp.setContentType("text/plain; charset=UTF-8"); // DO NOT use "application/json; charset=UTF-8".
 		PrintWriter out = rsp.getWriter();
 		JSONObject jo = new JSONObject();
@@ -46,11 +47,11 @@ public class WapLoginServlet extends HttpServlet
 			jo.put("retinfo", "action为空");
 		} else {
 			if (action.equalsIgnoreCase("login")) { // Do login.
-				if (username != null && 
+				if (name     != null && 
 					password != null &&
-					userrole != null) {
+					role     != null) {
 					try {
-						if (Authenticate.authenticate(username, password, userrole, session)) {
+						if (Authenticate.authenticate(name, password, role, session)) {
 							JSONObject user = new JSONObject();
 							user.put("role", session.getAttribute("role"));
 							user.put("id", ((Integer)session.getAttribute("id")).intValue());
@@ -71,7 +72,7 @@ public class WapLoginServlet extends HttpServlet
 					}
 				} else {
 					jo.put("retcode", RETCODE_KO);
-					if (username == null)
+					if (name == null)
 						jo.put("retinfo", "用户名为空");
 					else if (password == null)
 						jo.put("retinfo", "密码为空");
