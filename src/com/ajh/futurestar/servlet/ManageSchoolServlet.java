@@ -169,9 +169,10 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void generatePage(HttpServletResponse rsp, String reqfrom, Return result)
 			throws IOException
 	{
-		PrintWriter out = rsp.getWriter();
+		PrintWriter out = null; // Method getWriter() should be called after setContentType().
 		if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_PC)) {
 			rsp.setContentType("text/html; charset=UTF-8");
+			out = rsp.getWriter();
 			out.println("<html>");
 			out.println("<head><title>" + HTML_TITLE + "</title></head>");
 			out.println("<body>");
@@ -180,9 +181,12 @@ public class ManageSchoolServlet extends HttpServlet {
 			out.println("</html>");
 		} else if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_WAP)) {
 			rsp.setContentType("application/json; charset=UTF-8");
+//			rsp.setContentType("text/plain; charset=UTF-8");
+			out = rsp.getWriter();
 			generatePageBody4WAP(out, result);
 		} else {
 			rsp.setContentType("text/plain; charset=UTF-8");
+			out = rsp.getWriter();
 			out.println("未知请求来源！");
 		}
 	}
@@ -196,7 +200,7 @@ public class ManageSchoolServlet extends HttpServlet {
 			throws IOException
 	{
 		JSONObject obj = new JSONObject();
-		obj.put("retcode", result.retcode);
+		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
 		obj.put("retinfo", result.retinfo);
 		obj.put("schools", result.retobjx);
 		out.println(obj.toString());
