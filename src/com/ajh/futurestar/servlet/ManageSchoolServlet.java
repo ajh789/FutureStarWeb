@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.ajh.future.common.*;
+import com.ajh.futurestar.common.*;
 
 /**
  * Servlet implementation class ManageSchoolServlet
@@ -26,12 +26,12 @@ import com.ajh.future.common.*;
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
-       
-    public ManageSchoolServlet()
-    {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	public ManageSchoolServlet()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse rsp)
 			throws ServletException, IOException
@@ -104,6 +104,7 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		// DO NOT return when performing action.
 		String action = req.getParameter(Request.PARAM_ACTION);
+		ret.actionx += action;
 		if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
 			try {
 				doDbActionSelect(conn, stmt, ret);
@@ -203,6 +204,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
 		obj.put("retinfo", result.retinfo);
 		obj.put("schools", result.retobjx);
+		obj.put("actionx", result.actionx);
 		out.println(obj.toString());
 	}
 }

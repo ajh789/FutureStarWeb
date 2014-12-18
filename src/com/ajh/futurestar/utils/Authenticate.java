@@ -8,8 +8,8 @@ import java.sql.Statement;
 
 import javax.servlet.http.HttpSession;
 
-import com.ajh.future.common.Attribute;
-import com.ajh.future.common.DbConn;
+import com.ajh.futurestar.common.Attribute;
+import com.ajh.futurestar.common.DbConn;
 
 public class Authenticate {
 //	private static String dburl = "C:\\Program Files\\Apache Software Foundation\\Tomcat 8.0\\webapps_db\\futurestar.db";
