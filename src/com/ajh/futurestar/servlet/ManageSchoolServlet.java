@@ -106,6 +106,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		String action = req.getParameter(Request.PARAM_ACTION);
 		ret.actionx += action;
 		if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
+			String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 			try {
 				doDbActionSelect(conn, stmt, ret);
 			} catch (SQLException e) {
@@ -149,6 +150,22 @@ public class ManageSchoolServlet extends HttpServlet {
 			throws SQLException
 	{
 		String sql = "select * from T_SCHOOL order by ID asc limit 0,5";
+		ResultSet rs = stmt.executeQuery(sql);
+		JSONArray array = new JSONArray();
+		while (rs.next()) {
+			JSONObject obj = new JSONObject(); // Item in array.
+			obj.put("ID", rs.getInt("ID"));
+			obj.put("NAME", rs.getString("NAME"));
+			array.put(obj);
+		}
+		ret.retobjx = array;
+		rs.close();
+	}
+
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, int from, int range)
+			throws SQLException
+	{
+		String sql = "select * from T_SCHOOL order by ID asc limit " + from + ",5";
 		ResultSet rs = stmt.executeQuery(sql);
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
