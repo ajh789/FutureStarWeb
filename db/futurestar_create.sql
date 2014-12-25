@@ -5,10 +5,13 @@ NAME      VARCHAR(255) UNIQUE                    NOT NULL, -- Only one root.
 NICKNAME  VARCHAR(255)                           NOT NULL,
 PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
 -- PRIVILEGE: 
----- 0 - highest, can do everything
----- 1 - intermediate, insert/delete/update/select all common data
----- 2 - lowest, insert/update/select all common data
-PRIVILEGE INTEGER                                NOT NULL DEFAULT 2,
+---- Bitwise permission control.
+---- XXXX (insert|delete|update|select)
+---- ||||-> bit flag for select, 0 or 1
+---- |||--> bit flag for update, 0 or 1
+---- ||---> bit flag for delete, 0 or 1
+---- |----> bit flag for insert, 0 or 1
+PRIVILEGE INTEGER                                NOT NULL DEFAULT 9, -- 1001
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1 -- 0 - unlocked, 1 - locked
 );
 
@@ -16,7 +19,8 @@ CREATE TABLE T_SCHOOL
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
 NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-LOGO      VARCHAR(255)
+LOGO      VARCHAR(255)                                   , -- Logo image location.
+ISLOCKED  INTEGER                                NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
 CREATE TABLE T_CLASS

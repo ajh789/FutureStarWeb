@@ -26,6 +26,7 @@ import com.ajh.futurestar.common.*;
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
+	private static final int DEFAULT_QUERY_INCREMENT = 10;
 
 	public ManageSchoolServlet()
 	{
@@ -108,7 +109,11 @@ public class ManageSchoolServlet extends HttpServlet {
 		if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
 			String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 			try {
-				doDbActionSelect(conn, stmt, ret);
+				if (baseid == null) {
+					doDbActionSelect(conn, stmt, ret);
+				} else {
+					doDbActionSelect(conn, stmt, ret, Integer.parseInt(baseid), DEFAULT_QUERY_INCREMENT);
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
@@ -149,7 +154,7 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret)
 			throws SQLException
 	{
-		String sql = "select * from T_SCHOOL order by ID asc limit 0,5";
+		String sql = "select * from T_SCHOOL order by ID asc limit 0," + DEFAULT_QUERY_INCREMENT + ";";
 		ResultSet rs = stmt.executeQuery(sql);
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
@@ -165,7 +170,7 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret, int from, int range)
 			throws SQLException
 	{
-		String sql = "select * from T_SCHOOL order by ID asc limit " + from + ",5";
+		String sql = "select * from T_SCHOOL order by ID asc limit " + from + "," + DEFAULT_QUERY_INCREMENT + ";";
 		ResultSet rs = stmt.executeQuery(sql);
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
