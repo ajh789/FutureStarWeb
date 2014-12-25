@@ -19,7 +19,8 @@ CREATE TABLE T_SCHOOL
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
 NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-LOGO      VARCHAR(255)                                   , -- Logo image location.
+LOGO      VARCHAR(255)                                    DEFAULT 'null', -- Logo image location.
+INTRO     TEXT                                            DEFAULT 'null', -- Introduction
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
@@ -49,7 +50,9 @@ ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlo
 FOREIGN KEY(CHILD1_ID) REFERENCES T_CHILD(ID),
 FOREIGN KEY(CHILD2_ID) REFERENCES T_CHILD(ID),
 FOREIGN KEY(CHILD3_ID) REFERENCES T_CHILD(ID),
-FOREIGN KEY(CHILD4_ID) REFERENCES T_CHILD(ID)
+FOREIGN KEY(CHILD4_ID) REFERENCES T_CHILD(ID),
+FOREIGN KEY(CHILD5_ID) REFERENCES T_CHILD(ID),
+FOREIGN KEY(CHILD6_ID) REFERENCES T_CHILD(ID)
 );
 
 CREATE TABLE T_TEACHER -- Teacher logs in with ID.

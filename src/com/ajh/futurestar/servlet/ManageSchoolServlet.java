@@ -26,6 +26,7 @@ import com.ajh.futurestar.common.*;
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
+	private static final int DEFAULT_QUERY_BASEID = 0;
 	private static final int DEFAULT_QUERY_INCREMENT = 10;
 
 	public ManageSchoolServlet()
@@ -110,7 +111,7 @@ public class ManageSchoolServlet extends HttpServlet {
 			String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 			try {
 				if (baseid == null) {
-					doDbActionSelect(conn, stmt, ret);
+					doDbActionSelect(conn, stmt, ret, DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
 				} else {
 					doDbActionSelect(conn, stmt, ret, Integer.parseInt(baseid), DEFAULT_QUERY_INCREMENT);
 				}
@@ -151,16 +152,17 @@ public class ManageSchoolServlet extends HttpServlet {
 		return ret;
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret)
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
 			throws SQLException
 	{
-		String sql = "select * from T_SCHOOL order by ID asc limit 0," + DEFAULT_QUERY_INCREMENT + ";";
-		ResultSet rs = stmt.executeQuery(sql);
+		ResultSet rs = stmt.executeQuery(query);
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
 			JSONObject obj = new JSONObject(); // Item in array.
 			obj.put("ID", rs.getInt("ID"));
 			obj.put("NAME", rs.getString("NAME"));
+			obj.put("LOGO", rs.getString("LOGO"));
+			obj.put("INTRO", rs.getString("INTRO"));
 			array.put(obj);
 		}
 		ret.retobjx = array;
@@ -171,16 +173,7 @@ public class ManageSchoolServlet extends HttpServlet {
 			throws SQLException
 	{
 		String sql = "select * from T_SCHOOL order by ID asc limit " + from + "," + DEFAULT_QUERY_INCREMENT + ";";
-		ResultSet rs = stmt.executeQuery(sql);
-		JSONArray array = new JSONArray();
-		while (rs.next()) {
-			JSONObject obj = new JSONObject(); // Item in array.
-			obj.put("ID", rs.getInt("ID"));
-			obj.put("NAME", rs.getString("NAME"));
-			array.put(obj);
-		}
-		ret.retobjx = array;
-		rs.close();
+		doDbActionSelect(c, stmt, ret, sql);
 	}
 
 	private void doDbActionInsert(Connection c, Statement stmt, String schoolName) throws SQLException
