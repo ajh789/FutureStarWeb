@@ -14,15 +14,6 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
 
-  <servlet>
-    <servlet-name>WapLoginServlet</servlet-name>
-    <servlet-class>com.ajh.futurestar.servlet.WapLoginServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>WapLoginServlet</servlet-name>
-    <url-pattern>/waplogin</url-pattern>
-  </servlet-mapping>
-
   <session-config>
     <session-timeout>10</session-timeout>
   </session-config>

@@ -1,4 +1,4 @@
-package com.ajh.futurestar.common;
+package com.ajh.futurestar.web.common;
 
 public class Attribute {
 	public static final String ATTR_USER_ROLE = "role";

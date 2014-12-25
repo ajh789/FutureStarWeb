@@ -1,4 +1,4 @@
-package com.ajh.futurestar.common;
+package com.ajh.futurestar.web.common;
 
 public enum RetCode {
 	RETCODE_OK,

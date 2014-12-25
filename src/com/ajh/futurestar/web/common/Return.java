@@ -1,4 +1,4 @@
-package com.ajh.futurestar.common;
+package com.ajh.futurestar.web.common;
 
 public class Return {
 	public RetCode retcode = RetCode.RETCODE_OK;

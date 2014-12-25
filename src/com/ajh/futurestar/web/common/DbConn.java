@@ -1,4 +1,4 @@
-package com.ajh.futurestar.common;
+package com.ajh.futurestar.web.common;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

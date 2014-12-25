@@ -1,4 +1,4 @@
-package com.ajh.futurestar.common;
+package com.ajh.futurestar.web.common;
 
 public class DbAction {
 	public static final String ACTION_SELECT = "select"; // query
