@@ -17,18 +17,35 @@ ISLOCKED  INTEGER                                NOT NULL DEFAULT 1 -- 0 - unloc
 
 CREATE TABLE T_SCHOOL
 (
-ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
-NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-LOGO      VARCHAR(255)                                    DEFAULT 'null', -- Logo image location.
-INTRO     TEXT                                            DEFAULT 'null', -- Introduction
-ISLOCKED  INTEGER                                NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
+ID        CHAR(32)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
+NAME      VARCHAR(255) UNIQUE       NOT NULL,
+LOGO      VARCHAR(255)                       DEFAULT 'null', -- Logo image location.
+INTRO     TEXT                               DEFAULT 'null', -- Introduction
+CREATION  CHAR(20)                           DEFAULT 'null', -- Time stamp of creation.
+ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
+
+CREATE TRIGGER T_SCHOOL_AutoGenerateGUID
+AFTER INSERT ON T_SCHOOL
+FOR EACH ROW
+WHEN (NEW.ID = 'null')
+BEGIN
+    UPDATE T_SCHOOL SET ID = (SELECT hex(randomblob(16))) WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
+AFTER INSERT ON T_SCHOOL
+FOR EACH ROW
+WHEN (NEW.CREATION = 'null')
+BEGIN
+    UPDATE T_SCHOOL SET CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now')) WHERE rowid = NEW.rowid;
+END;
 
 CREATE TABLE T_CLASS
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
 NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-SCHOOL_ID INTEGER                                NOT NULL,
+SCHOOL_ID CHAR(32)                               NOT NULL,
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
 
@@ -63,7 +80,7 @@ NICKNAME  VARCHAR(255)                           NOT NULL,
 GENDER    INTEGER                                NOT NULL DEFAULT 0, -- 0 - male, 1 - female
 PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
 CLASS_ID  INTEGER                                        , -- Could be null.
-SCHOOL_ID INTEGER                                NOT NULL,
+SCHOOL_ID CHAR(32)                               NOT NULL,
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 2, -- 0 - school admin, 1 - class admin, 2 - none admin
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlocked, 1 - locked
 FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),
@@ -84,4 +101,21 @@ CLASS_ID      INTEGER                  NOT NULL,
 FOREIGN KEY(PARENT_ID_DAD) REFERENCES T_PARENT(ID),
 FOREIGN KEY(PARENT_ID_MOM) REFERENCES T_PARENT(ID),
 FOREIGN KEY(CLASS_ID)      REFERENCES T_CLASS(ID)
+);
+
+CREATE TABLE T_CATALOG -- Catalog of posters.
+(
+ID   INTEGER PRIMARY KEY NOT NULL,
+NAME VARCHAR(512)        NOT NULL
+);
+
+CREATE TABLE T_POSTER -- Posters
+(
+ID         INTEGER PRIMARY KEY NOT NULL,
+TITLE      VARCHAR(512)        NOT NULL,
+CONTENT    VARCHAR(8192)       NOT NULL,
+CATALOG_ID INTEGER             NOT NULL,
+TEACHER_ID INTEGER             NOT NULL,
+FOREIGN KEY(CATALOG_ID) REFERENCES T_CATALOG(ID),
+FOREIGN KEY(TEACHER_ID) REFERENCES T_TEACHER(ID)
 );

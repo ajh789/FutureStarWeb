@@ -111,9 +111,9 @@ public class ManageSchoolServlet extends HttpServlet {
 			String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 			try {
 				if (baseid == null) {
-					doDbActionSelect(conn, stmt, ret, DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
+					doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
 				} else {
-					doDbActionSelect(conn, stmt, ret, Integer.parseInt(baseid), DEFAULT_QUERY_INCREMENT);
+					doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_INCREMENT);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -159,20 +159,21 @@ public class ManageSchoolServlet extends HttpServlet {
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
 			JSONObject obj = new JSONObject(); // Item in array.
-			obj.put("ID", rs.getInt("ID"));
+			obj.put("ID", rs.getString("ID"));
 			obj.put("NAME", rs.getString("NAME"));
 			obj.put("LOGO", rs.getString("LOGO"));
 			obj.put("INTRO", rs.getString("INTRO"));
+			obj.put("CREATION", rs.getString("CREATION"));
 			array.put(obj);
 		}
 		ret.retobjx = array;
 		rs.close();
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret, int from, int range)
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String from, int range)
 			throws SQLException
 	{
-		String sql = "select * from T_SCHOOL order by ID asc limit " + from + "," + DEFAULT_QUERY_INCREMENT + ";";
+		String sql = "select * from T_SCHOOL where CREATION > '" + from + "' limit 0,10;";
 		doDbActionSelect(c, stmt, ret, sql);
 	}
 
