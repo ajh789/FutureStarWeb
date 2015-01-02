@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 
 import com.ajh.futurestar.web.utils.Authenticate;
 
-@WebServlet("/login")
+@WebServlet("/login.do")
 public class LoginServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = 1382075836716659538L;
@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet
 		PrintWriter out = rsp.getWriter();
 		out.println("<html>");
 		out.println("<head>");
-		out.println("<title>µÇÂ¼</title>");
+		out.println("<title>ç™»å½•</title>");
 		out.println("</head>");
 		out.println("<body>");
 //		out.println("username: " + username + "<br/>");
@@ -50,20 +50,20 @@ public class LoginServlet extends HttpServlet
 			try {
 //				out.println("Try connecting to db and authenticate.<br/>");
 				if (Authenticate.authenticate(username, password, role, session)) {
-					out.println("µÇÂ¼³É¹¦.<br/>");
+					out.println("ç™»å½•æˆåŠŸ.<br/>");
 					out.println("role    : " + session.getAttribute("role") + "<br/>");
 					out.println("id      : " + session.getAttribute("id") + "<br/>");
 					out.println("name    : " + session.getAttribute("name") + "<br/>");
 					out.println("islocked: " + session.getAttribute("islocked") + "<br/>");
 				} else {
-					out.println("ÓÃ»§Ãû»òÃÜÂë´íÎó.<br/>");
+					out.println("ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯.<br/>");
 				}
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 				out.println(e.getMessage() + "<br/>");
 			}
 		} else {
-			out.println("µÇÂ¼Ê§°Ü.<br/>");
+			out.println("ç™»å½•å¤±è´¥.<br/>");
 		}
 		out.println("</body>");
 		out.println("</html>");

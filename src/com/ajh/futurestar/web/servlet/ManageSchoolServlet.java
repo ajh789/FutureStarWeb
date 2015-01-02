@@ -25,7 +25,7 @@ import com.ajh.futurestar.web.common.*;
 @WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/manageschool" })
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String HTML_TITLE = "—ß–£π‹¿Ì";
+	private static final String HTML_TITLE = "Â≠¶Ê†°ÁÆ°ÁêÜ";
 	private static final int DEFAULT_QUERY_BASEID = 0;
 	private static final int DEFAULT_QUERY_INCREMENT = 10;
 
@@ -75,7 +75,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		if (name == null || name.equalsIgnoreCase(""))
 		{
 			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
-			ret.retinfo += "…–Œ¥µ«¬ºªÚª·ª∞≥¨ ±";
+			ret.retinfo += "Â∞öÊú™ÁôªÂΩïÊàñ‰ºöËØùË∂ÖÊó∂";
 			return ret;
 		}
 
@@ -106,40 +106,45 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		// DO NOT return when performing action.
 		String action = req.getParameter(Request.PARAM_ACTION);
-		ret.actionx += action;
-		if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
-			String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
-			try {
-				if (baseid == null) {
-					doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
-				} else {
-					doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_INCREMENT);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
-				ret.retinfo += e.getMessage();
-			}
-		} else if (action.equalsIgnoreCase(DbAction.ACTION_INSERT)) { // insert
-			String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
-			if (schoolName == null || schoolName.equalsIgnoreCase("")) {
-				ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
-				ret.retinfo += "—ß–£√˚≥∆Œ™ø’";
-			} else {
+		if (action == null || action.equalsIgnoreCase("")) {
+			ret.retcode = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_ACTION;
+			ret.retinfo = "action‰∏∫Á©∫";
+		} else {
+			ret.actionx += action;
+			if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
+				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 				try {
-					doDbActionInsert(conn, stmt, schoolName);
+					if (baseid == null) {
+						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
+					} else {
+						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_INCREMENT);
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_INSERT_FAILED;
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
 					ret.retinfo += e.getMessage();
 				}
+			} else if (action.equalsIgnoreCase(DbAction.ACTION_INSERT)) { // insert
+				String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
+				if (schoolName == null || schoolName.equalsIgnoreCase("")) {
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
+					ret.retinfo += "Â≠¶Ê†°ÂêçÁß∞‰∏∫Á©∫";
+				} else {
+					try {
+						doDbActionInsert(conn, stmt, schoolName);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_INSERT_FAILED;
+						ret.retinfo += e.getMessage();
+					}
+				}
+			} else if (action.equalsIgnoreCase(DbAction.ACTION_UPDATE)) { // update
+				// TODO
+			} else if (action.equalsIgnoreCase(DbAction.ACTION_DELETE)) { // delete
+				// TODO
+			} else {
+				ret.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
 			}
-		} else if (action.equalsIgnoreCase(DbAction.ACTION_UPDATE)) { // update
-			// TODO
-		} else if (action.equalsIgnoreCase(DbAction.ACTION_DELETE)) { // delete
-			// TODO
-		} else {
-			ret.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
 		}
 
 		try {
@@ -186,6 +191,9 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void generatePage(HttpServletResponse rsp, String reqfrom, Return result)
 			throws IOException
 	{
+		rsp.setHeader("Cache-Control", "no-store");  
+		rsp.setHeader("Pragma", "no-cache");  
+		rsp.setDateHeader("Expires", 0); 
 		PrintWriter out = null; // Method getWriter() should be called after setContentType().
 		if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_PC)) {
 			rsp.setContentType("text/html; charset=UTF-8");
@@ -204,7 +212,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		} else {
 			rsp.setContentType("text/plain; charset=UTF-8");
 			out = rsp.getWriter();
-			out.println("Œ¥÷™«Î«Û¿¥‘¥£°");
+			out.println("Êú™Áü•ËØ∑Ê±ÇÊù•Ê∫êÔºÅ");
 		}
 	}
 

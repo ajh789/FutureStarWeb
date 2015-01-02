@@ -46,7 +46,7 @@ public class WapLoginServlet extends HttpServlet
 		JSONObject jo = new JSONObject();
 		if (action == null) {
 			jo.put("retcode", RETCODE_KO);
-			jo.put("retinfo", "actionÎª¿Õ");
+			jo.put("retinfo", "actionä¸ºç©º");
 		} else {
 			if (action.equalsIgnoreCase("login")) { // Do login.
 				if (name     != null && 
@@ -61,25 +61,25 @@ public class WapLoginServlet extends HttpServlet
 							user.put("privilege", ((Integer)session.getAttribute("privilege")).intValue());
 							user.put("islocked", ((Boolean)session.getAttribute("islocked")).booleanValue());
 							jo.put("retcode", RETCODE_OK);
-							jo.put("retinfo", "µÇÂ¼³É¹¦");
+							jo.put("retinfo", "ç™»å½•æˆåŠŸ");
 							jo.put("user", user);
 						} else {
 							jo.put("retcode", RETCODE_KO_LOGIN_FAILED);
-							jo.put("retinfo", "ÓÃ»§Ãû»òÃÜÂë²»ÕıÈ·");
+							jo.put("retinfo", "ç”¨æˆ·åæˆ–å¯†ç ä¸æ­£ç¡®");
 						}
 					} catch (ClassNotFoundException | SQLException e) {
 						jo.put("retcode", RETCODE_KO);
-						jo.put("retinfo", "²¶»ñÒì³£: " + e.getMessage());
+						jo.put("retinfo", "æ•è·å¼‚å¸¸: " + e.getMessage());
 						e.printStackTrace();
 					}
 				} else {
 					jo.put("retcode", RETCODE_KO);
 					if (name == null)
-						jo.put("retinfo", "ÓÃ»§ÃûÎª¿Õ");
+						jo.put("retinfo", "ç”¨æˆ·åä¸ºç©º");
 					else if (password == null)
-						jo.put("retinfo", "ÃÜÂëÎª¿Õ");
+						jo.put("retinfo", "å¯†ç ä¸ºç©º");
 					else
-						jo.put("retinfo", "ÓÃ»§½ÇÉ«Îª¿Õ");
+						jo.put("retinfo", "ç”¨æˆ·è§’è‰²ä¸ºç©º");
 				}
 			} // End login.
 			else if (action.equalsIgnoreCase("getstatus")) { // Do get status.
@@ -91,16 +91,16 @@ public class WapLoginServlet extends HttpServlet
 					user.put("privilege", ((Integer)session.getAttribute("privilege")).intValue());
 					user.put("islocked", ((Boolean)session.getAttribute("islocked")).booleanValue());
 					jo.put("retcode", RETCODE_OK);
-					jo.put("retinfo", "ÒÑ¾­µÇÂ¼");
+					jo.put("retinfo", "å·²ç»ç™»å½•");
 					jo.put("user", user);
 				} else {
 					jo.put("retcode", RETCODE_KO_NOTLOGIN_OR_TIMEOUT);
-					jo.put("retinfo", "ÉĞÎ´µÇÂ¼»ò»á»°³¬Ê±");
+					jo.put("retinfo", "å°šæœªç™»å½•æˆ–ä¼šè¯è¶…æ—¶");
 				}
 			} // End get status.
 			else {
 				jo.put("retcode", RETCODE_KO);
-				jo.put("retinfo", "Î´Öªaction: " + action);
+				jo.put("retinfo", "æœªçŸ¥action: " + action);
 			}
 		}
 

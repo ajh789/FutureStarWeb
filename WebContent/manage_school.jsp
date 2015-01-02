@@ -36,8 +36,8 @@ if (session.getAttribute("name") == null) {
 </ul>
 </div>
 <div id="content">
-<input id="button_create" type="button" value="新建" onclick="on_button_create()">
-<input id="button_search" type="button" value="查找" onclick="on_button_search()"><br/>
+<input id="button_create" type="button" value="新建" onclick="on_button_create()" />
+<input id="button_search" type="button" value="查找" onclick="on_button_search()" /><br/>
 <span id="span_content"></span>
 </div>
 <div id="footer">Copyright FutureStar.com.cn</div>

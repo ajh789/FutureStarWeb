@@ -15,6 +15,7 @@ h2 {margin-bottom:0; font-size:14px;}
 ul {margin:0;}
 li {list-style:none;}
 </style>
+<script type="text/javascript" src="js/ajax.js" charset="UTF-8"></script>
 </head>
 <body>
 <%
@@ -25,7 +26,7 @@ else {
 %>
 <div id="container">
 <div id="header">
-<h1>Main Title of Web Page</h1>
+<h1>Main Title of Web Page</h1><br/>
 </div>
 <div id="menu">
 <h2>菜单</h2>
@@ -35,7 +36,10 @@ else {
 <li><a href="">学生管理</a></li>
 </ul>
 </div>
-<div id="content">Content goes here</div>
+<div id="content">
+<input id="button_reqdata" type="button" value="测试" onclick="reqdata()" /><br/>
+<span id="span_content"></span>
+</div>
 <div id="footer">Copyright FutureStar.com.cn</div>
 </div>
 <%

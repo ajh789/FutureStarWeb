@@ -6,6 +6,7 @@
     "<input type='submit' value='创建'>" +
     "</form>";
 }
+
 function on_button_search()
 {
   document.getElementById("span_content").innerHTML="<b>My First JavaScript Function</b>";

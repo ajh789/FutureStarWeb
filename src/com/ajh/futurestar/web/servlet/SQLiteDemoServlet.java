@@ -46,7 +46,7 @@ public class SQLiteDemoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		rsp.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = rsp.getWriter();
-		out.println("²éÑ¯½á¹û£º");
+		out.println("æŸ¥è¯¢ç»“æžœï¼š");
 		query(out, out);
 	}
 	
