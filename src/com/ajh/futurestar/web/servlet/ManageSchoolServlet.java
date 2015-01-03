@@ -38,18 +38,24 @@ public class ManageSchoolServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse rsp)
 			throws ServletException, IOException
 	{
+		getServletContext().log("Enter method doGet().");
 		process(req, rsp);
+		getServletContext().log("Leave method doGet().");
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse rsp)
 			throws ServletException, IOException
 	{
+		getServletContext().log("Enter method doPost().");
 		process(req, rsp);
+		getServletContext().log("Leave method doPost().");
 	}
 
 	private void process(HttpServletRequest req, HttpServletResponse rsp)
 			throws ServletException, IOException
 	{
+		getServletContext().log("Enter method process().");
+
 		Return ret = new Return();
 
 		String reqfrom = req.getParameter(Request.PARAM_FROM);
@@ -65,11 +71,15 @@ public class ManageSchoolServlet extends HttpServlet {
 		}
 
 		generatePage(rsp, reqfrom, ret);
+
+		getServletContext().log("Leave method process().");
 	}
 
 	// Catch and handle all exceptions in this method and generate return code.
 	private Return doBusiness(HttpServletRequest req, HttpServletResponse rsp, Return ret)
 	{
+		getServletContext().log("Enter method doBusiness().");
+
 		HttpSession session = req.getSession();
 		String name = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
 		if (name == null || name.equalsIgnoreCase(""))
@@ -160,6 +170,8 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
 			throws SQLException
 	{
+		getServletContext().log("Enter method doDbActionSelect(4 PARAMS).");
+
 		ResultSet rs = stmt.executeQuery(query);
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
@@ -173,13 +185,19 @@ public class ManageSchoolServlet extends HttpServlet {
 		}
 		ret.retobjx = array;
 		rs.close();
+
+		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
 	}
 
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String from, int range)
 			throws SQLException
 	{
+		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
+
 		String sql = "select * from T_SCHOOL where CREATION > '" + from + "' limit 0,10;";
 		doDbActionSelect(c, stmt, ret, sql);
+
+		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
 	}
 
 	private void doDbActionInsert(Connection c, Statement stmt, String schoolName) throws SQLException
@@ -191,9 +209,11 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void generatePage(HttpServletResponse rsp, String reqfrom, Return result)
 			throws IOException
 	{
-		rsp.setHeader("Cache-Control", "no-store");  
-		rsp.setHeader("Pragma", "no-cache");  
-		rsp.setDateHeader("Expires", 0); 
+		getServletContext().log("Enter method generatePage().");
+
+//		rsp.setHeader("Cache-Control", "no-store");
+//		rsp.setHeader("Pragma", "no-cache");
+//		rsp.setDateHeader("Expires", 0);
 		PrintWriter out = null; // Method getWriter() should be called after setContentType().
 		if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_PC)) {
 			rsp.setContentType("text/html; charset=UTF-8");
@@ -214,6 +234,8 @@ public class ManageSchoolServlet extends HttpServlet {
 			out = rsp.getWriter();
 			out.println("未知请求来源！");
 		}
+
+		getServletContext().log("Leave method generatePage().");
 	}
 
 	private void generatePageBody4PC(PrintWriter out, Return result)
@@ -224,11 +246,13 @@ public class ManageSchoolServlet extends HttpServlet {
 	private void generatePageBody4WAP(PrintWriter out, Return result)
 			throws IOException
 	{
+		getServletContext().log("Enter method generatePageBody4WAP().");
 		JSONObject obj = new JSONObject();
 		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
 		obj.put("retinfo", result.retinfo);
 		obj.put("schools", result.retobjx);
 		obj.put("actionx", result.actionx);
 		out.println(obj.toString());
+		getServletContext().log("Leave method generatePageBody4WAP().");
 	}
 }

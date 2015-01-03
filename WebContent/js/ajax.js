@@ -1,38 +1,72 @@
-var req = null;
-
-function reqdata()
+function createXHR()
 {
-	var url = "manageschool?reqfrom=wap";
-
+	var obj = false;
 	if (window.XMLHttpRequest) { // IE7, Firefox, Opera
-		document.getElementById("span_content").innerHTML = "<b>尝试获取XMLHttpRequest！</b>";
-		req = new XMLHttpRequest();
+		obj = new XMLHttpRequest();
 	} else if (window.ActiveXObject) { // IE5, IE6
-		document.getElementById("span_content").innerHTML = "<b>尝试获取ActiveXObject！</b>";
-		req = new ActiveXObject("Microsoft.XMLHTTP");
+		obj = new ActiveXObject("Microsoft.XMLHTTP");
 	} else {
-		document.getElementById("span_content").innerHTML = "<b>获取req对象出错！</b>";
-	}
-	
-	if (req == null) {
-		window.alert("不能创建XMLHttpRequest对象实例！");
-		return;
+		window.alert("未知浏览器，不能创建XMLHttpRequest对象实例！");
 	}
 
-	req.open("GET", url, true);
-	req.onreadystatechange = getResponse;
+	if (!obj) {
+		window.alert("创建XMLHttpRequest对象实例失败！");
+	}
 
-	req.send(null);
+	return obj;
 }
 
-function getResponse() {
-	var tmp = "<b>In function getResponse.</b><br/>";
-	tmp += "req.readyState is " + req.readyState + "<br/>";
-	tmp += "req.status is " + req.status + "<br/>";
-//	if (req.readyState == 4 && req.status == 200) {
-//		var rsp = req.responseText;
-//		tmp += rsp;
-//	}
-	tmp += req.responseText;
-	document.getElementById("span_content").innerHTML = tmp;
+var xmlhttp = new createXHR();
+
+function reqData()
+{
+	var url = "/futurestar/manageschool?reqfrom=wap&action=select";
+
+	xmlhttp.open("GET", url, true);
+	xmlhttp.onreadystatechange = handleResponse;
+
+	xmlhttp.send();
+}
+
+function handleResponse() {
+	if (xmlhttp.readyState == 4) {
+		var tmp = "Output:<br/>";
+		var rsp = xmlhttp.responseText;
+		if (xmlhttp.status == 200) { // 200 OK
+			// Four members: retcode, retinfo, actionx, schools
+			var ret = eval("("+rsp+")"); // Transit JSON string to JSON object.
+			if (ret.retcode == 0) { // OK
+				var schools = ret.schools; // Array of schools.
+				tmp += "Data:<br/>";
+				if (schools.length > 0) {
+					tmp += "<table border='1'>";
+//					tmp += "<caption>Schools:</caption>";
+					tmp += "<tr>";
+//					tmp += "<th>ID</th>";
+					tmp += "<th>NAME</th>";
+					tmp += "<th>LOGO</th>";
+					tmp += "<th>INTRO</th>";
+					tmp += "<th>CREATION</th>";
+					tmp += "</tr>";
+				}
+				for (var i=0; i<schools.length; i++) {
+					tmp += "<tr>";
+//					tmp += "<td>" + schools[i].ID + "</td>";
+					tmp += "<td>" + schools[i].NAME + "</td>";
+					tmp += "<td>" + schools[i].LOGO + "</td>";
+					tmp += "<td>" + schools[i].INTRO + "</td>";
+					tmp += "<td>" + schools[i].CREATION + "</td>";
+					tmp += "</tr>";
+				}
+				if (schools.length > 0) {
+					tmp += "</table>";
+				}
+			} else {
+				tmp += ret.retinfo;
+			}
+		} else {
+			tmp += rsp;
+		}
+		document.getElementById("span_content").innerHTML = tmp;
+	}
 }

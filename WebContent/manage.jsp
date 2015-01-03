@@ -26,7 +26,7 @@ else {
 %>
 <div id="container">
 <div id="header">
-<h1>Main Title of Web Page</h1><br/>
+<h1>Main Title of Web Page</h1>
 </div>
 <div id="menu">
 <h2>菜单</h2>
@@ -37,7 +37,7 @@ else {
 </ul>
 </div>
 <div id="content">
-<input id="button_reqdata" type="button" value="测试" onclick="reqdata()" /><br/>
+<input id="button_reqdata" type="button" value="测试" onclick="reqData()" /><br/>
 <span id="span_content"></span>
 </div>
 <div id="footer">Copyright FutureStar.com.cn</div>
