@@ -7,13 +7,14 @@
 <style type="text/css">
 div#container {width:100%}
 div#header    {background-color:#99bbbb;}
-div#menu      {background-color:#ffff99; height:600px; width:15%; float:left;}
-div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left;}
+div#menu      {background-color:#ffff99; height:600px; width:15%; float:left; overflow:auto;}
+div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
 h1 {margin-bottom:0;}
 h2 {margin-bottom:0; font-size:14px;}
 ul {margin:0;}
 li {list-style:none;}
+table#schools {font-size:10px;}
 </style>
 <script type="text/javascript" src="js/ajax.js" charset="UTF-8"></script>
 </head>

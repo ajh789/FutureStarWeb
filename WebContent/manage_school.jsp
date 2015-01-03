@@ -7,8 +7,8 @@
 <style type="text/css">
 div#container {width:100%}
 div#header    {background-color:#99bbbb;}
-div#menu      {background-color:#ffff99; height:600px; width:15%; float:left;}
-div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left;}
+div#menu      {background-color:#ffff99; height:600px; width:15%; float:left; overflow:auto;}
+div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
 h1 {margin-bottom:0;}
 h2 {margin-bottom:0; font-size:14px;}
@@ -24,23 +24,23 @@ if (session.getAttribute("name") == null) {
 } else {
 %>
 <div id="container">
-<div id="header">
-<h1>Main Title of Web Page</h1>
-</div>
-<div id="menu">
-<h2>菜单</h2>
-<ul>
-<li><a href="manage_school.jsp">学校管理</a></li>
-<li><a href="">教师管理</a></li>
-<li><a href="">学生管理</a></li>
-</ul>
-</div>
-<div id="content">
-<input id="button_create" type="button" value="新建" onclick="on_button_create()" />
-<input id="button_search" type="button" value="查找" onclick="on_button_search()" /><br/>
-<span id="span_content"></span>
-</div>
-<div id="footer">Copyright FutureStar.com.cn</div>
+	<div id="header">
+		<h1>Main Title of Web Page</h1>
+	</div>
+	<div id="menu">
+		<h2>菜单</h2>
+		<ul>
+		<li><a href="manage_school.jsp">学校管理</a></li>
+		<li><a href="">教师管理</a></li>
+		<li><a href="">学生管理</a></li>
+		</ul>
+	</div>
+	<div id="content">
+		<input id="button_create" type="button" value="新建" onclick="on_button_create()" />
+		<input id="button_search" type="button" value="查找" onclick="on_button_search()" /><br/>
+		<span id="span_content"></span>
+	</div>
+	<div id="footer">Copyright FutureStar.com.cn</div>
 </div>
 <%
 } // else

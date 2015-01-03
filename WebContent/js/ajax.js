@@ -37,9 +37,8 @@ function handleResponse() {
 			var ret = eval("("+rsp+")"); // Transit JSON string to JSON object.
 			if (ret.retcode == 0) { // OK
 				var schools = ret.schools; // Array of schools.
-				tmp += "Data:<br/>";
 				if (schools.length > 0) {
-					tmp += "<table border='1'>";
+					tmp += "<table id='schools' border='1'>";
 //					tmp += "<caption>Schools:</caption>";
 					tmp += "<tr>";
 //					tmp += "<th>ID</th>";
