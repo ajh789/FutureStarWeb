@@ -10,6 +10,9 @@ div#header    {background-color:#99bbbb;}
 div#menu      {background-color:#ffff99; height:600px; width:15%; float:left; overflow:auto;}
 div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
+span#span_debugmsg {display:none; color:red;}
+input#button_reqdata_up   {display:none;}
+input#button_reqdata_down {display:none;}
 h1 {margin-bottom:0;}
 h2 {margin-bottom:0; font-size:14px;}
 ul {margin:0;}
@@ -38,7 +41,11 @@ else {
 </ul>
 </div>
 <div id="content">
-<input id="button_reqdata" type="button" value="测试" onclick="reqData()" /><br/>
+<input id="button_reqdata" type="button" value="加载数据" onclick="reqData()" />
+<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
+<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+<br/>
+<span id="span_debugmsg"></span>
 <span id="span_content"></span>
 </div>
 <div id="footer">Copyright FutureStar.com.cn</div>

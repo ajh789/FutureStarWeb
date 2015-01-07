@@ -1,3 +1,11 @@
+document.getElementByIdx_x = function(id) {
+	if (typeof id == 'string') {
+		return document.getElementById(id);
+	} else {
+		throw new error('Please pass a string as an ID!');
+	}
+};
+
 function createXHR()
 {
 	var obj = false;
@@ -17,10 +25,17 @@ function createXHR()
 }
 
 var xmlhttp = new createXHR();
+var g_schools = null; // Array of schools.
+var g_schools_head = null;
+var g_schools_tail = null;
 
 function reqData()
 {
 	var url = "/futurestar/manageschool?reqfrom=wap&action=select";
+
+	if (g_schools_tail != null) {
+		url += "&baseid=" + g_schools_tail;
+	}
 
 	xmlhttp.open("GET", url, true);
 	xmlhttp.onreadystatechange = handleResponse;
@@ -28,9 +43,29 @@ function reqData()
 	xmlhttp.send();
 }
 
+function reqDataUp()
+{
+	var url = "/futurestar/manageschool?reqfrom=wap&action=select";
+
+	if (g_schools_head != null) {
+		url += "&baseid=" + g_schools_head + "&goes=up";
+	}
+
+	xmlhttp.open("GET", url, true);
+	xmlhttp.onreadystatechange = handleResponse;
+
+	xmlhttp.send();
+}
+
+function reqDataDown()
+{
+	reqData();
+}
+
 function handleResponse() {
 	if (xmlhttp.readyState == 4) {
-		var tmp = "Output:<br/>";
+		var tmp = "";
+		var debug = "";
 		var rsp = xmlhttp.responseText;
 		if (xmlhttp.status == 200) { // 200 OK
 			// Four members: retcode, retinfo, actionx, schools
@@ -38,6 +73,10 @@ function handleResponse() {
 			if (ret.retcode == 0) { // OK
 				var schools = ret.schools; // Array of schools.
 				if (schools.length > 0) {
+//					g_schools = new Array(); // Allocate a new array.
+					g_schools_head = schools[0].CREATION;
+					g_schools_tail = schools[schools.length-1].CREATION;
+
 					tmp += "<table id='schools' border='1'>";
 //					tmp += "<caption>Schools:</caption>";
 					tmp += "<tr>";
@@ -47,25 +86,43 @@ function handleResponse() {
 					tmp += "<th>INTRO</th>";
 					tmp += "<th>CREATION</th>";
 					tmp += "</tr>";
-				}
-				for (var i=0; i<schools.length; i++) {
-					tmp += "<tr>";
-//					tmp += "<td>" + schools[i].ID + "</td>";
-					tmp += "<td>" + schools[i].NAME + "</td>";
-					tmp += "<td>" + schools[i].LOGO + "</td>";
-					tmp += "<td>" + schools[i].INTRO + "</td>";
-					tmp += "<td>" + schools[i].CREATION + "</td>";
-					tmp += "</tr>";
-				}
-				if (schools.length > 0) {
+
+					for (var i=0; i<schools.length; i++) {
+//						g_schools.push(schools[i]); // Append new item.
+						tmp += "<tr>";
+//						tmp += "<td>" + schools[i].ID + "</td>";
+						tmp += "<td>" + schools[i].NAME + "</td>";
+						if (schools[i].LOGO != "" && schools[i].LOGO != "null") {
+							tmp += "<td><img src='" + schools[i].LOGO +"' alt='logo' height='100' width='100' /></td>";
+						} else {
+							tmp += "<td>" + schools[i].LOGO + "</td>";
+						}
+						tmp += "<td>" + schools[i].INTRO + "</td>";
+						tmp += "<td>" + schools[i].CREATION + "</td>";
+						tmp += "</tr>";
+					}
+
 					tmp += "</table>";
+					document.getElementByIdx_x("span_content").innerHTML = tmp;
+					document.getElementByIdx_x("button_reqdata").style.display = "none";
+					document.getElementByIdx_x("button_reqdata_up").style.display = "inline";
+					document.getElementByIdx_x("button_reqdata_down").style.display = "inline";
+				} else {
+					debug += "没有更多数据可加载！";
 				}
 			} else {
-				tmp += ret.retinfo;
+				debug += ret.retinfo;
 			}
 		} else {
-			tmp += rsp;
+			debug += rsp;
 		}
-		document.getElementById("span_content").innerHTML = tmp;
+		if (debug != "") {
+//			window.alert("Debug message is not null.");
+			document.getElementById("span_debugmsg").style.display = "block"; // Show
+			document.getElementById("span_debugmsg").innerHTML = debug;
+		} else {
+//			window.alert("Debug message is null.");
+			document.getElementById("span_debugmsg").style.display = "none"; // Hide
+		}
 	}
 }

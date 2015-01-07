@@ -98,8 +98,10 @@ BIRTH_DAY     INTEGER                  NOT NULL CHECK(BIRTH_DAY>=1 AND BIRTH_DAY
 PARENT_ID_DAD INTEGER                          , -- Could be null? Or one of PARENT_ID_DAD & PARENT_ID_MOM could be null?
 PARENT_ID_MOM INTEGER                          , -- Could be null?
 CLASS_ID      INTEGER                  NOT NULL,
+/* This creates a circular/cyclic dependency between T_PARENET and T_CHILD.
 FOREIGN KEY(PARENT_ID_DAD) REFERENCES T_PARENT(ID),
 FOREIGN KEY(PARENT_ID_MOM) REFERENCES T_PARENT(ID),
+*/
 FOREIGN KEY(CLASS_ID)      REFERENCES T_CLASS(ID)
 );
 

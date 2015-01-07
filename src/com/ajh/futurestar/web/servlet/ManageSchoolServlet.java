@@ -27,7 +27,9 @@ public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
 	private static final int DEFAULT_QUERY_BASEID = 0;
-	private static final int DEFAULT_QUERY_INCREMENT = 10;
+	private static final int DEFAULT_QUERY_RANGE = 10;
+	private static final int GOES_UP = 0;
+	private static final int GOES_DOWN = 1;
 
 	public ManageSchoolServlet()
 	{
@@ -123,11 +125,16 @@ public class ManageSchoolServlet extends HttpServlet {
 			ret.actionx += action;
 			if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
 				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
+				int nGoes = GOES_DOWN; // Default to goes down.
+				if (goes != null && goes.compareToIgnoreCase("up") == 0) {
+					nGoes = GOES_UP;
+				}
 				try {
 					if (baseid == null) {
-						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_INCREMENT);
+						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_RANGE, nGoes);
 					} else {
-						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_INCREMENT);
+						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_RANGE, nGoes);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -189,13 +196,21 @@ public class ManageSchoolServlet extends HttpServlet {
 		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String from, int range)
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String from, int range, int goes)
 			throws SQLException
 	{
 		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
 
-		String sql = "select * from T_SCHOOL where CREATION > '" + from + "' limit 0,10;";
-		doDbActionSelect(c, stmt, ret, sql);
+		if (goes == GOES_DOWN) {
+			String sql = "select * from T_SCHOOL where CREATION > '" + from + "' order by CREATION asc limit " + range +";";
+			getServletContext().log(sql);
+			doDbActionSelect(c, stmt, ret, sql);
+		} else {
+			String sql = "select * from T_SCHOOL where CREATION in " + 
+				"( select CREATION from T_SCHOOL where CREATION < '" + from + "' order by CREATION desc limit " + range +");";
+			getServletContext().log(sql);
+			doDbActionSelect(c, stmt, ret, sql);
+		}
 
 		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
 	}
