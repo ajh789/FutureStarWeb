@@ -60,6 +60,8 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		Return ret = new Return();
 
+//		req.setCharacterEncoding("UTF-8"); // Doesn't work. Need to set URIEncoding="UTF-8" for Connector in server.xml
+
 		String reqfrom = req.getParameter(Request.PARAM_FROM);
 		if (reqfrom == null) {
 			reqfrom = Request.PARAM_FROM_NULL;
@@ -83,8 +85,8 @@ public class ManageSchoolServlet extends HttpServlet {
 		getServletContext().log("Enter method doBusiness().");
 
 		HttpSession session = req.getSession();
-		String name = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
-		if (name == null || name.equalsIgnoreCase(""))
+		String username = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
+		if (username == null || username.equalsIgnoreCase(""))
 		{
 			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
 			ret.retinfo += "尚未登录或会话超时";
@@ -125,6 +127,7 @@ public class ManageSchoolServlet extends HttpServlet {
 			ret.actionx += action;
 			if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
 				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
 				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
 				int nGoes = GOES_DOWN; // Default to goes down.
 				if (goes != null && goes.compareToIgnoreCase("up") == 0) {
@@ -132,9 +135,9 @@ public class ManageSchoolServlet extends HttpServlet {
 				}
 				try {
 					if (baseid == null) {
-						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_RANGE, nGoes);
+						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_RANGE, schoolname, nGoes);
 					} else {
-						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_RANGE, nGoes);
+						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_RANGE, schoolname, nGoes);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -196,21 +199,30 @@ public class ManageSchoolServlet extends HttpServlet {
 		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String from, int range, int goes)
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String baseid, int range, String name, int goes)
 			throws SQLException
 	{
 		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
 
+		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION from T_SCHOOL";
 		if (goes == GOES_DOWN) {
-			String sql = "select * from T_SCHOOL where CREATION > '" + from + "' order by CREATION asc limit " + range +";";
-			getServletContext().log(sql);
-			doDbActionSelect(c, stmt, ret, sql);
+			sql += " where CREATION > '" + baseid + "'";
+			if (name != null && name.compareToIgnoreCase("") != 0) {
+				getServletContext().log("School name is " + name);
+				sql += " and NAME like '%" + name + "%'";
+			}
+			sql += " order by CREATION asc limit " + range + ";";
+//			getServletContext().log(sql);
+//			doDbActionSelect(c, stmt, ret, sql);
 		} else {
-			String sql = "select * from T_SCHOOL where CREATION in " + 
-				"( select CREATION from T_SCHOOL where CREATION < '" + from + "' order by CREATION desc limit " + range +");";
-			getServletContext().log(sql);
-			doDbActionSelect(c, stmt, ret, sql);
+			sql += " where CREATION in " + 
+				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "' order by CREATION desc limit " + range +");";
+//			getServletContext().log(sql);
+//			doDbActionSelect(c, stmt, ret, sql);
 		}
+
+		getServletContext().log(sql);
+		doDbActionSelect(c, stmt, ret, sql);
 
 		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
 	}

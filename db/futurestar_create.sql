@@ -17,20 +17,30 @@ ISLOCKED  INTEGER                                NOT NULL DEFAULT 1 -- 0 - unloc
 
 CREATE TABLE T_SCHOOL
 (
-ID        CHAR(32)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
+ID        CHAR(16)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
 NAME      VARCHAR(255) UNIQUE       NOT NULL,
 LOGO      VARCHAR(255)                       DEFAULT 'null', -- Logo image location.
-INTRO     TEXT                               DEFAULT 'null', -- Introduction
+INTRO     VARCHAR(65536)                     DEFAULT 'null', -- Introduction
 CREATION  CHAR(20)                           DEFAULT 'null', -- Time stamp of creation.
 ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
+-- Use X'' notation to convert hex string to blob data.
+-- Use HEX() method to convert blob data to hex string.
 CREATE TRIGGER T_SCHOOL_AutoGenerateGUID
 AFTER INSERT ON T_SCHOOL
 FOR EACH ROW
 WHEN (NEW.ID = 'null')
 BEGIN
-    UPDATE T_SCHOOL SET ID = (SELECT hex(randomblob(16))) WHERE rowid = NEW.rowid;
+    UPDATE T_SCHOOL SET ID = (SELECT randomblob(16)) WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_SCHOOL_AutoGenerateLogo
+AFTER INSERT ON T_SCHOOL
+FOR EACH ROW
+WHEN (NEW.LOGO = 'null')
+BEGIN
+    UPDATE T_SCHOOL SET LOGO = 'images/school_default.png' WHERE rowid = NEW.rowid;
 END;
 
 CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
@@ -45,7 +55,7 @@ CREATE TABLE T_CLASS
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
 NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-SCHOOL_ID CHAR(32)                               NOT NULL,
+SCHOOL_ID CHAR(16)                               NOT NULL,
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
 
@@ -80,7 +90,7 @@ NICKNAME  VARCHAR(255)                           NOT NULL,
 GENDER    INTEGER                                NOT NULL DEFAULT 0, -- 0 - male, 1 - female
 PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
 CLASS_ID  INTEGER                                        , -- Could be null.
-SCHOOL_ID CHAR(32)                               NOT NULL,
+SCHOOL_ID CHAR(16)                               NOT NULL,
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 2, -- 0 - school admin, 1 - class admin, 2 - none admin
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlocked, 1 - locked
 FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),

@@ -36,8 +36,13 @@ function reqData()
 	if (g_schools_tail != null) {
 		url += "&baseid=" + g_schools_tail;
 	}
+	var schoolname = document.getElementByIdx_x("text_schoolname").value;
+	if (schoolname != "") {
+		window.alert(schoolname);
+		url += "&name=" + schoolname;
+	}
 
-	xmlhttp.open("GET", url, true);
+	xmlhttp.open("GET", encodeURI(url), true);
 	xmlhttp.onreadystatechange = handleResponse;
 
 	xmlhttp.send();
@@ -81,9 +86,9 @@ function handleResponse() {
 //					tmp += "<caption>Schools:</caption>";
 					tmp += "<tr>";
 //					tmp += "<th>ID</th>";
-					tmp += "<th>NAME</th>";
+//					tmp += "<th>NAME</th>";
 					tmp += "<th>LOGO</th>";
-					tmp += "<th>INTRO</th>";
+					tmp += "<th>NAME&INTRO</th>";
 					tmp += "<th>CREATION</th>";
 					tmp += "</tr>";
 
@@ -91,13 +96,13 @@ function handleResponse() {
 //						g_schools.push(schools[i]); // Append new item.
 						tmp += "<tr>";
 //						tmp += "<td>" + schools[i].ID + "</td>";
-						tmp += "<td>" + schools[i].NAME + "</td>";
+//						tmp += "<td>" + schools[i].NAME + "</td>";
 						if (schools[i].LOGO != "" && schools[i].LOGO != "null") {
 							tmp += "<td><img src='" + schools[i].LOGO +"' alt='logo' height='100' width='100' /></td>";
 						} else {
 							tmp += "<td>" + schools[i].LOGO + "</td>";
 						}
-						tmp += "<td>" + schools[i].INTRO + "</td>";
+						tmp += "<td><b>" + schools[i].NAME + "</b>(" + schools[i].ID + ")<br/><br/>" + schools[i].INTRO + "</td>";
 						tmp += "<td>" + schools[i].CREATION + "</td>";
 						tmp += "</tr>";
 					}

@@ -41,7 +41,9 @@ else {
 </ul>
 </div>
 <div id="content">
-<input id="button_reqdata" type="button" value="加载数据" onclick="reqData()" />
+学校名称：
+<input id="text_schoolname" type="text" value="南京" />
+<input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
 <input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
 <input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
 <br/>

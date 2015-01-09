@@ -11,5 +11,5 @@ public class Request {
 	public static final String PARAM_ACTION_SELECT_BASEID = "baseid";
 	public static final String PARAM_ACTION_SELECT_GOES = "goes"; // up/down
 
-	public static final String PARAM_SCHOOL_NAME = "schoolname";
+	public static final String PARAM_SCHOOL_NAME = "name";
 }
