@@ -91,6 +91,9 @@ public class ManageSchoolServlet extends HttpServlet {
 			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
 			ret.retinfo += "尚未登录或会话超时";
 			return ret;
+		} else {
+			Integer privilege = (Integer)session.getAttribute(Attribute.ATTR_USER_PRIVILEGE);
+			ret.prvlege = privilege.intValue();
 		}
 
 		Connection conn = null;
@@ -280,6 +283,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		obj.put("retinfo", result.retinfo);
 		obj.put("schools", result.retobjx);
 		obj.put("actionx", result.actionx);
+		obj.put("prvlege", result.prvlege);
 		out.println(obj.toString());
 		getServletContext().log("Leave method generatePageBody4WAP().");
 	}

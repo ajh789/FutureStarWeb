@@ -20,6 +20,8 @@ h2 {margin-bottom:0; font-size:14px;}
 ul {margin:0;}
 li {list-style:none;}
 table#schools {font-size:10px;}
+.table_school_edit {font-size:10px;}
+.table_school_edit tr {vertical-align:top;}
 </style>
 <script type="text/javascript" src="js/ajax.js" charset="UTF-8"></script>
 </head>

@@ -5,4 +5,5 @@ public class Return {
 	public String  retinfo = new String();
 	public Object  retobjx = null;
 	public String  actionx = new String();
+	public int     prvlege = 0; // privilege
 }

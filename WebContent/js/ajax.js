@@ -92,45 +92,48 @@ function handleResponse() {
 		var debug = "";
 		var rsp = xmlhttp.responseText;
 		if (xmlhttp.status == 200) { // 200 OK
-			// Four members: retcode, retinfo, actionx, schools
+			// Five members: retcode, retinfo, actionx, schools, prvlege
 			var ret = eval("("+rsp+")"); // Transit JSON string to JSON object.
 			if (ret.retcode == 0) { // OK
 				var schools = ret.schools; // Array of schools.
 				if (schools.length > 0) {
-//					g_schools = new Array(); // Allocate a new array.
+					g_schools = new Array(); // Allocate a new array.
 					g_schools_head = schools[0].CREATION;
 					g_schools_tail = schools[schools.length-1].CREATION;
 
 					tmp += "<table id='schools' border='1'>";
-//					tmp += "<caption>Schools:</caption>";
 					tmp += "<tr>";
-//					tmp += "<th>ID</th>";
-//					tmp += "<th>NAME</th>";
-					tmp += "<th>LOGO</th>";
-					tmp += "<th>NAME&INTRO</th>";
-					tmp += "<th>CREATION</th>";
+					tmp += "<th>&nbsp;</th>";       // Column 1
+					tmp += "<th>学校</th>"; // Column 2
+					tmp += "<th>操作</th>";     // Column 3
 					tmp += "</tr>";
 
 					for (var i=0; i<schools.length; i++) {
-//						g_schools.push(schools[i]); // Append new item.
-						tmp += "<tr>";
-//						tmp += "<td>" + schools[i].ID + "</td>";
-//						tmp += "<td>" + schools[i].NAME + "</td>";
+						g_schools.push(schools[i]); // Append new item.
+						tmp += "<tr>"; // Row stars.
+						// Column 1
 						if (schools[i].LOGO != "" && schools[i].LOGO != "null") {
 							tmp += "<td><img src='" + schools[i].LOGO +"' alt='logo' height='100' width='100' /></td>";
 						} else {
 							tmp += "<td>" + schools[i].LOGO + "</td>";
 						}
-						tmp += "<td><b>" + schools[i].NAME + "</b>(" + schools[i].ID + ")<br/><br/>" + schools[i].INTRO + "</td>";
-						tmp += "<td>" + schools[i].CREATION + "</td>";
-						tmp += "</tr>";
+						// Column 2
+						tmp += "<td><b>" + schools[i].NAME + "</b>(" + schools[i].ID + ")<br/>" + schools[i].CREATION +"<br/>" + schools[i].INTRO + "</td>";
+						// Column 3
+						tmp += "<td>";
+						if (ret.prvlege & 0x4)
+							tmp += "<input type='button' value='删除' />";
+						if (ret.prvlege & 0x2)
+							tmp += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + schools[i].ID +"\")' />";
+						tmp += "</td>";
+						tmp += "</tr>"; // Row ends.
 					}
 
 					tmp += "</table>";
-					document.getElementByIdx_x("span_content").innerHTML = tmp;
-//					document.getElementByIdx_x("button_reqdata").style.display = "none";
-					document.getElementByIdx_x("button_reqdata_up").style.display = "inline";
-					document.getElementByIdx_x("button_reqdata_down").style.display = "inline";
+					setSpanContentInnerHTML(tmp);
+//					hideButtonReqData();
+					showButtonReqDataUp();
+					showButtonReqDataDown();
 				} else {
 					debug += "没有更多数据可加载！";
 				}
@@ -141,12 +144,63 @@ function handleResponse() {
 			debug += rsp;
 		}
 		if (debug != "") {
-//			window.alert("Debug message is not null.");
-			document.getElementById("span_debugmsg").style.display = "block"; // Show
-			document.getElementById("span_debugmsg").innerHTML = debug;
+			showSpanDebugMsg(); // Show
+			setSpanDebugMsgInnerHTML(debug);
 		} else {
-//			window.alert("Debug message is null.");
-			document.getElementById("span_debugmsg").style.display = "none"; // Hide
+			hideSpanDebugMsg(); // Hide
 		}
+	}
+}
+
+function hideButtonReqData() {
+	document.getElementByIdx_x("button_reqdata").style.display = "none";
+}
+
+function showButtonReqDataUp() {
+	document.getElementByIdx_x("button_reqdata_up").style.display = "inline";
+}
+
+function showButtonReqDataDown() {
+	document.getElementByIdx_x("button_reqdata_down").style.display = "inline";
+}
+
+function hideSpanDebugMsg() {
+	document.getElementById("span_debugmsg").style.display = "none"; // Hide
+}
+
+function showSpanDebugMsg() {
+	document.getElementById("span_debugmsg").style.display = "block"; // Hide
+}
+
+function setSpanDebugMsgInnerHTML(innerHTML) {
+	document.getElementById("span_debugmsg").innerHTML = innerHTML;
+}
+
+function setSpanContentInnerHTML(innerHTML) {
+	document.getElementByIdx_x("span_content").innerHTML = innerHTML;
+}
+
+function onButtonEditSchool(id) {
+//	window.alert("onButtonEditSchool: id = " + id);
+	if (typeof id == 'string') {
+		var tmp = "<table class='table_school_edit'>";
+		var found = false;
+		for (var i=0; i<g_schools.length; i++) {
+			if (g_schools[i].ID == id) {
+				tmp += "<tr><td>学校名称：</td><td>" + g_schools[i].NAME + "</td></tr>";
+				tmp += "<tr><td>注册时间：</td><td>" + g_schools[i].CREATION + "</td></tr>";
+				tmp += "<tr><td>学校介绍：</td><td>" + "<textarea rows='10' cols='80'>" + g_schools[i].INTRO + "</textarea></td>";
+				tmp += "<tr><td></td><td><input type='button' value='更新' /><input type='button' value='取消' /></td></tr>";
+				found = true;
+				break;
+			}
+		}
+		tmp += "</table>";
+		if (found) {
+			hideSpanDebugMsg();
+			setSpanContentInnerHTML(tmp);
+		}
+	} else {
+		throw new error('Please pass a string as an ID!');
 	}
 }
