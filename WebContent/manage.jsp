@@ -7,8 +7,10 @@
 <style type="text/css">
 div#container {width:100%}
 div#header    {background-color:#99bbbb;}
-div#menu      {background-color:#ffff99; height:600px; width:15%; float:left; overflow:auto;}
-div#content   {background-color:#EEEEEE; height:600px; width:85%; float:left; overflow:auto;}
+div#menu      {background-color:#ffff99; height:650px; width:15%; float:left; overflow:auto;}
+div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; overflow:auto;}
+div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
+div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
 span#span_debugmsg {display:none; color:red;}
 input#button_reqdata_up   {display:none;}
@@ -41,14 +43,17 @@ else {
 </ul>
 </div>
 <div id="content">
+<div id="content_upper">
 学校名称：
 <input id="text_schoolname" type="text" value="南京" />
 <input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
 <input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
 <input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
-<br/>
+</div>
+<div id="content_lower">
 <span id="span_debugmsg"></span>
 <span id="span_content"></span>
+</div>
 </div>
 <div id="footer">Copyright FutureStar.com.cn</div>
 </div>

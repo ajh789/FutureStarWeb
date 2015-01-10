@@ -33,12 +33,12 @@ function reqData()
 {
 	var url = "/futurestar/manageschool?reqfrom=wap&action=select";
 
-	if (g_schools_tail != null) {
-		url += "&baseid=" + g_schools_tail;
-	}
+//	if (g_schools_tail != null) {
+//		url += "&baseid=" + g_schools_tail;
+//	}
+
 	var schoolname = document.getElementByIdx_x("text_schoolname").value;
 	if (schoolname != "") {
-		window.alert(schoolname);
 		url += "&name=" + schoolname;
 	}
 
@@ -56,6 +56,11 @@ function reqDataUp()
 		url += "&baseid=" + g_schools_head + "&goes=up";
 	}
 
+	var schoolname = document.getElementByIdx_x("text_schoolname").value;
+	if (schoolname != "") {
+		url += "&name=" + schoolname;
+	}
+
 	xmlhttp.open("GET", url, true);
 	xmlhttp.onreadystatechange = handleResponse;
 
@@ -64,7 +69,21 @@ function reqDataUp()
 
 function reqDataDown()
 {
-	reqData();
+	var url = "/futurestar/manageschool?reqfrom=wap&action=select";
+
+	if (g_schools_tail != null) {
+		url += "&baseid=" + g_schools_tail;
+	}
+
+	var schoolname = document.getElementByIdx_x("text_schoolname").value;
+	if (schoolname != "") {
+		url += "&name=" + schoolname;
+	}
+
+	xmlhttp.open("GET", encodeURI(url), true);
+	xmlhttp.onreadystatechange = handleResponse;
+
+	xmlhttp.send();
 }
 
 function handleResponse() {
@@ -109,7 +128,7 @@ function handleResponse() {
 
 					tmp += "</table>";
 					document.getElementByIdx_x("span_content").innerHTML = tmp;
-					document.getElementByIdx_x("button_reqdata").style.display = "none";
+//					document.getElementByIdx_x("button_reqdata").style.display = "none";
 					document.getElementByIdx_x("button_reqdata_up").style.display = "inline";
 					document.getElementByIdx_x("button_reqdata_down").style.display = "inline";
 				} else {

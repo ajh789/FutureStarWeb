@@ -212,13 +212,14 @@ public class ManageSchoolServlet extends HttpServlet {
 				sql += " and NAME like '%" + name + "%'";
 			}
 			sql += " order by CREATION asc limit " + range + ";";
-//			getServletContext().log(sql);
-//			doDbActionSelect(c, stmt, ret, sql);
 		} else {
 			sql += " where CREATION in " + 
-				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "' order by CREATION desc limit " + range +");";
-//			getServletContext().log(sql);
-//			doDbActionSelect(c, stmt, ret, sql);
+				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
+			if (name != null && name.compareToIgnoreCase("") != 0) {
+				getServletContext().log("School name is " + name);
+				sql += " and NAME like '%" + name + "%'";
+			}
+			sql += " order by CREATION desc limit " + range +");";
 		}
 
 		getServletContext().log(sql);
