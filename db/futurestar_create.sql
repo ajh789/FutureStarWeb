@@ -19,10 +19,10 @@ CREATE TABLE T_SCHOOL
 (
 ID        CHAR(16)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
 NAME      VARCHAR(255) UNIQUE       NOT NULL,
-LOGO      VARCHAR(255)                       DEFAULT 'null', -- Logo image location.
-INTRO     VARCHAR(65536)                     DEFAULT 'null', -- Introduction
-CREATION  CHAR(20)                           DEFAULT 'null', -- Time stamp of creation.
-L_UPDATE  CHAR(20)                           DEFAULT 'null', -- Time stamp of last update.
+LOGO      VARCHAR(255)              NOT NULL DEFAULT 'null', -- Logo image location.
+INTRO     VARCHAR(65536)            NOT NULL DEFAULT 'null', -- Introduction
+CREATION  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of creation.
+L_UPDATE  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of last update.
 ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
