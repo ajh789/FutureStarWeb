@@ -28,6 +28,7 @@ var xmlhttp = new createXHR();
 var g_schools = null; // Array of schools.
 var g_schools_head = null;
 var g_schools_tail = null;
+var g_privilege = 0;
 
 function reqData()
 {
@@ -42,10 +43,11 @@ function reqData()
 		url += "&name=" + schoolname;
 	}
 
-	xmlhttp.open("GET", encodeURI(url), true);
-	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.open("GET", encodeURI(url), true);
+//	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.send();
 
-	xmlhttp.send();
+	$.get(url, handleSelectResponse);
 }
 
 function reqDataUp()
@@ -61,10 +63,11 @@ function reqDataUp()
 		url += "&name=" + schoolname;
 	}
 
-	xmlhttp.open("GET", url, true);
-	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.open("GET", url, true);
+//	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.send();
 
-	xmlhttp.send();
+	$.get(url, handleSelectResponse);
 }
 
 function reqDataDown()
@@ -80,10 +83,11 @@ function reqDataDown()
 		url += "&name=" + schoolname;
 	}
 
-	xmlhttp.open("GET", encodeURI(url), true);
-	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.open("GET", encodeURI(url), true);
+//	xmlhttp.onreadystatechange = handleResponse;
+//	xmlhttp.send();
 
-	xmlhttp.send();
+	$.get(url, handleSelectResponse);
 }
 
 function handleResponse() {
@@ -152,43 +156,113 @@ function handleResponse() {
 	}
 }
 
+function handleSelectResponse(data, status) {
+	var tmp = "";
+	var debug = "";
+
+	if (status == "success") { // 200 OK
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+		// Five members: retcode, retinfo, actionx, schools, prvlege
+		if (ret.retcode == 0) { // OK
+			g_privilege = ret.prvlege;
+			var schools = ret.schools; // Array of schools.
+			if (schools.length > 0) {
+				g_schools = new Array(); // Allocate a new array.
+				g_schools = g_schools.concat(schools);
+				g_schools_head = schools[0].CREATION;
+				g_schools_tail = schools[schools.length-1].CREATION;
+				tmp += generateTableOfSchools();
+				setSpanContentInnerHTML(tmp);
+//				hideButtonReqData();
+				showButtonReqDataUp();
+				showButtonReqDataDown();
+			} else {
+				debug += "没有更多数据可加载！";
+			}
+		} else {
+			g_privilege = 0;
+			debug += ret.retinfo;
+		}
+	} else {
+		debug += data;
+	}
+	if (debug != "") {
+		showSpanDebugMsg(); // Show
+		setSpanDebugMsgInnerHTML(debug);
+	} else {
+		hideSpanDebugMsg(); // Hide
+	}
+}
+
+function generateTableOfSchools() {
+	var html = "";
+
+	html += "<table id='schools' border='1'>";
+	html += "<tr>";
+	html += "<th>&nbsp;</th>";       // Column 1
+	html += "<th>学校</th>"; // Column 2
+	html += "<th>操作</th>";     // Column 3
+	html += "</tr>";
+
+	for (var i=0; i<g_schools.length; i++) {
+		html += "<tr>"; // Row stars.
+		// Column 1
+		if (g_schools[i].LOGO != "" && g_schools[i].LOGO != "null") {
+			html += "<td><img src='" + g_schools[i].LOGO +"' alt='logo' height='100' width='100' /></td>";
+		} else {
+			html += "<td>" + g_schools[i].LOGO + "</td>";
+		}
+		// Column 2
+		html += "<td><b>" + g_schools[i].NAME + "</b>(" + g_schools[i].ID + ")<br/>" + g_schools[i].CREATION +"<br/>" + g_schools[i].INTRO + "</td>";
+		// Column 3
+		html += "<td>";
+		if (g_privilege & 0x4)
+			html += "<input type='button' value='删除' />";
+		if (g_privilege & 0x2)
+			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />";
+		html += "</td>";
+		html += "</tr>"; // Row ends.
+	}
+
+	html += "</table>";
+
+	return html;
+}
+
 function hideButtonReqData() {
-//	document.getElementByIdx_x("button_reqdata").style.display = "none";
 	$("#button_reqdata").hide();
 }
 
 function showButtonReqDataUp() {
-//	document.getElementByIdx_x("button_reqdata_up").style.display = "inline";
 	$("#button_reqdata_up").show();
 }
 
 function showButtonReqDataDown() {
-//	document.getElementByIdx_x("button_reqdata_down").style.display = "inline";
 	$("#button_reqdata_down").show();
 }
 
 function hideSpanDebugMsg() {
-//	document.getElementById("span_debugmsg").style.display = "none"; // Hide
 	$("#span_debugmsg").hide();
 }
 
 function showSpanDebugMsg() {
-//	document.getElementById("span_debugmsg").style.display = "block"; // Hide
 	$("#span_debugmsg").show();
 }
 
 function setSpanDebugMsgInnerHTML(innerHTML) {
-//	document.getElementById("span_debugmsg").innerHTML = innerHTML;
 	$("#span_debugmsg").html(innerHTML);
 }
 
 function setSpanContentInnerHTML(innerHTML) {
-//	document.getElementByIdx_x("span_content").innerHTML = innerHTML;
 	$("#span_content").html(innerHTML);
 }
 
 function onButtonEditSchool(id) {
-//	window.alert("onButtonEditSchool: id = " + id);
 	if (typeof id == 'string') {
 		var tmp = "<table class='table_school_edit'>";
 		var found = false;
