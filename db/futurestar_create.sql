@@ -22,6 +22,7 @@ NAME      VARCHAR(255) UNIQUE       NOT NULL,
 LOGO      VARCHAR(255)                       DEFAULT 'null', -- Logo image location.
 INTRO     VARCHAR(65536)                     DEFAULT 'null', -- Introduction
 CREATION  CHAR(20)                           DEFAULT 'null', -- Time stamp of creation.
+L_UPDATE  CHAR(20)                           DEFAULT 'null', -- Time stamp of last update.
 ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
@@ -29,7 +30,6 @@ ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - lock
 -- Use HEX() method to convert blob data to hex string.
 CREATE TRIGGER T_SCHOOL_AutoGenerateGUID
 AFTER INSERT ON T_SCHOOL
-FOR EACH ROW
 WHEN (NEW.ID = 'null')
 BEGIN
     UPDATE T_SCHOOL SET ID = (SELECT randomblob(16)) WHERE rowid = NEW.rowid;
@@ -37,7 +37,6 @@ END;
 
 CREATE TRIGGER T_SCHOOL_AutoGenerateLogo
 AFTER INSERT ON T_SCHOOL
-FOR EACH ROW
 WHEN (NEW.LOGO = 'null')
 BEGIN
     UPDATE T_SCHOOL SET LOGO = 'images/school_default.png' WHERE rowid = NEW.rowid;
@@ -45,10 +44,19 @@ END;
 
 CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
 AFTER INSERT ON T_SCHOOL
-FOR EACH ROW
 WHEN (NEW.CREATION = 'null')
 BEGIN
-    UPDATE T_SCHOOL SET CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now')) WHERE rowid = NEW.rowid;
+    UPDATE T_SCHOOL SET 
+        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_SCHOOL_AutoUpdateTimeStamp
+AFTER UPDATE ON T_SCHOOL
+BEGIN
+    UPDATE T_SCHOOL SET 
+        L_UPDATE = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+    WHERE ID = NEW.ID;
 END;
 
 CREATE TABLE T_CLASS
