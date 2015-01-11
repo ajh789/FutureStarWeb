@@ -23,7 +23,8 @@ table#schools {font-size:10px;}
 .table_school_edit {font-size:10px;}
 .table_school_edit tr {vertical-align:top;}
 </style>
-<script type="text/javascript" src="js/ajax.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/jquery-1.11.2.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/manage.js" charset="UTF-8"></script>
 </head>
 <body>
 <%
