@@ -113,18 +113,20 @@ function handleSelectResponse(data, status) {
 function generateTableOfSchools() {
 	var html = "";
 
-	html += "<table id='schools' border='1'>";
-	html += "<tr>";
-	html += "<th>&nbsp;</th>";       // Column 1
-	html += "<th>学校</th>"; // Column 2
-	html += "<th>操作</th>";     // Column 3
-	html += "</tr>";
+	if (g_schools.length > 0) {
+		html += "<table id='schools' border='1'>";
+		html += "<tr>";
+		html += "<th>&nbsp;</th>";       // Column 1
+		html += "<th>学校</th>"; // Column 2
+		html += "<th>操作</th>";     // Column 3
+		html += "</tr>";
+	}
 
 	for (var i=0; i<g_schools.length; i++) {
 		html += "<tr>"; // Row stars.
 		// Column 1
 		if (g_schools[i].LOGO != "" && g_schools[i].LOGO != "null") {
-			html += "<td><img src='" + g_schools[i].LOGO +"' alt='logo' height='100' width='100' /></td>";
+			html += "<td><img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' /></td>";
 		} else {
 			html += "<td>" + g_schools[i].LOGO + "</td>";
 		}
@@ -140,7 +142,9 @@ function generateTableOfSchools() {
 		html += "</tr>"; // Row ends.
 	}
 
-	html += "</table>";
+	if (g_schools.length > 0) {
+		html += "</table>";
+	}
 
 	return html;
 }
@@ -179,10 +183,23 @@ function onButtonEditSchool(id) {
 		var found = false;
 		for (var i=0; i<g_schools.length; i++) {
 			if (g_schools[i].ID == id) {
+				tmp += // LOGO
+					"<tr><td>学校徽标：</td><td>" + 
+					"<img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' />" + 
+					"</td></tr>";
 				tmp += "<tr><td>学校名称：</td><td>" + g_schools[i].NAME + "</td></tr>";
 				tmp += "<tr><td>注册时间：</td><td>" + g_schools[i].CREATION + "</td></tr>";
+				tmp += "<tr><td>更新时间：</td><td>" + g_schools[i].LASTUPDATE + "</td></tr>";
+				tmp += // ISLOCKED
+					"<tr><td>当前状态：</td><td>" + 
+					"<input type='radio' name='islocked' value='true'  checked='" + (( g_schools[i].ISLOCKED)?"checked":"") + "' />锁定" + 
+					"<input type='radio' name='islocked' value='false' checked='" + ((!g_schools[i].ISLOCKED)?"checked":"") + "' />未锁定" + 
+					"</td></tr>";
 				tmp += "<tr><td>学校介绍：</td><td>" + "<textarea rows='10' cols='80'>" + g_schools[i].INTRO + "</textarea></td>";
-				tmp += "<tr><td></td><td><input type='button' value='更新' /><input type='button' value='取消' /></td></tr>";
+				tmp += // Buttons
+					"<tr><td></td><td>" +
+					"<input type='button' value='更新' /><input type='button' value='取消' onclick='onButtonCancelEditSchool()' />" + 
+					"</td></tr>";
 				found = true;
 				break;
 			}
@@ -195,4 +212,9 @@ function onButtonEditSchool(id) {
 	} else {
 		throw new error('Please pass a string as an ID!');
 	}
+}
+
+function onButtonCancelEditSchool() {
+	var tmp = generateTableOfSchools();
+	setSpanContentInnerHTML(tmp);
 }

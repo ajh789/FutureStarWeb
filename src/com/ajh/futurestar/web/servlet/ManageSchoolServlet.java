@@ -194,6 +194,8 @@ public class ManageSchoolServlet extends HttpServlet {
 			obj.put("LOGO", rs.getString("LOGO"));
 			obj.put("INTRO", rs.getString("INTRO"));
 			obj.put("CREATION", rs.getString("CREATION"));
+			obj.put("LASTUPDATE", rs.getString("LASTUPDATE"));
+			obj.put("ISLOCKED", rs.getBoolean("ISLOCKED"));
 			array.put(obj);
 		}
 		ret.retobjx = array;
@@ -207,7 +209,7 @@ public class ManageSchoolServlet extends HttpServlet {
 	{
 		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
 
-		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION from T_SCHOOL";
+		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
 		if (goes == GOES_DOWN) {
 			sql += " where CREATION > '" + baseid + "'";
 			if (name != null && name.compareToIgnoreCase("") != 0) {

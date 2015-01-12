@@ -17,13 +17,13 @@ ISLOCKED  INTEGER                                NOT NULL DEFAULT 1 -- 0 - unloc
 
 CREATE TABLE T_SCHOOL
 (
-ID        CHAR(16)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
-NAME      VARCHAR(255) UNIQUE       NOT NULL,
-LOGO      VARCHAR(255)              NOT NULL DEFAULT 'null', -- Logo image location.
-INTRO     VARCHAR(65536)            NOT NULL DEFAULT 'null', -- Introduction
-CREATION  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of creation.
-L_UPDATE  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of last update.
-ISLOCKED  INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
+ID          CHAR(16)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D2486D-7C0E-492D-9BD5-AC1145163F03
+NAME        VARCHAR(255) UNIQUE       NOT NULL,
+LOGO        VARCHAR(255)              NOT NULL DEFAULT 'null', -- Logo image location.
+INTRO       VARCHAR(65536)            NOT NULL DEFAULT 'null', -- Introduction
+CREATION    CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of creation.
+LASTUPDATE  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of last update.
+ISLOCKED    INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
 -- Use X'' notation to convert hex string to blob data.
@@ -55,7 +55,7 @@ CREATE TRIGGER T_SCHOOL_AutoUpdateTimeStamp
 AFTER UPDATE ON T_SCHOOL
 BEGIN
     UPDATE T_SCHOOL SET 
-        L_UPDATE = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        LASTUPDATE = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
     WHERE ID = NEW.ID;
 END;
 

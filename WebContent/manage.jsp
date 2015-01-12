@@ -22,6 +22,7 @@ li {list-style:none;}
 table#schools {font-size:10px;}
 .table_school_edit {font-size:10px;}
 .table_school_edit tr {vertical-align:top;}
+.img_school_logo {width: 100px; height: 100px;}
 </style>
 <script type="text/javascript" src="js/jquery-1.11.2.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/manage.js" charset="UTF-8"></script>
@@ -31,7 +32,6 @@ table#schools {font-size:10px;}
 if (session.getAttribute("name") == null) {
   response.sendRedirect("/futurestar/login.jsp");
 }
-else {
 %>
 <div id="container">
 <div id="header">
@@ -60,8 +60,6 @@ else {
 </div>
 <div id="footer">Copyright FutureStar.com.cn</div>
 </div>
-<%
-} // else
-%>
+
 </body>
 </html>
