@@ -179,39 +179,96 @@ function setSpanContentInnerHTML(innerHTML) {
 
 function onButtonEditSchool(id) {
 	if (typeof id == 'string') {
-		var tmp = "<table class='table_school_edit'>";
+//		var tmp = "<table class='table_school_edit'>";
 		var found = false;
+		var school = null;
 		for (var i=0; i<g_schools.length; i++) {
 			if (g_schools[i].ID == id) {
-				tmp += // LOGO
-					"<tr><td>学校徽标：</td><td>" + 
-					"<img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' />" + 
-					"</td></tr>";
-				tmp += "<tr><td>学校名称：</td><td>" + g_schools[i].NAME + "</td></tr>";
-				tmp += "<tr><td>注册时间：</td><td>" + g_schools[i].CREATION + "</td></tr>";
-				tmp += "<tr><td>更新时间：</td><td>" + g_schools[i].LASTUPDATE + "</td></tr>";
-				tmp += // ISLOCKED
-					"<tr><td>当前状态：</td><td>" + 
-					"<input type='radio' name='islocked' value='true'  checked='" + (( g_schools[i].ISLOCKED)?"checked":"") + "' />锁定" + 
-					"<input type='radio' name='islocked' value='false' checked='" + ((!g_schools[i].ISLOCKED)?"checked":"") + "' />未锁定" + 
-					"</td></tr>";
-				tmp += "<tr><td>学校介绍：</td><td>" + "<textarea rows='10' cols='80'>" + g_schools[i].INTRO + "</textarea></td>";
-				tmp += // Buttons
-					"<tr><td></td><td>" +
-					"<input type='button' value='更新' /><input type='button' value='取消' onclick='onButtonCancelEditSchool()' />" + 
-					"</td></tr>";
+//				tmp += // LOGO
+//					"<tr><td>学校徽标：</td><td>" + 
+//					"<img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' />" + 
+//					"</td></tr>";
+//				tmp += "<tr><td>学校名称：</td><td>" + g_schools[i].NAME + "</td></tr>";
+//				tmp += "<tr><td>注册时间：</td><td>" + g_schools[i].CREATION + "</td></tr>";
+//				tmp += "<tr><td>更新时间：</td><td>" + g_schools[i].LASTUPDATE + "</td></tr>";
+//				tmp += // ISLOCKED
+//					"<tr><td>当前状态：</td><td>" + 
+//					"<input type='radio' name='islocked' value='true'  checked='" + (( g_schools[i].ISLOCKED)?"checked":"") + "' />锁定" + 
+//					"<input type='radio' name='islocked' value='false' checked='" + ((!g_schools[i].ISLOCKED)?"checked":"") + "' />未锁定" + 
+//					"</td></tr>";
+//				tmp += "<tr><td>学校介绍：</td><td>" + "<textarea rows='10' cols='80'>" + g_schools[i].INTRO + "</textarea></td>";
+//				tmp += // Buttons
+//					"<tr><td></td><td>" +
+//					"<input type='button' value='更新' onclick='onButtonCommitEditSchool()' />" +
+//					"<input type='button' value='取消' onclick='onButtonCancelEditSchool()' />" + 
+//					"</td></tr>";
 				found = true;
+				school = g_schools[i];
 				break;
 			}
 		}
-		tmp += "</table>";
+//		tmp += "</table>";
 		if (found) {
 			hideSpanDebugMsg();
-			setSpanContentInnerHTML(tmp);
+//			setSpanContentInnerHTML(tmp);
+			generateEditSchoolHtml(school);
 		}
 	} else {
 		throw new error('Please pass a string as an ID!');
 	}
+}
+
+function generateEditSchoolHtml(school)
+{
+	var html = "";
+	html += "<table class='table_school_edit'>";
+	html += "  <tr>";
+	html += "    <td>学校徽标：</td>";
+	html += "    <td><img id='school_edit_logo' src='' alt='logo' class='img_school_logo' /></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>学校名称：</td>";
+	html += "    <td><span id='school_edit_name'></span></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>注册时间：</td>";
+	html += "    <td><span id='school_edit_creation'></span></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>更新时间：</td>";
+	html += "    <td><span id='school_edit_lastupdate'></span></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>当前状态：</td>";
+	html += "    <td>";
+	html += "      <input id='school_edit_islocked_true'  type='radio' name='islocked' value='true' />锁定";
+	html += "      <input id='school_edit_islocked_false' type='radio' name='islocked' value='false' />未锁定";
+	html += "    </td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>学校介绍：</td>";
+	html += "    <td><textarea id='school_edit_intro' rows='10' cols='80'></textarea></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>&nbsp;&nbsp;</td>";
+	html += "    <td>";
+	html += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
+	html += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
+	html += "    </td>";
+	html += "  </tr>";
+	html += "</table>";
+	setSpanContentInnerHTML(html);
+	$("#school_edit_logo").attr("src", school.LOGO);
+	$("#school_edit_name").html(school.NAME);
+	$("#school_edit_creation").html(school.CREATION);
+	$("#school_edit_lastupdate").html(school.LASTUPDATE);
+	$("#school_edit_islocked_true").attr("checked", (school.ISLOCKED)?"checked":"");
+	$("#school_edit_islocked_false").attr("checked", (!school.ISLOCKED)?"checked":"");
+	$("#school_edit_intro").val(school.INTRO);
+}
+
+function onButtonCommitEditSchool() {
+	//
 }
 
 function onButtonCancelEditSchool() {

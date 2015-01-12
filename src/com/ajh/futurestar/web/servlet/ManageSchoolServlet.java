@@ -162,7 +162,8 @@ public class ManageSchoolServlet extends HttpServlet {
 					}
 				}
 			} else if (action.equalsIgnoreCase(DbAction.ACTION_UPDATE)) { // update
-				// TODO
+				String id = req.getParameter("id");
+				String intro = req.getParameter("intro");
 			} else if (action.equalsIgnoreCase(DbAction.ACTION_DELETE)) { // delete
 				// TODO
 			} else {
