@@ -179,38 +179,17 @@ function setSpanContentInnerHTML(innerHTML) {
 
 function onButtonEditSchool(id) {
 	if (typeof id == 'string') {
-//		var tmp = "<table class='table_school_edit'>";
 		var found = false;
 		var school = null;
 		for (var i=0; i<g_schools.length; i++) {
 			if (g_schools[i].ID == id) {
-//				tmp += // LOGO
-//					"<tr><td>学校徽标：</td><td>" + 
-//					"<img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' />" + 
-//					"</td></tr>";
-//				tmp += "<tr><td>学校名称：</td><td>" + g_schools[i].NAME + "</td></tr>";
-//				tmp += "<tr><td>注册时间：</td><td>" + g_schools[i].CREATION + "</td></tr>";
-//				tmp += "<tr><td>更新时间：</td><td>" + g_schools[i].LASTUPDATE + "</td></tr>";
-//				tmp += // ISLOCKED
-//					"<tr><td>当前状态：</td><td>" + 
-//					"<input type='radio' name='islocked' value='true'  checked='" + (( g_schools[i].ISLOCKED)?"checked":"") + "' />锁定" + 
-//					"<input type='radio' name='islocked' value='false' checked='" + ((!g_schools[i].ISLOCKED)?"checked":"") + "' />未锁定" + 
-//					"</td></tr>";
-//				tmp += "<tr><td>学校介绍：</td><td>" + "<textarea rows='10' cols='80'>" + g_schools[i].INTRO + "</textarea></td>";
-//				tmp += // Buttons
-//					"<tr><td></td><td>" +
-//					"<input type='button' value='更新' onclick='onButtonCommitEditSchool()' />" +
-//					"<input type='button' value='取消' onclick='onButtonCancelEditSchool()' />" + 
-//					"</td></tr>";
 				found = true;
 				school = g_schools[i];
 				break;
 			}
 		}
-//		tmp += "</table>";
 		if (found) {
 			hideSpanDebugMsg();
-//			setSpanContentInnerHTML(tmp);
 			generateEditSchoolHtml(school);
 		}
 	} else {

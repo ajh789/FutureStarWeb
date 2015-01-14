@@ -86,7 +86,7 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		HttpSession session = req.getSession();
 		String username = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
-		if (username == null || username.equalsIgnoreCase(""))
+		if (username == null || username.equals(""))
 		{
 			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
 			ret.retinfo += "尚未登录或会话超时";
@@ -123,25 +123,38 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		// DO NOT return when performing action.
 		String action = req.getParameter(Request.PARAM_ACTION);
-		if (action == null || action.equalsIgnoreCase("")) {
+		if (action == null || action.equals("")) {
 			ret.retcode = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_ACTION;
 			ret.retinfo = "action为空";
 		} else {
+			boolean actionDone = false;
+DO_DB_ACTION:
+			if (!actionDone) { // Start DO_DB_ACTION.
 			ret.actionx += action;
 			if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
+				//
+				// Get parameters.
+				//
 				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+				if (baseid == null) {
+					baseid = "" + DEFAULT_QUERY_BASEID;
+				}
+				int range = DEFAULT_QUERY_RANGE;
 				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
 				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
 				int nGoes = GOES_DOWN; // Default to goes down.
-				if (goes != null && goes.compareToIgnoreCase("up") == 0) {
+				if (goes != null && goes.equalsIgnoreCase("up")) {
 					nGoes = GOES_UP;
 				}
+				//
+				// Construct query SQL string.
+				//
+				String sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, range, schoolname, nGoes);
+				//
+				// Do query.
+				//
 				try {
-					if (baseid == null) {
-						doDbActionSelect(conn, stmt, ret, ""+DEFAULT_QUERY_BASEID, DEFAULT_QUERY_RANGE, schoolname, nGoes);
-					} else {
-						doDbActionSelect(conn, stmt, ret, baseid, DEFAULT_QUERY_RANGE, schoolname, nGoes);
-					}
+					doDbActionSelect(conn, stmt, ret, sql);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
@@ -149,7 +162,7 @@ public class ManageSchoolServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase(DbAction.ACTION_INSERT)) { // insert
 				String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
-				if (schoolName == null || schoolName.equalsIgnoreCase("")) {
+				if (schoolName == null || schoolName.equals("")) {
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
 					ret.retinfo += "学校名称为空";
 				} else {
@@ -162,14 +175,44 @@ public class ManageSchoolServlet extends HttpServlet {
 					}
 				}
 			} else if (action.equalsIgnoreCase(DbAction.ACTION_UPDATE)) { // update
+				//
+				// Get parameters.
+				//
 				String id = req.getParameter("id");
+				if (id == null || id.equals("")) {
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+					ret.retinfo += "学校ID为空";
+					actionDone = true;
+					break DO_DB_ACTION;
+				}
 				String intro = req.getParameter("intro");
+				if (intro == null || intro.equals("")) {
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+					ret.retinfo += "学校介绍为空";
+					actionDone = true;
+					break DO_DB_ACTION;
+				}
+				//
+				// Construct update SQL string.
+				//
+				String sql = "";
+				//
+				// Do update.
+				//
+				try {
+					doDbActionUpdate(conn, stmt, sql);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+					ret.retinfo += e.getMessage();
+				}
 			} else if (action.equalsIgnoreCase(DbAction.ACTION_DELETE)) { // delete
 				// TODO
 			} else {
 				ret.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
 			}
-		}
+		} // End DO_DB_ACTION
+		} // End else.
 
 		try {
 			stmt.close();
@@ -179,6 +222,28 @@ public class ManageSchoolServlet extends HttpServlet {
 		}
 
 		return ret;
+	}
+
+	private String composeSqlStrSelect(DbVendor vendor, String baseid, int range, String schoolname, int goes)
+	{
+		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
+		if (goes == GOES_DOWN) {
+			sql += " where CREATION > '" + baseid + "'";
+			if (schoolname != null && !schoolname.equals("")) {
+				getServletContext().log("School name is " + schoolname);
+				sql += " and NAME like '%" + schoolname + "%'";
+			}
+			sql += " order by CREATION asc limit " + range + ";";
+		} else {
+			sql += " where CREATION in " + 
+				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
+			if (schoolname != null && !schoolname.equals("")) {
+				getServletContext().log("School name is " + schoolname);
+				sql += " and NAME like '%" + schoolname + "%'";
+			}
+			sql += " order by CREATION desc limit " + range +");";
+		}
+		return sql;
 	}
 
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
@@ -205,38 +270,43 @@ public class ManageSchoolServlet extends HttpServlet {
 		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String baseid, int range, String name, int goes)
-			throws SQLException
-	{
-		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
-
-		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
-		if (goes == GOES_DOWN) {
-			sql += " where CREATION > '" + baseid + "'";
-			if (name != null && name.compareToIgnoreCase("") != 0) {
-				getServletContext().log("School name is " + name);
-				sql += " and NAME like '%" + name + "%'";
-			}
-			sql += " order by CREATION asc limit " + range + ";";
-		} else {
-			sql += " where CREATION in " + 
-				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
-			if (name != null && name.compareToIgnoreCase("") != 0) {
-				getServletContext().log("School name is " + name);
-				sql += " and NAME like '%" + name + "%'";
-			}
-			sql += " order by CREATION desc limit " + range +");";
-		}
-
-		getServletContext().log(sql);
-		doDbActionSelect(c, stmt, ret, sql);
-
-		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
-	}
+//	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String baseid, int range, String name, int goes)
+//			throws SQLException
+//	{
+//		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
+//
+//		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
+//		if (goes == GOES_DOWN) {
+//			sql += " where CREATION > '" + baseid + "'";
+//			if (name != null && name.compareToIgnoreCase("") != 0) {
+//				getServletContext().log("School name is " + name);
+//				sql += " and NAME like '%" + name + "%'";
+//			}
+//			sql += " order by CREATION asc limit " + range + ";";
+//		} else {
+//			sql += " where CREATION in " + 
+//				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
+//			if (name != null && name.compareToIgnoreCase("") != 0) {
+//				getServletContext().log("School name is " + name);
+//				sql += " and NAME like '%" + name + "%'";
+//			}
+//			sql += " order by CREATION desc limit " + range +");";
+//		}
+//
+//		getServletContext().log(sql);
+//		doDbActionSelect(c, stmt, ret, sql);
+//
+//		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
+//	}
 
 	private void doDbActionInsert(Connection c, Statement stmt, String schoolName) throws SQLException
 	{
 		String sql = "";
+		stmt.execute(sql);
+	}
+
+	private void doDbActionUpdate(Connection c, Statement stmt, String sql) throws SQLException
+	{
 		stmt.execute(sql);
 	}
 
