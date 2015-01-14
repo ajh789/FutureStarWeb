@@ -110,6 +110,18 @@ function handleSelectResponse(data, status) {
 	}
 }
 
+function handleUpdateResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+		window.alert(ret.retcode + ret.retinfo);
+	}
+}
+
 function generateTableOfSchools() {
 	var html = "";
 
@@ -231,12 +243,14 @@ function generateEditSchoolHtml(school)
 	html += "  <tr>";
 	html += "    <td>&nbsp;&nbsp;</td>";
 	html += "    <td>";
+	html += "      <input type='hidden' id='school_edit_id' name='id' value='' />";
 	html += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
 	html += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "</table>";
 	setSpanContentInnerHTML(html);
+	$("#school_edit_id").val(school.ID);
 	$("#school_edit_logo").attr("src", school.LOGO);
 	$("#school_edit_name").html(school.NAME);
 	$("#school_edit_creation").html(school.CREATION);
@@ -247,7 +261,14 @@ function generateEditSchoolHtml(school)
 }
 
 function onButtonCommitEditSchool() {
-	//
+	var id = $("#school_edit_id").val();
+	var name = $("#school_edit_name").html();
+	var intro = $("#school_edit_intro").val();
+	$.post(
+		g_manageschool_update_url, 
+		{"id":id, "name":name, "intro":intro}, 
+		handleUpdateResponse
+	);
 }
 
 function onButtonCancelEditSchool() {

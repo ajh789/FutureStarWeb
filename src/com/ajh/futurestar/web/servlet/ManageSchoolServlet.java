@@ -178,14 +178,21 @@ DO_DB_ACTION:
 				//
 				// Get parameters.
 				//
-				String id = req.getParameter("id");
+				String id = req.getParameter(Request.PARAM_SCHOOL_ID);
 				if (id == null || id.equals("")) {
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
 					ret.retinfo += "学校ID为空";
 					actionDone = true;
 					break DO_DB_ACTION;
 				}
-				String intro = req.getParameter("intro");
+				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
+				if (schoolname == null || schoolname.equals("")) {
+					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+					ret.retinfo += "学校名称为空";
+					actionDone = true;
+					break DO_DB_ACTION;
+				}
+				String intro = req.getParameter(Request.PARAM_SCHOOL_INTRO);
 				if (intro == null || intro.equals("")) {
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
 					ret.retinfo += "学校介绍为空";
@@ -195,7 +202,7 @@ DO_DB_ACTION:
 				//
 				// Construct update SQL string.
 				//
-				String sql = "";
+				String sql = composeSqlStrUpdate(DbVendor.DB_SQLITE, id, schoolname, intro);
 				//
 				// Do update.
 				//
@@ -246,10 +253,21 @@ DO_DB_ACTION:
 		return sql;
 	}
 
+	private String composeSqlStrUpdate(DbVendor vendor, String id, String schoolname, String intro)
+	{
+		getServletContext().log("composeSqlStrUpdate() : School id is " + id);
+		getServletContext().log("composeSqlStrUpdate() : School name is " + schoolname);
+		getServletContext().log("composeSqlStrUpdate() : School name intro " + intro);
+		// Syntax: update T_SCHOOL set INTRO='xxx' where ID=X'xxx';
+		String sql = "update T_SCHOOL set INTRO='" + intro + "' where ID=X'" + id +"';";
+		return sql;
+	}
+
 	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
 			throws SQLException
 	{
 		getServletContext().log("Enter method doDbActionSelect(4 PARAMS).");
+		getServletContext().log(query);
 
 		ResultSet rs = stmt.executeQuery(query);
 		JSONArray array = new JSONArray();
@@ -307,7 +325,9 @@ DO_DB_ACTION:
 
 	private void doDbActionUpdate(Connection c, Statement stmt, String sql) throws SQLException
 	{
-		stmt.execute(sql);
+		getServletContext().log(sql);
+		stmt.executeUpdate(sql);
+		c.commit(); // Auto commit is set to false in DbConn.getDbConnection().
 	}
 
 	private void generatePage(HttpServletResponse rsp, String reqfrom, Return result)
