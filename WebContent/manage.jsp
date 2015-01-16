@@ -26,8 +26,9 @@ if (session.getAttribute("name") == null) {
 <h2>菜单</h2>
 <ul>
 <li><a href="manage_school.jsp">学校管理</a></li>
-<li><a href="">教师管理</a></li>
-<li><a href="">学生管理</a></li>
+<li><a href="manage_teacher.jsp">教师管理</a></li>
+<li><a href="manage_parent.jsp">家长管理</a></li>
+<li><a href="manage_student.jsp">学生管理</a></li>
 </ul>
 </div>
 <div id="content">

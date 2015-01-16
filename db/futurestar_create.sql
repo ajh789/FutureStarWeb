@@ -93,14 +93,15 @@ FOREIGN KEY(CHILD6_ID) REFERENCES T_CHILD(ID)
 CREATE TABLE T_TEACHER -- Teacher logs in with ID.
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
-NAME      VARCHAR(255) UNIQUE                    NOT NULL, -- Use mobile phone number.
-NICKNAME  VARCHAR(255)                           NOT NULL,
+NAME      VARCHAR(255)                           NOT NULL,
+MOBILENUM VARCHAR(11)  UNIQUE                    NOT NULL, -- Mobile number, used as login name.
 GENDER    INTEGER                                NOT NULL DEFAULT 0, -- 0 - male, 1 - female
 PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
 CLASS_ID  INTEGER                                        , -- Could be null.
 SCHOOL_ID CHAR(16)                               NOT NULL,
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 2, -- 0 - school admin, 1 - class admin, 2 - none admin
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlocked, 1 - locked
+LASTLOGIN CHAR(20)                               NOT NULL DEFAULT 'null', -- Time stamp of last login.
 FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
