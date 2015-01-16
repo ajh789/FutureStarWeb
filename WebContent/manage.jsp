@@ -5,32 +5,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>信息管理主页</title>
 <style type="text/css">
-div#container {width:100%}
-div#header    {background-color:#99bbbb;}
-div#menu      {background-color:#ffff99; height:650px; width:15%; float:left; overflow:auto;}
-div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; overflow:auto;}
-div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
-div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
-div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
-span#span_debugmsg {display:none; color:red;}
-input#button_reqdata_up   {display:none;}
-input#button_reqdata_down {display:none;}
-h1 {margin-bottom:0;}
-h2 {margin-bottom:0; font-size:14px;}
-ul {margin:0;}
-li {list-style:none;}
-table#schools {font-size:10px;}
-.table_school_edit {font-size:10px;}
-.table_school_edit tr {vertical-align:top;}
-.img_school_logo {width: 100px; height: 100px;}
+@import "css/manage.css"
 </style>
 <script type="text/javascript" src="js/jquery-1.11.2.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/common.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/manage.js" charset="UTF-8"></script>
 </head>
 <body>
 <%
 if (session.getAttribute("name") == null) {
-  response.sendRedirect("/futurestar/login.jsp");
+	session.setAttribute("frompage", "/futurestar/manage.jsp");
+ 	response.sendRedirect("/futurestar/login.jsp");
 }
 %>
 <div id="container">
@@ -52,9 +37,9 @@ if (session.getAttribute("name") == null) {
 <input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
 <input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
 <input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+<span id="span_debugmsg"></span>
 </div>
 <div id="content_lower">
-<span id="span_debugmsg"></span>
 <span id="span_content"></span>
 </div>
 </div>

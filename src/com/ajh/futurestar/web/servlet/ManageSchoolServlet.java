@@ -26,10 +26,12 @@ import com.ajh.futurestar.web.common.*;
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
-	private static final int DEFAULT_QUERY_BASEID = 0;
-	private static final int DEFAULT_QUERY_RANGE = 10;
-	private static final int GOES_UP = 0;
-	private static final int GOES_DOWN = 1;
+	private static final int Q_DEFAULT_BASEID = 0;
+	private static final int Q_DEFAULT_RANGE = 10;
+	private static final int Q_GOES_UP = 0;
+	private static final int Q_GOES_DOWN = 1;
+	private static final int Q_MODE_BASEID_AND_INCREMENT = 0;
+	private static final int Q_MODE_FROM_TO = 1;
 
 	public ManageSchoolServlet()
 	{
@@ -135,21 +137,55 @@ DO_DB_ACTION:
 				//
 				// Get parameters.
 				//
+				int nMode = Q_MODE_BASEID_AND_INCREMENT;
+				String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
+				if (mode != null) {
+					nMode = Integer.parseInt(mode);
+				}
+
 				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 				if (baseid == null) {
-					baseid = "" + DEFAULT_QUERY_BASEID;
+					baseid = "" + Q_DEFAULT_BASEID;
 				}
-				int range = DEFAULT_QUERY_RANGE;
+
+				int nRange = Q_DEFAULT_RANGE;
+				String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
+				if (range != null) {
+					nRange = Integer.parseInt(range);
+				}
+
 				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
+
+				int nGoes = Q_GOES_DOWN; // Default to goes down.
 				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
-				int nGoes = GOES_DOWN; // Default to goes down.
 				if (goes != null && goes.equalsIgnoreCase("up")) {
-					nGoes = GOES_UP;
+					nGoes = Q_GOES_UP;
 				}
+				
+				String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
+				if (fromid == null) {
+					fromid = "0";
+				}
+				String toid = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
+				if (toid == null) {
+					toid = "0";
+				}
+
 				//
 				// Construct query SQL string.
 				//
-				String sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, range, schoolname, nGoes);
+				String sql = "";
+				switch (nMode) {
+				case Q_MODE_BASEID_AND_INCREMENT:
+					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, schoolname, nGoes);
+					break;
+				case Q_MODE_FROM_TO:
+					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
+					break;
+				default:
+					break;
+				}
+
 				//
 				// Do query.
 				//
@@ -230,11 +266,16 @@ DO_DB_ACTION:
 
 		return ret;
 	}
+	
+	private String composeSqlStrSelectAllFields()
+	{
+		return "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
+	}
 
 	private String composeSqlStrSelect(DbVendor vendor, String baseid, int range, String schoolname, int goes)
 	{
-		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
-		if (goes == GOES_DOWN) {
+		String sql = composeSqlStrSelectAllFields();
+		if (goes == Q_GOES_DOWN) {
 			sql += " where CREATION > '" + baseid + "'";
 			if (schoolname != null && !schoolname.equals("")) {
 				getServletContext().log("School name is " + schoolname);
@@ -250,6 +291,15 @@ DO_DB_ACTION:
 			}
 			sql += " order by CREATION desc limit " + range +");";
 		}
+
+		return sql;
+	}
+
+	private String composeSqlStrSelect(DbVendor vendor, String fromid, String toid)
+	{
+		String sql = composeSqlStrSelectAllFields();
+		sql += " where CREATION >= '" + fromid + "' AND CREATION <= '" + toid + "';";
+
 		return sql;
 	}
 

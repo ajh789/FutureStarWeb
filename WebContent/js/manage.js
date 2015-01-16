@@ -13,8 +13,8 @@ var g_manageschool_update_url = g_manageschool_url + "&action=update";
 var g_manageschool_delete_url = g_manageschool_url + "&action=delete";
 
 var g_schools = null; // Array of schools.
-var g_schools_head = null;
-var g_schools_tail = null;
+var g_schools_head = null; // Current head.
+var g_schools_tail = null; // Current tail.
 var g_privilege = 0;
 
 function reqData()
@@ -61,6 +61,19 @@ function reqDataDown()
 	if (schoolname != "") {
 		url += "&name=" + schoolname;
 	}
+
+	$.get(url, handleSelectResponse);
+}
+
+function reqDataFromTo()
+{
+	var url = g_manageschool_select_url + "&mode=1";
+
+	if (g_schools_head != null)
+		url += "&fromid=" + g_schools_head;
+
+	if (g_schools_tail != null)
+		url += "&toid=" + g_schools_tail;
 
 	$.get(url, handleSelectResponse);
 }
@@ -118,7 +131,11 @@ function handleUpdateResponse(data, status) {
 		} else { // string
 			ret = eval("("+data+")"); // Transit JSON string to JSON object.
 		}
-		window.alert(ret.retcode + ret.retinfo);
+//		window.alert(ret.retcode + ": " + ret.retinfo);
+		if (ret.retcode == 0) {
+			// Trigger a query
+			reqDataFromTo();
+		}
 	}
 }
 
@@ -143,11 +160,11 @@ function generateTableOfSchools() {
 			html += "<td>" + g_schools[i].LOGO + "</td>";
 		}
 		// Column 2
-		html += "<td><b>" + g_schools[i].NAME + "</b>(" + g_schools[i].ID + ")<br/>" + g_schools[i].CREATION +"<br/>" + g_schools[i].INTRO + "</td>";
+		html += "<td id='school_details'><b>" + g_schools[i].NAME + "</b>(" + g_schools[i].ID + ")<br/>" + g_schools[i].CREATION +"<br/>" + g_schools[i].INTRO + "</td>";
 		// Column 3
 		html += "<td>";
 		if (g_privilege & 0x4)
-			html += "<input type='button' value='删除' />";
+			html += "<input type='button' value='删除' onclick='onButtonDeleteSchool()' />";
 		if (g_privilege & 0x2)
 			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />";
 		html += "</td>";
@@ -209,6 +226,11 @@ function onButtonEditSchool(id) {
 	}
 }
 
+function onButtonDeleteSchool()
+{
+	window.alert("暂不支持删除操作！");
+}
+
 function generateEditSchoolHtml(school)
 {
 	var html = "";
@@ -257,13 +279,14 @@ function generateEditSchoolHtml(school)
 	$("#school_edit_lastupdate").html(school.LASTUPDATE);
 	$("#school_edit_islocked_true").attr("checked", (school.ISLOCKED)?"checked":"");
 	$("#school_edit_islocked_false").attr("checked", (!school.ISLOCKED)?"checked":"");
-	$("#school_edit_intro").val(school.INTRO);
+	$("#school_edit_intro").val(htmlDecode(school.INTRO)); // Remember to do html decode.
 }
 
 function onButtonCommitEditSchool() {
 	var id = $("#school_edit_id").val();
 	var name = $("#school_edit_name").html();
 	var intro = $("#school_edit_intro").val();
+	intro = htmlEncode(intro); // Remember to do html encode.
 	$.post(
 		g_manageschool_update_url, 
 		{"id":id, "name":name, "intro":intro}, 

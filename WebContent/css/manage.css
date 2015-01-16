@@ -1,0 +1,19 @@
+div#container {width:100%}
+div#header    {background-color:#99bbbb;}
+div#menu      {background-color:#ffff99; height:650px; width:15%; float:left; overflow:auto;}
+div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; overflow:auto;}
+div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
+div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
+div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
+span#span_debugmsg {display:none; color:red; font-weight:bold;}
+input#button_reqdata_up   {display:none;}
+input#button_reqdata_down {display:none;}
+h1 {margin-bottom:0;}
+h2 {margin-bottom:0; font-size:14px;}
+ul {margin:0;}
+li {list-style:none;}
+table#schools {font-size:10px;}
+table#schools td#school_details {width:700px;}
+.table_school_edit {font-size:10px;}
+.table_school_edit tr {vertical-align:top;}
+.img_school_logo {width: 100px; height: 100px;}

@@ -55,6 +55,10 @@ public class LoginServlet extends HttpServlet
 					out.println("id      : " + session.getAttribute("id") + "<br/>");
 					out.println("name    : " + session.getAttribute("name") + "<br/>");
 					out.println("islocked: " + session.getAttribute("islocked") + "<br/>");
+					String frompage = (String) session.getAttribute("frompage");
+					if (frompage != null) {
+						rsp.sendRedirect(frompage);
+					}
 				} else {
 					out.println("用户名或密码错误.<br/>");
 				}
