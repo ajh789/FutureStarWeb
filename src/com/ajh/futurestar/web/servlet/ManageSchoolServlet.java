@@ -22,16 +22,16 @@ import com.ajh.futurestar.web.common.*;
 /**
  * Servlet implementation class ManageSchoolServlet
  */
-@WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/manageschool" })
+@WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/manageschool.do" })
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
-	private static final int Q_DEFAULT_BASEID = 0;
-	private static final int Q_DEFAULT_RANGE = 10;
-	private static final int Q_GOES_UP = 0;
-	private static final int Q_GOES_DOWN = 1;
-	private static final int Q_MODE_BASEID_AND_INCREMENT = 0;
-	private static final int Q_MODE_FROM_TO = 1;
+//	private static final int Q_DEFAULT_BASEID = 0;
+//	private static final int Q_DEFAULT_RANGE = 10;
+//	private static final int Q_GOES_UP = 0;
+//	private static final int Q_GOES_DOWN = 1;
+//	private static final int Q_MODE_BASEID_AND_INCREMENT = 0;
+//	private static final int Q_MODE_FROM_TO = 1;
 
 	public ManageSchoolServlet()
 	{
@@ -64,13 +64,13 @@ public class ManageSchoolServlet extends HttpServlet {
 
 //		req.setCharacterEncoding("UTF-8"); // Doesn't work. Need to set URIEncoding="UTF-8" for Connector in server.xml
 
-		String reqfrom = req.getParameter(Request.PARAM_FROM);
+		String reqfrom = req.getParameter(Request.PARAM_REQFROM);
 		if (reqfrom == null) {
-			reqfrom = Request.PARAM_FROM_NULL;
+			reqfrom = Request.VALUE_REQFROM_NULL;
 			ret.retcode = RetCode.RETCODE_KO_NULL_REQ_SOURCE;
-		} else if (!reqfrom.equalsIgnoreCase(Request.PARAM_FROM_PC) &&
-				   !reqfrom.equalsIgnoreCase(Request.PARAM_FROM_WAP)) {
-			reqfrom = Request.PARAM_FROM_UNKNOWN;
+		} else if (!reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_PC) &&
+				   !reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_WAP)) {
+			reqfrom = Request.VALUE_REQFROM_UNKNOWN;
 			ret.retcode = RetCode.RETCODE_KO_UNKNOWN_REQ_SOURCE;
 		} else {
 			doBusiness(req, rsp, ret);
@@ -133,11 +133,11 @@ public class ManageSchoolServlet extends HttpServlet {
 DO_DB_ACTION:
 			if (!actionDone) { // Start DO_DB_ACTION.
 			ret.actionx += action;
-			if (action.equalsIgnoreCase(DbAction.ACTION_SELECT)) { // select
+			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // select
 				//
 				// Get parameters.
 				//
-				int nMode = Q_MODE_BASEID_AND_INCREMENT;
+				int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
 				String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
 				if (mode != null) {
 					nMode = Integer.parseInt(mode);
@@ -145,10 +145,10 @@ DO_DB_ACTION:
 
 				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
 				if (baseid == null) {
-					baseid = "" + Q_DEFAULT_BASEID;
+					baseid = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
 				}
 
-				int nRange = Q_DEFAULT_RANGE;
+				int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
 				String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
 				if (range != null) {
 					nRange = Integer.parseInt(range);
@@ -156,12 +156,12 @@ DO_DB_ACTION:
 
 				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
 
-				int nGoes = Q_GOES_DOWN; // Default to goes down.
+				int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
 				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
 				if (goes != null && goes.equalsIgnoreCase("up")) {
-					nGoes = Q_GOES_UP;
+					nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
 				}
-				
+
 				String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
 				if (fromid == null) {
 					fromid = "0";
@@ -176,10 +176,10 @@ DO_DB_ACTION:
 				//
 				String sql = "";
 				switch (nMode) {
-				case Q_MODE_BASEID_AND_INCREMENT:
+				case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
 					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, schoolname, nGoes);
 					break;
-				case Q_MODE_FROM_TO:
+				case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
 					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
 					break;
 				default:
@@ -196,7 +196,7 @@ DO_DB_ACTION:
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
 					ret.retinfo += e.getMessage();
 				}
-			} else if (action.equalsIgnoreCase(DbAction.ACTION_INSERT)) { // insert
+			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_INSERT)) { // insert
 				String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
 				if (schoolName == null || schoolName.equals("")) {
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
@@ -210,7 +210,7 @@ DO_DB_ACTION:
 						ret.retinfo += e.getMessage();
 					}
 				}
-			} else if (action.equalsIgnoreCase(DbAction.ACTION_UPDATE)) { // update
+			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_UPDATE)) { // update
 				//
 				// Get parameters.
 				//
@@ -249,7 +249,7 @@ DO_DB_ACTION:
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
 					ret.retinfo += e.getMessage();
 				}
-			} else if (action.equalsIgnoreCase(DbAction.ACTION_DELETE)) { // delete
+			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_DELETE)) { // delete
 				// TODO
 			} else {
 				ret.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
@@ -266,7 +266,7 @@ DO_DB_ACTION:
 
 		return ret;
 	}
-	
+
 	private String composeSqlStrSelectAllFields()
 	{
 		return "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
@@ -275,7 +275,7 @@ DO_DB_ACTION:
 	private String composeSqlStrSelect(DbVendor vendor, String baseid, int range, String schoolname, int goes)
 	{
 		String sql = composeSqlStrSelectAllFields();
-		if (goes == Q_GOES_DOWN) {
+		if (goes == Request.VALUE_ACTION_SELECT_GOES_DOWN) {
 			sql += " where CREATION > '" + baseid + "'";
 			if (schoolname != null && !schoolname.equals("")) {
 				getServletContext().log("School name is " + schoolname);
@@ -389,7 +389,7 @@ DO_DB_ACTION:
 //		rsp.setHeader("Pragma", "no-cache");
 //		rsp.setDateHeader("Expires", 0);
 		PrintWriter out = null; // Method getWriter() should be called after setContentType().
-		if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_PC)) {
+		if (reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_PC)) {
 			rsp.setContentType("text/html; charset=UTF-8");
 			out = rsp.getWriter();
 			out.println("<html>");
@@ -398,7 +398,7 @@ DO_DB_ACTION:
 			generatePageBody4PC(out, result);
 			out.println("</body>");
 			out.println("</html>");
-		} else if (reqfrom.equalsIgnoreCase(Request.PARAM_FROM_WAP)) {
+		} else if (reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_WAP)) {
 			rsp.setContentType("application/json; charset=UTF-8");
 //			rsp.setContentType("text/plain; charset=UTF-8");
 			out = rsp.getWriter();

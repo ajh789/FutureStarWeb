@@ -14,7 +14,7 @@ public class DbConn {
 		Class.forName("org.sqlite.JDBC");
 		Connection c = DriverManager.getConnection("jdbc:sqlite:" + DB_URL);
 		c.setAutoCommit(false);
-	
+
 		return c;
 	}
 }

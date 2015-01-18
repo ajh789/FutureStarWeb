@@ -6,7 +6,7 @@ document.getElementByIdx_x = function(id) {
 	}
 };
 
-var g_manageschool_url = "/futurestar/manageschool?reqfrom=wap";
+var g_manageschool_url = "/futurestar/manageschool.do?reqfrom=wap";
 var g_manageschool_select_url = g_manageschool_url + "&action=select";
 var g_manageschool_insert_url = g_manageschool_url + "&action=insert";
 var g_manageschool_update_url = g_manageschool_url + "&action=update";
