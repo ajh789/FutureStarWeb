@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import com.ajh.futurestar.web.common.Attribute;
 import com.ajh.futurestar.web.common.DbConn;
+import com.ajh.futurestar.web.common.DbVendor;
 import com.ajh.futurestar.web.common.Request;
 import com.ajh.futurestar.web.common.RetCode;
 import com.ajh.futurestar.web.common.Return;
@@ -118,7 +119,29 @@ DO_DB_ACTION:
 					//
 					// Get parameters.
 					//
-					//
+					int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
+					String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
+					if (mode != null) {
+						nMode = Integer.parseInt(mode);
+					}
+
+					String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+					if (baseid == null) {
+						baseid = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
+					}
+
+					int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
+					String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
+					if (range != null) {
+						nRange = Integer.parseInt(range);
+					}
+
+					int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
+					String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
+					if (goes != null && goes.equalsIgnoreCase("up")) {
+						nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
+					}
+
 					String name = req.getParameter(Request.PARAM_TEACHER_NAME);
 					if (name == null) {
 						name = "";
@@ -131,8 +154,28 @@ DO_DB_ACTION:
 					if (schoolname == null) {
 						schoolname = "";
 					}
+					String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
+					if (fromid == null) {
+						fromid = "0";
+					}
+					String toid = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
+					if (toid == null) {
+						toid = "0";
+					}
+					//
 					// Construct SQL query string.
 					//
+					String sql = "";
+					switch (nMode) {
+					case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
+						sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, name, schoolname, nGoes);
+						break;
+					case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
+						sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
+						break;
+					default:
+						break;
+					}
 					//
 					// Do query.
 					//
@@ -154,6 +197,24 @@ DO_DB_ACTION:
 		} catch (SQLException e) { // No need to update return code.
 			e.printStackTrace();
 		}
+	}
+
+	private String composeSqlStrSelect(DbVendor vendor, String fromid, String toid)
+	{
+		return null;
+	}
+
+	private String composeSqlStrSelect
+	(
+		DbVendor vendor, 
+		String baseid,
+		int nRange, 
+		String name, 
+		String schoolname, 
+		int nGoes
+	)
+	{
+		return null;
 	}
 
 }

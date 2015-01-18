@@ -26,12 +26,6 @@ import com.ajh.futurestar.web.common.*;
 public class ManageSchoolServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String HTML_TITLE = "学校管理";
-//	private static final int Q_DEFAULT_BASEID = 0;
-//	private static final int Q_DEFAULT_RANGE = 10;
-//	private static final int Q_GOES_UP = 0;
-//	private static final int Q_GOES_DOWN = 1;
-//	private static final int Q_MODE_BASEID_AND_INCREMENT = 0;
-//	private static final int Q_MODE_FROM_TO = 1;
 
 	public ManageSchoolServlet()
 	{
