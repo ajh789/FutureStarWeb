@@ -1,7 +1,9 @@
 package com.ajh.futurestar.web.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -11,6 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.ajh.futurestar.web.common.Attribute;
 import com.ajh.futurestar.web.common.DbConn;
@@ -53,17 +58,28 @@ public class ManageTeacherServlet extends HttpServlet {
 		process(req, rsp);
 	}
 
-	private void process(HttpServletRequest req, HttpServletResponse rsp)
+	private void process(HttpServletRequest req, HttpServletResponse rsp) throws IOException
 	{
 		Return ret = new Return();
 		doBusiness(req, rsp, ret);
-		generateResult(rsp, ret);
+		generatePage(rsp, ret);
 	}
 
-	private void generateResult(HttpServletResponse rsp, Return ret)
+	private void generatePage(HttpServletResponse rsp, Return result) throws IOException
 	{
-		// TODO Auto-generated method stub
-		
+		rsp.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = rsp.getWriter();
+		generatePageBody(out, result);
+	}
+
+	private void generatePageBody(PrintWriter out, Return result) {
+		JSONObject obj = new JSONObject();
+		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
+		obj.put("retinfo", result.retinfo);
+		obj.put("teachers", result.retobjx);
+		obj.put("actionx", result.actionx);
+		obj.put("privilege", result.prvlege);
+		out.println(obj.toString());
 	}
 
 	private void doBusiness(HttpServletRequest req, HttpServletResponse rsp, Return ret)
@@ -168,7 +184,7 @@ DO_DB_ACTION:
 					String sql = "";
 					switch (nMode) {
 					case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
-						sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, name, schoolname, nGoes);
+						sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, name, mobilenum, schoolname, nGoes);
 						break;
 					case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
 						sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
@@ -176,9 +192,17 @@ DO_DB_ACTION:
 					default:
 						break;
 					}
+
 					//
 					// Do query.
 					//
+					try {
+						doDbActionSelect(conn, stmt, ret, sql);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						ret.retcode  = RetCode.RETCODE_KO_MANAGE_TEACHER_SELECT_FAILED;
+						ret.retinfo += e.getMessage();
+					}
 				} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_INSERT)) { // insert
 					//
 				} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_UPDATE)) { // update
@@ -198,6 +222,11 @@ DO_DB_ACTION:
 			e.printStackTrace();
 		}
 	}
+	
+	private String composeSqlStrSelectAllFields()
+	{
+		return "select * from V_TEACHER_FROM_SCHOOL";
+	}
 
 	private String composeSqlStrSelect(DbVendor vendor, String fromid, String toid)
 	{
@@ -208,13 +237,54 @@ DO_DB_ACTION:
 	(
 		DbVendor vendor, 
 		String baseid,
-		int nRange, 
+		int range, 
 		String name, 
+		String mobilenum,
 		String schoolname, 
-		int nGoes
+		int goes
 	)
 	{
-		return null;
+		String sql = composeSqlStrSelectAllFields();
+		if (goes == Request.VALUE_ACTION_SELECT_GOES_DOWN) { // Goes down.
+			sql += " where CREATION > '" + baseid + "'";
+			if (name != null && !name.equals("")) {
+				sql += " and NAME like '%" + name +"%'";
+			}
+			if (mobilenum != null && !mobilenum.equals("")) {
+				sql += " and MOBILENUM = '" + mobilenum + "'";
+			}
+			if (schoolname != null && !schoolname.equals("")) {
+				sql += " and SCHOOL_NAME like '%" + schoolname + "%'";
+			}
+			sql += " order by CREATION asc limit " + range + ";";
+		} else { // Goes up.
+			
+		}
+		return sql;
 	}
+	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
+			throws SQLException
+	{
+		getServletContext().log("Enter method doDbActionSelect(4 PARAMS).");
+		getServletContext().log(query);
 
+		ResultSet rs = stmt.executeQuery(query);
+		JSONArray array = new JSONArray();
+		while (rs.next()) {
+			JSONObject obj = new JSONObject(); // Item in array.
+			obj.put("ID", rs.getString("ID"));
+			obj.put("NAME", rs.getString("NAME"));
+			obj.put("LOGO", rs.getString("LOGO"));
+			obj.put("MOBILENUM", rs.getString("MOBILENUM"));
+			obj.put("CREATION", rs.getString("CREATION"));
+			obj.put("LASTLOGIN", rs.getString("LASTLOGIN"));
+			obj.put("SCHOOL_ID", rs.getString("SCHOOL_ID"));
+			obj.put("SCHOOL_NAME", rs.getBoolean("SCHOOL_NAME"));
+			array.put(obj);
+		}
+		ret.retobjx = array;
+		rs.close();
+
+		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
+	}
 }

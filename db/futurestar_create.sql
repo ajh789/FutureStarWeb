@@ -94,6 +94,7 @@ CREATE TABLE T_TEACHER -- Teacher logs in with MOBILENUM.
 (
 ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
 NAME      VARCHAR(255)                           NOT NULL,
+LOGO      VARCHAR(255)                           NOT NULL DEFAULT 'null', -- Logo image location.
 MOBILENUM VARCHAR(11)  UNIQUE                    NOT NULL, -- Mobile number, used as login name.
 GENDER    INTEGER                                NOT NULL DEFAULT 0, -- 0 - male, 1 - female
 PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
@@ -101,10 +102,29 @@ CLASS_ID  INTEGER                                        , -- Could be null.
 SCHOOL_ID CHAR(16)                               NOT NULL,
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 2, -- 0 - school admin, 1 - class admin, 2 - none admin
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlocked, 1 - locked
+CREATION  CHAR(20)                               NOT NULL DEFAULT 'null', -- Time stamp of creation.
 LASTLOGIN CHAR(20)                               NOT NULL DEFAULT 'null', -- Time stamp of last login.
 FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
+
+CREATE TRIGGER T_TEACHER_AutoGenerateTimeStamp
+AFTER INSERT ON T_TEACHER
+WHEN (NEW.CREATION = 'null')
+BEGIN
+    UPDATE T_TEACHER SET 
+        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_TEACHER_SetDefaultLogo
+AFTER INSERT ON T_TEACHER
+WHEN (NEW.LOGO = 'null')
+BEGIN
+    UPDATE T_TEACHER SET 
+        LOGO = 'images/teachers/default.png'
+    WHERE rowid = NEW.rowid;
+END;
 
 CREATE TABLE T_CHILD
 (
@@ -142,6 +162,6 @@ FOREIGN KEY(TEACHER_ID) REFERENCES T_TEACHER(ID)
 );
 
 CREATE VIEW V_TEACHER_FROM_SCHOOL AS
-SELECT T_TEACHER.ID, T_TEACHER.NAME, T_TEACHER.MOBILENUM, hex(T_SCHOOL.ID) AS SCHOOL_ID, T_SCHOOL.NAME AS SCHOOL_NAME
+SELECT T_TEACHER.ID, T_TEACHER.NAME, T_TEACHER.LOGO, T_TEACHER.MOBILENUM, T_TEACHER.CREATION, T_TEACHER.LASTLOGIN, hex(T_SCHOOL.ID) AS SCHOOL_ID, T_SCHOOL.NAME AS SCHOOL_NAME
 FROM T_TEACHER, T_SCHOOL
 WHERE T_TEACHER.SCHOOL_ID = T_SCHOOL.ID;

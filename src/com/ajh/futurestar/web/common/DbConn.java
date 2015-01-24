@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DbConn {
-	public static final String DB_URL = "C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps_db\\futurestar.db";
+	public static final String DB_URL = "C:\\sqlitedb\\futurestar.db";
 
 	// Callers are responsible for close connection.
 	public static Connection getDbConnection()
