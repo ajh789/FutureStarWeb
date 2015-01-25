@@ -24,7 +24,7 @@ public class Request {
 	public static final int    VALUE_ACTION_SELECT_BASEID_DEFAULT = 0;
 
 	public static final String PARAM_ACTION_SELECT_RANGE = "range";
-	public static final int    VALUE_ACTION_SELECT_RANGE_DEFAULT = 10;
+	public static final int    VALUE_ACTION_SELECT_RANGE_DEFAULT = 5;
 
 	public static final String PARAM_ACTION_SELECT_GOES = "goes"; // UP or DOWN
 	public static final int    VALUE_ACTION_SELECT_GOES_UP = 0;

@@ -165,7 +165,7 @@ function generateTableOfSchools() {
 		html += "<tr>"; // Row stars.
 		// Column 1
 		if (g_teachers[i].LOGO != "" && g_teachers[i].LOGO != "null") {
-			html += "<td><img src='" + g_teachers[i].LOGO +"' alt='logo' class='img_school_logo' /></td>";
+			html += "<td><img src='" + g_teachers[i].LOGO +"' alt='logo' class='img_teacher_logo' /></td>";
 		} else {
 			html += "<td>" + g_teachers[i].LOGO + "</td>";
 		}

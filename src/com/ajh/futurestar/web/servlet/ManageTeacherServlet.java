@@ -279,8 +279,9 @@ DO_DB_ACTION:
 			obj.put("CREATION", rs.getString("CREATION"));
 			obj.put("LASTLOGIN", rs.getString("LASTLOGIN"));
 			obj.put("SCHOOL_ID", rs.getString("SCHOOL_ID"));
-			obj.put("SCHOOL_NAME", rs.getBoolean("SCHOOL_NAME"));
+			obj.put("SCHOOL_NAME", rs.getString("SCHOOL_NAME"));
 			array.put(obj);
+//			getServletContext().log(obj.toString());
 		}
 		ret.retobjx = array;
 		rs.close();

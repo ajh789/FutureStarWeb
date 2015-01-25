@@ -39,7 +39,7 @@ CREATE TRIGGER T_SCHOOL_AutoGenerateLogo
 AFTER INSERT ON T_SCHOOL
 WHEN (NEW.LOGO = 'null')
 BEGIN
-    UPDATE T_SCHOOL SET LOGO = 'images/school_default.png' WHERE rowid = NEW.rowid;
+    UPDATE T_SCHOOL SET LOGO = 'images/schools/school_default.png' WHERE rowid = NEW.rowid;
 END;
 
 CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
