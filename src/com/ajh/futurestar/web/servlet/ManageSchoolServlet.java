@@ -272,7 +272,7 @@ DO_DB_ACTION:
 		if (goes == Request.VALUE_ACTION_SELECT_GOES_DOWN) {
 			sql += " where CREATION > '" + baseid + "'";
 			if (schoolname != null && !schoolname.equals("")) {
-				getServletContext().log("School name is " + schoolname);
+//				getServletContext().log("School name is " + schoolname);
 				sql += " and NAME like '%" + schoolname + "%'";
 			}
 			sql += " order by CREATION asc limit " + range + ";";
@@ -280,7 +280,7 @@ DO_DB_ACTION:
 			sql += " where CREATION in " + 
 				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
 			if (schoolname != null && !schoolname.equals("")) {
-				getServletContext().log("School name is " + schoolname);
+//				getServletContext().log("School name is " + schoolname);
 				sql += " and NAME like '%" + schoolname + "%'";
 			}
 			sql += " order by CREATION desc limit " + range +");";
@@ -299,9 +299,9 @@ DO_DB_ACTION:
 
 	private String composeSqlStrUpdate(DbVendor vendor, String id, String schoolname, String intro)
 	{
-		getServletContext().log("composeSqlStrUpdate() : School id is " + id);
-		getServletContext().log("composeSqlStrUpdate() : School name is " + schoolname);
-		getServletContext().log("composeSqlStrUpdate() : School name intro " + intro);
+//		getServletContext().log("composeSqlStrUpdate() : School id is " + id);
+//		getServletContext().log("composeSqlStrUpdate() : School name is " + schoolname);
+//		getServletContext().log("composeSqlStrUpdate() : School name intro " + intro);
 		// Syntax: update T_SCHOOL set INTRO='xxx' where ID=X'xxx';
 		String sql = "update T_SCHOOL set INTRO='" + intro + "' where ID=X'" + id +"';";
 		return sql;

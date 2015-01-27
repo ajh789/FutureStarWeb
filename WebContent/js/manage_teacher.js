@@ -21,10 +21,6 @@ function reqData()
 {
 	var url = g_manageteacher_select_url;
 
-//	if (g_schools_tail != null) {
-//		url += "&baseid=" + g_schools_tail;
-//	}
-
 	var name = $("#text_teacher_name").val();
 	if (name != "") {
 		url += "&name=" + name;
@@ -51,9 +47,19 @@ function reqDataUp()
 		url += "&baseid=" + g_teachers_head + "&goes=up";
 	}
 
-	var schoolname = $("#text_schoolname").val();
+	var name = $("#text_teacher_name").val();
+	if (name != "") {
+		url += "&name=" + name;
+	}
+
+	var mobilenum = $("#text_teacher_mobilenum").val();
+	if (mobilenum != "") {
+		url += "&mobilenum=" + mobilenum;
+	}
+
+	var schoolname = $("#text_teacher_schoolname").val();
 	if (schoolname != "") {
-		url += "&name=" + schoolname;
+		url += "&schoolname=" + schoolname;
 	}
 
 	$.get(url, handleSelectResponse);
@@ -67,9 +73,19 @@ function reqDataDown()
 		url += "&baseid=" + g_teachers_tail;
 	}
 
-	var schoolname = $("#text_schoolname").val();
+	var name = $("#text_teacher_name").val();
+	if (name != "") {
+		url += "&name=" + name;
+	}
+
+	var mobilenum = $("#text_teacher_mobilenum").val();
+	if (mobilenum != "") {
+		url += "&mobilenum=" + mobilenum;
+	}
+
+	var schoolname = $("#text_teacher_schoolname").val();
 	if (schoolname != "") {
-		url += "&name=" + schoolname;
+		url += "&schoolname=" + schoolname;
 	}
 
 	$.get(url, handleSelectResponse);
@@ -173,7 +189,8 @@ function generateTableOfSchools() {
 		html += "<td id='teacher_details'>";
 		html += "<b>" + g_teachers[i].NAME + "</b>(" + g_teachers[i].MOBILENUM + ")<br/>";
 		html += "注册时间：" + g_teachers[i].CREATION + "<br/>";
-		html += "上次登录：" + g_teachers[i].LASTLOGIN;
+		html += "上次登录：" + g_teachers[i].LASTLOGIN + "<br/>";
+		html += "所属学校：" + g_teachers[i].SCHOOL_NAME;
 		html += "</td>";
 		// Column 3
 		html += "<td>";
@@ -223,17 +240,17 @@ function setSpanContentInnerHTML(innerHTML) {
 function onButtonEditTeacher(id) {
 	if (typeof id == 'string') {
 		var found = false;
-		var school = null;
+		var teacher = null;
 		for (var i=0; i<g_teachers.length; i++) {
 			if (g_teachers[i].ID == id) {
 				found = true;
-				school = g_teachers[i];
+				teacher = g_teachers[i];
 				break;
 			}
 		}
 		if (found) {
 			hideSpanDebugMsg();
-			generateEditSchoolHtml(school);
+			generateEditSchoolHtml(teacher);
 		}
 	} else {
 		throw new error('Please pass a string as an ID!');

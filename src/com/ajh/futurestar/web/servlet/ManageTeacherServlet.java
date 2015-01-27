@@ -258,7 +258,18 @@ DO_DB_ACTION:
 			}
 			sql += " order by CREATION asc limit " + range + ";";
 		} else { // Goes up.
-			
+			sql += " where CREATION in " +
+				"(select CREATION from V_TEACHER_FROM_SCHOOL where CREATION < '" + baseid + "'";
+			if (name != null && !name.equals("")) {
+				sql += " and NAME like '%" + name +"%'";
+			}
+			if (mobilenum != null && !mobilenum.equals("")) {
+				sql += " and MOBILENUM = '" + mobilenum + "'";
+			}
+			if (schoolname != null && !schoolname.equals("")) {
+				sql += " and SCHOOL_NAME like '%" + schoolname + "%'";
+			}
+			sql += " order by CREATION desc limit " + range +");";
 		}
 		return sql;
 	}
@@ -272,12 +283,14 @@ DO_DB_ACTION:
 		JSONArray array = new JSONArray();
 		while (rs.next()) {
 			JSONObject obj = new JSONObject(); // Item in array.
-			obj.put("ID", rs.getString("ID"));
+			obj.put("ID", rs.getInt("ID"));
 			obj.put("NAME", rs.getString("NAME"));
 			obj.put("LOGO", rs.getString("LOGO"));
 			obj.put("MOBILENUM", rs.getString("MOBILENUM"));
+			obj.put("GENDER", rs.getInt("GENDER"));
 			obj.put("CREATION", rs.getString("CREATION"));
 			obj.put("LASTLOGIN", rs.getString("LASTLOGIN"));
+			obj.put("ISLOCKED", rs.getInt("ISLOCKED"));
 			obj.put("SCHOOL_ID", rs.getString("SCHOOL_ID"));
 			obj.put("SCHOOL_NAME", rs.getString("SCHOOL_NAME"));
 			array.put(obj);
