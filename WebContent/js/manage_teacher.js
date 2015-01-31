@@ -125,7 +125,7 @@ function handleSelectResponse(data, status) {
 				g_teachers = g_teachers.concat(teachers);
 				g_teachers_head = teachers[0].CREATION;
 				g_teachers_tail = teachers[teachers.length-1].CREATION;
-				tmp += generateTableOfSchools();
+				tmp += generateTableOfTeachers();
 				setSpanContentInnerHTML(tmp);
 //				hideButtonReqData();
 				showButtonReqDataUp();
@@ -165,7 +165,7 @@ function handleUpdateResponse(data, status) {
 	}
 }
 
-function generateTableOfSchools() {
+function generateTableOfTeachers() {
 	var html = "";
 
 	if (g_teachers.length > 0) {
@@ -250,7 +250,7 @@ function onButtonEditTeacher(id) {
 		}
 		if (found) {
 			hideSpanDebugMsg();
-			generateEditSchoolHtml(teacher);
+			generateEditTeacherHtml(teacher);
 		}
 	} else {
 		throw new error('Please pass a string as an ID!');
@@ -262,61 +262,76 @@ function onButtonDeleteTeacher()
 	window.alert("暂不支持删除操作！");
 }
 
-function generateEditSchoolHtml(school)
+function generateEditTeacherHtml(teacher)
 {
 	var html = "";
-	html += "<table class='table_school_edit'>";
+	html += "<table class='table_teacher_edit'>";
 	html += "  <tr>";
-	html += "    <td>学校徽标：</td>";
-	html += "    <td><img id='school_edit_logo' src='' alt='logo' class='img_school_logo' /></td>";
+	html += "    <td>照片：</td>";
+	html += "    <td><img id='teacher_edit_logo' src='' alt='logo' class='img_school_logo' /></td>";
 	html += "  </tr>";
 	html += "  <tr>";
-	html += "    <td>学校名称：</td>";
-	html += "    <td><span id='school_edit_name'></span></td>";
+	html += "    <td>姓名：</td>";
+	html += "    <td><span id='teacher_edit_name'></span></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>性别：</td>";
+	html += "    <td>";
+	html += "      <input id='teacher_edit_gender_male'  type='radio' name='gender' value='male' />男";
+	html += "      <input id='teacher_edit_gender_female' type='radio' name='gender' value='female' />女";
+	html += "    </td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "  <tr>";
+	html += "    <td>手机号码：</td>";
+	html += "    <td><span id='teacher_edit_mobilenum'></span></td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>注册时间：</td>";
-	html += "    <td><span id='school_edit_creation'></span></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>更新时间：</td>";
-	html += "    <td><span id='school_edit_lastupdate'></span></td>";
+	html += "    <td><span id='teacher_edit_creation'></span></td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>当前状态：</td>";
 	html += "    <td>";
-	html += "      <input id='school_edit_islocked_true'  type='radio' name='islocked' value='true' />锁定";
-	html += "      <input id='school_edit_islocked_false' type='radio' name='islocked' value='false' />未锁定";
+	html += "      <input id='teacher_edit_islocked_true'  type='radio' name='islocked' value='true' />锁定";
+	html += "      <input id='teacher_edit_islocked_false' type='radio' name='islocked' value='false' />未锁定";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
-	html += "    <td>学校介绍：</td>";
-	html += "    <td><textarea id='school_edit_intro' rows='10' cols='80'></textarea></td>";
+	html += "    <td>所属学校：</td>";
+	html += "    <td><span id='teacher_edit_schoolname'></span></td>";
+	html += "  </tr>";
+	html += "  <tr>";
+	html += "    <td>所属班级：</td>";
+	html += "    <td><span id='teacher_edit_classname'></span></td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>&nbsp;&nbsp;</td>";
 	html += "    <td>";
-	html += "      <input type='hidden' id='school_edit_id' name='id' value='' />";
-	html += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
-	html += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
+	html += "      <input type='hidden' id='teacher_edit_id' name='id' value='' />";
+	html += "      <input type='button' value='更新' onclick='onButtonCommitEditTeacher()' />";
+	html += "      <input type='button' value='取消' onclick='onButtonCancelEditTeacher()' />";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "</table>";
 	setSpanContentInnerHTML(html);
-	$("#school_edit_id").val(school.ID);
-	$("#school_edit_logo").attr("src", school.LOGO);
-	$("#school_edit_name").html(school.NAME);
-	$("#school_edit_creation").html(school.CREATION);
-	$("#school_edit_lastupdate").html(school.LASTUPDATE);
-	$("#school_edit_islocked_true").attr("checked", (school.ISLOCKED)?"checked":"");
-	$("#school_edit_islocked_false").attr("checked", (!school.ISLOCKED)?"checked":"");
-	$("#school_edit_intro").val(htmlDecode(school.INTRO)); // Remember to do html decode.
+	$("#teacher_edit_id").val(teacher.ID);
+	$("#teacher_edit_logo").prop("src", teacher.LOGO);
+	$("#teacher_edit_name").html(teacher.NAME);
+	$("#teacher_edit_gender_male").prop("checked", (teacher.GENDER == 0));
+	$("#teacher_edit_gender_female").prop("checked", (teacher.GENDER != 0));
+	$("#teacher_edit_mobilenum").html(teacher.MOBILENUM);
+	$("#teacher_edit_creation").html(teacher.CREATION);
+	$("#teacher_edit_islocked_true").prop("checked", (teacher.ISLOCKED != 0));
+	$("#teacher_edit_islocked_false").prop("checked", (teacher.ISLOCKED == 0));
+	$("#teacher_edit_schoolname").html(teacher.SCHOOL_NAME);
+	$("#teacher_edit_classname").html(teacher.CLASS_NAME);
 }
 
-function onButtonCommitEditSchool() {
-	var id = $("#school_edit_id").val();
-	var name = $("#school_edit_name").html();
-	var intro = $("#school_edit_intro").val();
+function onButtonCommitEditTeacher() {
+	var id = $("#teacher_edit_id").val();
+	var name = $("#teacher_edit_name").html();
+	var intro = $("#teacher_edit_intro").val();
 	intro = htmlEncode(intro); // Remember to do html encode.
 	$.post(
 		g_manageteacher_update_url, 
@@ -325,7 +340,7 @@ function onButtonCommitEditSchool() {
 	);
 }
 
-function onButtonCancelEditSchool() {
-	var tmp = generateTableOfSchools();
+function onButtonCancelEditTeacher() {
+	var tmp = generateTableOfTeachers();
 	setSpanContentInnerHTML(tmp);
 }

@@ -16,7 +16,9 @@ table#schools {font-size:10px;}
 table#schools td#school_details {width:700px;}
 table#teachers {font-size:12px;}
 table#teachers td#teacher_details {width:500px;}
-.table_school_edit {font-size:10px;}
+.table_school_edit {font-size:12px;}
 .table_school_edit tr {vertical-align:top;}
+.table_teacher_edit {font-size:12px;}
+.table_teacher_edit tr {vertical-align:top;}
 .img_school_logo {width: 100px; height: 100px;}
 .img_teacher_logo {width: 100px; height: 100px;}
