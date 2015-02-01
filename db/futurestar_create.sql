@@ -1,9 +1,12 @@
 CREATE TABLE T_ADMIN -- Admin logs in with NAME.
 (
-ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
-NAME      VARCHAR(255) UNIQUE                    NOT NULL, -- Only one root.
-NICKNAME  VARCHAR(255)                           NOT NULL,
-PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypted data.
+ID        CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
+NAME      VARCHAR(255) UNIQUE      NOT NULL, -- Only one root.
+NICKNAME  VARCHAR(255)             NOT NULL,
+LOGO      VARCHAR(255)             NOT NULL DEFAULT 'null', -- Logo image location.
+PASSWORD  VARCHAR(255)             NOT NULL, -- Should be encrypted data.
+CREATION  CHAR(20)                 NOT NULL DEFAULT 'null', -- Time stamp of creation.
+LASTLOGIN CHAR(20)                 NOT NULL DEFAULT 'null', -- Time stamp of last login.
 -- PRIVILEGE: 
 ---- Bitwise permission control.
 ---- XXXX (insert|delete|update|select)
@@ -14,6 +17,34 @@ PASSWORD  VARCHAR(255)                           NOT NULL, -- Should be encrypte
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 9, -- 1001
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1 -- 0 - unlocked, 1 - locked
 );
+
+CREATE VIEW V_ADMIN AS
+SELECT
+hex(ID) AS ID, NAME, NICKNAME, LOGO, PASSWORD, CREATION, LASTLOGIN, PRIVILEGE, ISLOCKED
+FROM T_ADMIN;
+
+CREATE TRIGGER T_ADMIN_AutoGenerateGUID
+AFTER INSERT ON T_ADMIN
+WHEN (NEW.ID = 'null')
+BEGIN
+    UPDATE T_ADMIN SET ID = (SELECT randomblob(8)) WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_ADMIN_AutoGenerateTimeStamp
+AFTER INSERT ON T_ADMIN
+WHEN (NEW.CREATION = 'null')
+BEGIN
+    UPDATE T_ADMIN SET 
+        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_ADMIN_AutoGenerateLogo
+AFTER INSERT ON T_ADMIN
+WHEN (NEW.LOGO = 'null')
+BEGIN
+    UPDATE T_ADMIN SET LOGO = 'images/admins/default.png' WHERE rowid = NEW.rowid;
+END;
 
 CREATE TABLE T_SCHOOL
 (
@@ -39,7 +70,7 @@ CREATE TRIGGER T_SCHOOL_AutoGenerateLogo
 AFTER INSERT ON T_SCHOOL
 WHEN (NEW.LOGO = 'null')
 BEGIN
-    UPDATE T_SCHOOL SET LOGO = 'images/schools/school_default.png' WHERE rowid = NEW.rowid;
+    UPDATE T_SCHOOL SET LOGO = 'images/schools/default.png' WHERE rowid = NEW.rowid;
 END;
 
 CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
@@ -59,13 +90,27 @@ BEGIN
     WHERE ID = NEW.ID;
 END;
 
+-- Create a table T_CLASS for each school by copying same schemas from T_CLASS. 
+-- Naming convention is T_CLASS_FROM_SCHOOL_XXX, where XXX is school id.
 CREATE TABLE T_CLASS
 (
-ID        INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,
-NAME      VARCHAR(255) UNIQUE                    NOT NULL,
-SCHOOL_ID CHAR(16)                               NOT NULL,
-FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
+ID        CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
+NAME      VARCHAR(255) UNIQUE      NOT NULL,
+CREATION  CHAR(20)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
 );
+
+-- Use same naming convention as T_CLASS.
+CREATE VIEW V_CLASS AS
+SELECT
+hex(ID) AS ID, NAME, CREATION
+FROM T_CLASS;
+
+CREATE TRIGGER T_CLASS_AutoGenerateGUID
+AFTER INSERT ON T_CLASS
+WHEN (NEW.ID = 'null')
+BEGIN
+    UPDATE T_CLASS SET ID = (SELECT randomblob(8)) WHERE rowid = NEW.rowid;
+END;
 
 CREATE TABLE T_PARENT -- Parent logs in with ID.
 (
@@ -163,7 +208,8 @@ FOREIGN KEY(TEACHER_ID) REFERENCES T_TEACHER(ID)
 
 CREATE VIEW V_TEACHER_FROM_SCHOOL AS
 SELECT 
-T_TEACHER.ID, T_TEACHER.NAME, T_TEACHER.LOGO, T_TEACHER.MOBILENUM, T_TEACHER.GENDER, T_TEACHER.CREATION, T_TEACHER.LASTLOGIN, T_TEACHER.ISLOCKED,
+T_TEACHER.ID, T_TEACHER.NAME, T_TEACHER.LOGO, T_TEACHER.MOBILENUM, T_TEACHER.GENDER, 
+T_TEACHER.CREATION, T_TEACHER.LASTLOGIN, T_TEACHER.ISLOCKED, T_TEACHER.CLASS_ID,
 hex(T_SCHOOL.ID) AS SCHOOL_ID, T_SCHOOL.NAME AS SCHOOL_NAME
 FROM T_TEACHER, T_SCHOOL
 WHERE T_TEACHER.SCHOOL_ID = T_SCHOOL.ID;
