@@ -195,7 +195,7 @@ function generateTableOfTeachers() {
 		// Column 3
 		html += "<td>";
 		if (g_privilege & 0x4)
-			html += "<input type='button' value='删除' onclick='onButtonDeleteTeacher()' />";
+			html += "<input type='button' value='删除' onclick='onButtonDeleteTeacher()' />&nbsp;";
 		if (g_privilege & 0x2)
 			html += "<input type='button' value='修改' onclick='onButtonEditTeacher(\"" + g_teachers[i].ID +"\")' />";
 		html += "</td>";
@@ -272,7 +272,7 @@ function generateEditTeacherHtml(teacher)
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>姓名：</td>";
-	html += "    <td><span id='teacher_edit_name'></span></td>";
+	html += "    <td><input id='teacher_edit_name' type='text' name='name' value=''/></td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>性别：</td>";
@@ -284,7 +284,7 @@ function generateEditTeacherHtml(teacher)
 	html += "  <tr>";
 	html += "  <tr>";
 	html += "    <td>手机号码：</td>";
-	html += "    <td><span id='teacher_edit_mobilenum'></span></td>";
+	html += "    <td><input id='teacher_edit_mobilenum' type='text' name='mobilenum' value=''/></td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>注册时间：</td>";
@@ -299,7 +299,11 @@ function generateEditTeacherHtml(teacher)
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>所属学校：</td>";
-	html += "    <td><span id='teacher_edit_schoolname'></span></td>";
+	html += "    <td>";
+	html += "      <span id='teacher_edit_schoolname'></span>&nbsp;";
+	html += "      <input type='hidden' id='teacher_edit_schoolid' name='schoolid' value='' />";
+	html += "      <input type='button' value='学校列表' onclick='onButtonGetSchoolList()'/>";
+	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>所属班级：</td>";
@@ -317,14 +321,15 @@ function generateEditTeacherHtml(teacher)
 	setSpanContentInnerHTML(html);
 	$("#teacher_edit_id").val(teacher.ID);
 	$("#teacher_edit_logo").prop("src", teacher.LOGO);
-	$("#teacher_edit_name").html(teacher.NAME);
+	$("#teacher_edit_name").prop("value", teacher.NAME);
 	$("#teacher_edit_gender_male").prop("checked", (teacher.GENDER == 0));
 	$("#teacher_edit_gender_female").prop("checked", (teacher.GENDER != 0));
-	$("#teacher_edit_mobilenum").html(teacher.MOBILENUM);
+	$("#teacher_edit_mobilenum").prop("value", teacher.MOBILENUM);
 	$("#teacher_edit_creation").html(teacher.CREATION);
 	$("#teacher_edit_islocked_true").prop("checked", (teacher.ISLOCKED != 0));
 	$("#teacher_edit_islocked_false").prop("checked", (teacher.ISLOCKED == 0));
 	$("#teacher_edit_schoolname").html(teacher.SCHOOL_NAME);
+	$("#teacher_edit_schoolname").prop("value", teacher.SCHOOL_ID);
 	$("#teacher_edit_classname").html(teacher.CLASS_NAME);
 }
 
@@ -343,4 +348,45 @@ function onButtonCommitEditTeacher() {
 function onButtonCancelEditTeacher() {
 	var tmp = generateTableOfTeachers();
 	setSpanContentInnerHTML(tmp);
+}
+
+function onButtonGetSchoolList() {
+	var dialoghtml = "";
+	dialoghtml += "<div id='dialog_school_list' title='学校列表'>";
+	dialoghtml += "  <label for='text_school_list'>学校名称: </label>";
+	dialoghtml += "  <input id='text_school_list' value='' />";
+	dialoghtml += "  <input id='button_school_list_ok' type='button' value='确定' disabled /> ";
+	dialoghtml += "  <input id='button_school_list_cancel' type='button' value='取消' /> ";
+	dialoghtml += "</div>";
+	$(dialoghtml).appendTo('body');
+
+	$("#dialog_school_list").css("display", "true");
+	$("#dialog_school_list").dialog(
+		{
+			modal : true,
+			minWidth : 450,
+			minHeight : 300
+		}
+	);
+
+	$("#text_school_list").autocomplete({
+		source : function(req, rsp) {
+			$.ajax({
+				url : "/futurestar/getschools.do",
+				dataType : "json",
+				data : {term: req.term},
+				success : function(data) {
+					rsp($.map(data, function(item) {
+						return {
+							label : item.NAME,
+							id : item.ID
+						};
+					}));
+				}
+			});
+		}, 
+		appendTo : "#dialog_school_list",
+//		change: function( event, ui ) {$("#button_school_list_ok").prop("disabled", true);},
+		select : function(event, ui) {$("#button_school_list_ok").prop("disabled", false);}
+	});
 }

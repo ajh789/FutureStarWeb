@@ -5,6 +5,7 @@ div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; ov
 div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
 div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
+div#dialog_school_list {display:none;}
 span#span_debugmsg {display:none; color:red; font-weight:bold;}
 input#button_reqdata_up   {display:none;}
 input#button_reqdata_down {display:none;}
