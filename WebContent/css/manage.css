@@ -4,6 +4,8 @@ div#menu      {background-color:#ffff99; height:650px; width:15%; float:left; ov
 div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; overflow:auto;}
 div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
 div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
+div#content_tab_search_upper   {height:05%; overflow:auto;}
+div#content_tab_search_lower   {height:95%; overflow:auto;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
 div#dialog_school_list {display:none;}
 span#span_debugmsg {display:none; color:red; font-weight:bold;}
@@ -15,11 +17,22 @@ ul {margin:0;}
 li {list-style:none;}
 table#schools {font-size:10px;}
 table#schools td#school_details {width:700px;}
-table#teachers {font-size:12px;}
+table#teachers {font-size:12px; border:1px solid black; border-collapse:collapse;}
+table#teachers th{border:1px solid black;}
+table#teachers td{border:1px solid black;}
 table#teachers td#teacher_details {width:500px;}
 .table_school_edit {font-size:12px;}
 .table_school_edit tr {vertical-align:top;}
-.table_teacher_edit {font-size:12px;}
+.table_teacher_edit {font-size:12px; border:1px solid blue; border-collapse:collapse;}
 .table_teacher_edit tr {vertical-align:top;}
+.table_teacher_edit td {border:1px solid blue;}
 .img_school_logo {width: 100px; height: 100px;}
 .img_teacher_logo {width: 100px; height: 100px;}
+
+.ui-widget {
+  font-size:80% !important;
+}
+.ui-button-text {
+  font-size: 12px; /* change font size */
+  padding: 1px 1px 1px 1px; /* change padding */
+}

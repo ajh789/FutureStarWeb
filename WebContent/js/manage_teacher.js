@@ -169,11 +169,11 @@ function generateTableOfTeachers() {
 	var html = "";
 
 	if (g_teachers.length > 0) {
-		html += "<table id='teachers' border='1'>";
+		html += "<table id='teachers'";
 		html += "<tr>";
-		html += "<th>&nbsp;</th>";       // Column 1
-		html += "<th>教师</th>"; // Column 2
-		html += "<th>操作</th>";     // Column 3
+		html += "<th>照&nbsp;片</th>"; // Column 1
+		html += "<th>信&nbsp;息</th>"; // Column 2
+		html += "<th>操&nbsp;作</th>"; // Column 3
 		html += "</tr>";
 	}
 
@@ -359,7 +359,7 @@ function onButtonGetSchoolList() {
 	var dialoghtml = "";
 	dialoghtml += "<div id='dialog_school_list' title='学校列表'>";
 	dialoghtml += "  <label for='text_school_list_input'>学校名称: </label>";
-	dialoghtml += "  <input id='text_school_list_input' value='' /><br/>"; // input field
+	dialoghtml += "  <input id='text_school_list_input' value='' /><br/><br/>"; // input field
 	dialoghtml += "  <input id='text_school_list_output_id' type='hidden' value='' disabled />"; // selected id
 	dialoghtml += "  <label for='text_school_list_output_name'>已选学校: </label>";
 	dialoghtml += "  <input id='text_school_list_output_name' type='text' value='' disabled />"; // selected name
