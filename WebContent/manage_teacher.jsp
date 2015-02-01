@@ -5,11 +5,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>教师管理</title>
 <style type="text/css">
-@import "js/jquery-ui-1.11.2/jquery-ui.css";
+@import "js/jquery-ui-1.11.2/jquery-ui.min.css";
 @import "css/manage.css";
 </style>
-<script type="text/javascript" src="js/jquery-1.11.2.js" charset="UTF-8"></script>
-<script type="text/javascript" src="js/jquery-ui-1.11.2/jquery-ui.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/jquery-1.10.2.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.2/jquery-ui.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/common.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/manage_teacher.js" charset="UTF-8"></script>
 </head>

@@ -272,7 +272,10 @@ function generateEditTeacherHtml(teacher)
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>姓名：</td>";
-	html += "    <td><input id='teacher_edit_name' type='text' name='name' value=''/></td>";
+	html += "    <td>";
+	html += "      <input id='teacher_edit_id' type='hidden' name='id' value='' />";
+	html += "      <input id='teacher_edit_name' type='text' name='name' value=''/>";
+	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>性别：</td>";
@@ -300,26 +303,28 @@ function generateEditTeacherHtml(teacher)
 	html += "  <tr>";
 	html += "    <td>所属学校：</td>";
 	html += "    <td>";
-	html += "      <span id='teacher_edit_schoolname'></span>&nbsp;";
-	html += "      <input type='hidden' id='teacher_edit_schoolid' name='schoolid' value='' />";
-	html += "      <input type='button' value='学校列表' onclick='onButtonGetSchoolList()'/>";
+	html += "      <input id='teacher_edit_schoolname' type='text' name='schoolname' value='' disabled />&nbsp;";
+	html += "      <input id='teacher_edit_schoolid' type='hidden' name='schoolid' value='' />";
+	html += "      <input type='button' value='更改...' onclick='onButtonGetSchoolList()'/>";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>所属班级：</td>";
-	html += "    <td><span id='teacher_edit_classname'></span></td>";
+	html += "    <td>";
+	html += "      <intput id='teacher_edit_classname' type='text' value='' disabled />";
+	html += "      <intput id='teacher_edit_classid' type='hidden' value='' />";
+	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>&nbsp;&nbsp;</td>";
 	html += "    <td>";
-	html += "      <input type='hidden' id='teacher_edit_id' name='id' value='' />";
 	html += "      <input type='button' value='更新' onclick='onButtonCommitEditTeacher()' />";
 	html += "      <input type='button' value='取消' onclick='onButtonCancelEditTeacher()' />";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "</table>";
 	setSpanContentInnerHTML(html);
-	$("#teacher_edit_id").val(teacher.ID);
+	$("#teacher_edit_id").prop("value", teacher.ID);
 	$("#teacher_edit_logo").prop("src", teacher.LOGO);
 	$("#teacher_edit_name").prop("value", teacher.NAME);
 	$("#teacher_edit_gender_male").prop("checked", (teacher.GENDER == 0));
@@ -328,9 +333,9 @@ function generateEditTeacherHtml(teacher)
 	$("#teacher_edit_creation").html(teacher.CREATION);
 	$("#teacher_edit_islocked_true").prop("checked", (teacher.ISLOCKED != 0));
 	$("#teacher_edit_islocked_false").prop("checked", (teacher.ISLOCKED == 0));
-	$("#teacher_edit_schoolname").html(teacher.SCHOOL_NAME);
-	$("#teacher_edit_schoolname").prop("value", teacher.SCHOOL_ID);
-	$("#teacher_edit_classname").html(teacher.CLASS_NAME);
+	$("#teacher_edit_schoolname").prop("value", teacher.SCHOOL_NAME);
+	$("#teacher_edit_schoolid").prop("value", teacher.SCHOOL_ID);
+	$("#teacher_edit_classname").prop("value", teacher.CLASS_NAME);
 }
 
 function onButtonCommitEditTeacher() {
@@ -353,10 +358,11 @@ function onButtonCancelEditTeacher() {
 function onButtonGetSchoolList() {
 	var dialoghtml = "";
 	dialoghtml += "<div id='dialog_school_list' title='学校列表'>";
-	dialoghtml += "  <label for='text_school_list'>学校名称: </label>";
-	dialoghtml += "  <input id='text_school_list' value='' />";
-	dialoghtml += "  <input id='button_school_list_ok' type='button' value='确定' disabled /> ";
-	dialoghtml += "  <input id='button_school_list_cancel' type='button' value='取消' /> ";
+	dialoghtml += "  <label for='text_school_list_input'>学校名称: </label>";
+	dialoghtml += "  <input id='text_school_list_input' value='' /><br/>"; // input field
+	dialoghtml += "  <input id='text_school_list_output_id' type='hidden' value='' disabled />"; // selected id
+	dialoghtml += "  <label for='text_school_list_output_name'>已选学校: </label>";
+	dialoghtml += "  <input id='text_school_list_output_name' type='text' value='' disabled />"; // selected name
 	dialoghtml += "</div>";
 	$(dialoghtml).appendTo('body');
 
@@ -365,11 +371,34 @@ function onButtonGetSchoolList() {
 		{
 			modal : true,
 			minWidth : 450,
-			minHeight : 300
+			minHeight : 300,
+			buttons : [
+				{
+					text: "清除所选",
+//					icons: {primary: "ui-icon-heart"},
+					click: function() {
+						$("#text_school_list_output_id").prop("value", "");
+						$("#text_school_list_output_name").prop("value", "");
+					}
+				},
+				{
+					text: "确定",
+//					icons: {primary: "ui-icon-heart"},
+					click: function() {
+						var schoolid = $("#text_school_list_output_id").prop("value");
+						var schoolname = $("#text_school_list_output_name").prop("value");
+						if (schoolid != "" && schoolname != "") {
+							$("#teacher_edit_schoolid").prop("value", schoolid);
+							$("#teacher_edit_schoolname").prop("value", schoolname);
+						}
+						$(this).dialog("close");
+					}
+				}
+			]
 		}
 	);
 
-	$("#text_school_list").autocomplete({
+	$("#text_school_list_input").autocomplete({
 		source : function(req, rsp) {
 			$.ajax({
 				url : "/futurestar/getschools.do",
@@ -378,15 +407,18 @@ function onButtonGetSchoolList() {
 				success : function(data) {
 					rsp($.map(data, function(item) {
 						return {
-							label : item.NAME,
-							id : item.ID
+							id : item.ID,
+							name : item.NAME,
+							label : item.NAME // A 'label' and/or 'value' field is used to display suggestion list.
 						};
 					}));
 				}
 			});
 		}, 
 		appendTo : "#dialog_school_list",
-//		change: function( event, ui ) {$("#button_school_list_ok").prop("disabled", true);},
-		select : function(event, ui) {$("#button_school_list_ok").prop("disabled", false);}
+		select : function(event, ui) {
+			$("#text_school_list_output_id").prop("value", ui.item.id);
+			$("#text_school_list_output_name").prop("value", ui.item.name);
+		}
 	});
 }
