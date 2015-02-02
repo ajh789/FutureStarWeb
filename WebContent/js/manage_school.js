@@ -133,8 +133,8 @@ function handleUpdateResponse(data, status) {
 		}
 //		window.alert(ret.retcode + ": " + ret.retinfo);
 		if (ret.retcode == 0) {
-			// Trigger a query
-			reqDataFromTo();
+			reqDataFromTo(); // Trigger a query
+			$("#dialog_school_edit").dialog("destroy").remove(); // Destroy and remove dialog.
 		}
 	}
 }
@@ -146,8 +146,8 @@ function generateTableOfSchools() {
 		html += "<table id='schools' border='1'>";
 		html += "<tr>";
 		html += "<th>&nbsp;</th>";       // Column 1
-		html += "<th>学校</th>"; // Column 2
-		html += "<th>操作</th>";     // Column 3
+		html += "<th>学&nbsp;校</th>"; // Column 2
+		html += "<th>操&nbsp;作</th>";     // Column 3
 		html += "</tr>";
 	}
 
@@ -164,9 +164,11 @@ function generateTableOfSchools() {
 		// Column 3
 		html += "<td>";
 		if (g_privilege & 0x4)
-			html += "<input type='button' value='删除' onclick='onButtonDeleteSchool()' />";
+			html += "<input type='button' value='删除' onclick='onButtonDeleteSchool()' />&nbsp;";
 		if (g_privilege & 0x2)
-			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />";
+			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />&nbsp;";
+		if (g_privilege > 0)
+			html += "<input type='button' value='班级列表' onclick='' />";
 		html += "</td>";
 		html += "</tr>"; // Row ends.
 	}
@@ -233,59 +235,87 @@ function onButtonDeleteSchool()
 
 function generateEditSchoolHtml(school)
 {
-	var html = "";
-	html += "<table class='table_school_edit'>";
-	html += "  <tr>";
-	html += "    <td>学校徽标：</td>";
-	html += "    <td><img id='school_edit_logo' src='' alt='logo' class='img_school_logo' /></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>学校名称：</td>";
-	html += "    <td><span id='school_edit_name'></span></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>注册时间：</td>";
-	html += "    <td><span id='school_edit_creation'></span></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>更新时间：</td>";
-	html += "    <td><span id='school_edit_lastupdate'></span></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>当前状态：</td>";
-	html += "    <td>";
-	html += "      <input id='school_edit_islocked_true'  type='radio' name='islocked' value='true' />锁定";
-	html += "      <input id='school_edit_islocked_false' type='radio' name='islocked' value='false' />未锁定";
-	html += "    </td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>学校介绍：</td>";
-	html += "    <td><textarea id='school_edit_intro' rows='10' cols='80'></textarea></td>";
-	html += "  </tr>";
-	html += "  <tr>";
-	html += "    <td>&nbsp;&nbsp;</td>";
-	html += "    <td>";
-	html += "      <input type='hidden' id='school_edit_id' name='id' value='' />";
-	html += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
-	html += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
-	html += "    </td>";
-	html += "  </tr>";
-	html += "</table>";
-	setSpanContentInnerHTML(html);
-	$("#school_edit_id").val(school.ID);
-	$("#school_edit_logo").attr("src", school.LOGO);
-	$("#school_edit_name").html(school.NAME);
+	var dialoghtml = "";
+	dialoghtml += "<div id='dialog_school_edit' title='学校编辑'>";
+	dialoghtml += "<table class='table_school_edit'>";
+//	dialoghtml += "  <caption>学校编辑</caption>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>学校徽标：</td>";
+	dialoghtml += "    <td><img id='school_edit_logo' src='' alt='logo' class='img_school_logo' /></td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>学校名称：</td>";
+	dialoghtml += "    <td>";
+	dialoghtml += "      <input type='text' id='school_edit_name' name='name' value='' disabled/>";
+	dialoghtml += "      <input type='hidden' id='school_edit_id' name='id' value='' />";
+	dialoghtml += "    </td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>注册时间：</td>";
+	dialoghtml += "    <td><span id='school_edit_creation'></span></td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>更新时间：</td>";
+	dialoghtml += "    <td><span id='school_edit_lastupdate'></span></td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>当前状态：</td>";
+	dialoghtml += "    <td>";
+	dialoghtml += "      <input id='school_edit_islocked_true'  type='radio' name='islocked' value='true' />锁定";
+	dialoghtml += "      <input id='school_edit_islocked_false' type='radio' name='islocked' value='false' />未锁定";
+	dialoghtml += "    </td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>学校介绍：</td>";
+	dialoghtml += "    <td><textarea id='school_edit_intro' rows='10' cols='80'></textarea></td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "  <tr>";
+	dialoghtml += "    <td>&nbsp;&nbsp;</td>";
+	dialoghtml += "    <td>";
+//	dialoghtml += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
+//	dialoghtml += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
+	dialoghtml += "    </td>";
+	dialoghtml += "  </tr>";
+	dialoghtml += "</table>";
+	dialoghtml += "</div>";
+
+//	setSpanContentInnerHTML(html);
+	$(dialoghtml).appendTo('body');
+
+	$("#school_edit_id").prop("value", school.ID);
+	$("#school_edit_logo").prop("src", school.LOGO);
+	$("#school_edit_name").prop("value", school.NAME);
 	$("#school_edit_creation").html(school.CREATION);
 	$("#school_edit_lastupdate").html(school.LASTUPDATE);
-	$("#school_edit_islocked_true").attr("checked", (school.ISLOCKED)?"checked":"");
-	$("#school_edit_islocked_false").attr("checked", (!school.ISLOCKED)?"checked":"");
-	$("#school_edit_intro").val(htmlDecode(school.INTRO)); // Remember to do html decode.
+	$("#school_edit_islocked_true").prop("checked", school.ISLOCKED);
+	$("#school_edit_islocked_false").prop("checked", !school.ISLOCKED);
+	$("#school_edit_intro").prop("value", htmlDecode(school.INTRO)); // Remember to do html decode.
+
+	$("#dialog_school_edit").dialog({
+		modal : true,
+		minWidth : 600,
+		minHeight : 300,
+		buttons : [
+			{
+				text : "更新",
+				click : function() {
+					onButtonCommitEditSchool();
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
 }
 
 function onButtonCommitEditSchool() {
-	var id = $("#school_edit_id").val();
-	var name = $("#school_edit_name").html();
-	var intro = $("#school_edit_intro").val();
+	var id = $("#school_edit_id").prop("value");
+	var name = $("#school_edit_name").prop("value");
+	var intro = $("#school_edit_intro").prop("value");
 	intro = htmlEncode(intro); // Remember to do html encode.
 	$.post(
 		g_manageschool_update_url, 

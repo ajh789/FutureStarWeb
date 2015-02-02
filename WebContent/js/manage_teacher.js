@@ -391,7 +391,8 @@ function onButtonGetSchoolList() {
 							$("#teacher_edit_schoolid").prop("value", schoolid);
 							$("#teacher_edit_schoolname").prop("value", schoolname);
 						}
-						$(this).dialog("close");
+//						$(this).dialog("close");
+						$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
 					}
 				}
 			]
