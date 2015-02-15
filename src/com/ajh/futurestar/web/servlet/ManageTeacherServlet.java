@@ -128,7 +128,7 @@ public class ManageTeacherServlet extends HttpServlet {
 			ret.retinfo = "action为空";
 		} else {
 			boolean actionDone = false;
-DO_DB_ACTION:
+//DO_DB_ACTION:
 			if (!actionDone) { // Start DO_DB_ACTION.
 				ret.actionx += action;
 				if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // select
