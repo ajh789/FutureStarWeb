@@ -1,3 +1,8 @@
+// RetCode.java
+/*
+ * This is an auto-generated source file.
+ */
+
 package com.ajh.futurestar.web.common;
 
 public enum RetCode {
@@ -27,3 +32,5 @@ public enum RetCode {
 	RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID,
 	RETCODE_KO_MANAGE_CLASS_TABLES_SELECT_FAILED
 }
+
+// End of file
