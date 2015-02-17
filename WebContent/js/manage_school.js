@@ -17,6 +17,9 @@ var g_schools_head = null; // Current head.
 var g_schools_tail = null; // Current tail.
 var g_privilege = 0;
 
+var g_manageclasstables_url = "/futurestar/manageclasstables.do";
+var g_manageclasstables_select_url = g_manageclasstables_url + "?action=select";
+
 function reqData()
 {
 	var url = g_manageschool_select_url;
@@ -30,7 +33,7 @@ function reqData()
 		url += "&name=" + schoolname;
 	}
 
-	$.get(url, handleSelectResponse);
+	$.get(url, handleSchoolSelectResponse);
 }
 
 function reqDataUp()
@@ -46,7 +49,7 @@ function reqDataUp()
 		url += "&name=" + schoolname;
 	}
 
-	$.get(url, handleSelectResponse);
+	$.get(url, handleSchoolSelectResponse);
 }
 
 function reqDataDown()
@@ -62,7 +65,7 @@ function reqDataDown()
 		url += "&name=" + schoolname;
 	}
 
-	$.get(url, handleSelectResponse);
+	$.get(url, handleSchoolSelectResponse);
 }
 
 function reqDataFromTo()
@@ -75,10 +78,10 @@ function reqDataFromTo()
 	if (g_schools_tail != null)
 		url += "&toid=" + g_schools_tail;
 
-	$.get(url, handleSelectResponse);
+	$.get(url, handleSchoolSelectResponse);
 }
 
-function handleSelectResponse(data, status) {
+function handleSchoolSelectResponse(data, status) {
 	var tmp = "";
 	var debug = "";
 
@@ -91,7 +94,7 @@ function handleSelectResponse(data, status) {
 		}
 
 		// Five members: retcode, retinfo, actionx, schools, prvlege
-		if (ret.retcode == 0) { // OK
+		if (ret.retcode == RetCode.RETCODE_OK) { // OK
 			g_privilege = ret.prvlege;
 			var schools = ret.schools; // Array of schools.
 			if (schools.length > 0) {
@@ -123,7 +126,7 @@ function handleSelectResponse(data, status) {
 	}
 }
 
-function handleUpdateResponse(data, status) {
+function handleSchoolUpdateResponse(data, status) {
 	if (status == "success") {
 		var ret = null;
 		if (typeof data == "object") { // object
@@ -168,7 +171,7 @@ function generateTableOfSchools() {
 		if (g_privilege & 0x2)
 			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />&nbsp;";
 		if (g_privilege > 0)
-			html += "<input type='button' value='班级列表' onclick='' />";
+			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + g_schools[i].ID + "\")' />";
 		html += "</td>";
 		html += "</tr>"; // Row ends.
 	}
@@ -320,11 +323,42 @@ function onButtonCommitEditSchool() {
 	$.post(
 		g_manageschool_update_url, 
 		{"id":id, "name":name, "intro":intro}, 
-		handleUpdateResponse
+		handleSchoolUpdateResponse
 	);
 }
 
 function onButtonCancelEditSchool() {
 	var tmp = generateTableOfSchools();
 	setSpanContentInnerHTML(tmp);
+}
+
+function onButtonGetSchoolClassList(id) {
+	if (typeof id == 'string') {
+		var url = g_manageclasstables_select_url + "&schoolid=" + id;
+		$.get(url, handleClassTableSelectResponse);
+	} else {
+		throw new error('Please pass a string as an ID!');
+	}
+}
+
+function handleClassTableSelectResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+//		window.alert(ret.retcode + ": " + ret.retinfo);
+		if (ret.retcode == RetCode.RETCODE_OK) {
+		} else if (ret.retcode == RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE) {
+			window.alert(ret.retinfo);
+		} else {
+			window.alert("Retrieve class list no match.");
+		}
+	}
+}
+
+function generateClassTableHtml() {
+	
 }

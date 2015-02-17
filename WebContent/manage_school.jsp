@@ -11,6 +11,7 @@
 <script type="text/javascript" src="js/jquery/jquery-1.10.2.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/jquery/ui/1.11.2/jquery-ui.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/common.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/retcode.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/manage_school.js" charset="UTF-8"></script>
 <script type="text/javascript">
 $(function() {

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 import com.ajh.futurestar.web.common.Attribute;
 import com.ajh.futurestar.web.common.DbConn;
 import com.ajh.futurestar.web.common.Request;
@@ -36,6 +38,13 @@ public class ManageClassTablesServlet extends ManageServlet {
 
 	@Override
 	protected void generatePageBody(PrintWriter out, Return result) {
+		JSONObject obj = new JSONObject();
+		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
+		obj.put("retinfo", result.retinfo);
+		obj.put("classes", result.retobjx);
+		obj.put("actionx", result.actionx);
+		obj.put("prvlege", result.prvlege);
+		out.println(obj.toString());
 	}
 
 	@Override
@@ -80,8 +89,8 @@ public class ManageClassTablesServlet extends ManageServlet {
 		// DO NOT return when performing action.
 		String action = req.getParameter(Request.PARAM_ACTION);
 		if (action == null || action.equals("")) {
-			ret.retcode = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_ACTION;
-			ret.retinfo = "action为空";
+			ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_ACTION;
+			ret.retinfo += "action为空";
 		} else {
 			ret.actionx += action;
 			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) {
@@ -108,18 +117,21 @@ public class ManageClassTablesServlet extends ManageServlet {
 			HttpServletRequest req, Return ret) throws SQLException {
 		String schoolid = req.getParameter("schoolid");
 		if (schoolid == null || schoolid.equals("")) {
-			ret.retcode = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID;
-			ret.retinfo = "school id为空！";
+			ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID;
+			ret.retinfo += "school id为空！";
 		} else {
 			String sql = "SELECT * FROM sqlite_master WHERE type='table' AND name='T_CLASS_FROM_SCHOOL_";
 			sql += schoolid + "';";
-			
+
 			ResultSet rs = stmt.executeQuery(sql);
-			
+
 			if (rs.next()) { // Table exists.
-				
+				//
+			} else { // Table doesn't exist.
+				ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE;
+				ret.retinfo += "表格不存在！";
 			}
-			
+
 			rs.close();
 		}
 	}
