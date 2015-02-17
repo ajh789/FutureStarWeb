@@ -19,6 +19,7 @@ var g_privilege = 0;
 
 var g_manageclasstables_url = "/futurestar/manageclasstables.do";
 var g_manageclasstables_select_url = g_manageclasstables_url + "?action=select";
+var g_manageclasstables_create_url = g_manageclasstables_url + "?action=create";
 
 function reqData()
 {
@@ -93,10 +94,15 @@ function handleSchoolSelectResponse(data, status) {
 			ret = eval("("+data+")"); // Transit JSON string to JSON object.
 		}
 
-		// Five members: retcode, retinfo, actionx, schools, prvlege
+		// Five members: 
+		//   retcode -- see enum RetCode
+		//   retinfo -- string
+		//   actionx -- string of action
+		//   retobjx -- JSON array of schools
+		//   prvlege -- privilege of current user
 		if (ret.retcode == RetCode.RETCODE_OK) { // OK
 			g_privilege = ret.prvlege;
-			var schools = ret.schools; // Array of schools.
+			var schools = ret.retobjx; // Array of schools.
 			if (schools.length > 0) {
 				g_schools = new Array(); // Allocate a new array.
 				g_schools = g_schools.concat(schools);
@@ -332,9 +338,9 @@ function onButtonCancelEditSchool() {
 	setSpanContentInnerHTML(tmp);
 }
 
-function onButtonGetSchoolClassList(id) {
-	if (typeof id == 'string') {
-		var url = g_manageclasstables_select_url + "&schoolid=" + id;
+function onButtonGetSchoolClassList(schoolid) {
+	if (typeof schoolid == 'string') {
+		var url = g_manageclasstables_select_url + "&schoolid=" + schoolid;
 		$.get(url, handleClassTableSelectResponse);
 	} else {
 		throw new error('Please pass a string as an ID!');
@@ -349,16 +355,74 @@ function handleClassTableSelectResponse(data, status) {
 		} else { // string
 			ret = eval("("+data+")"); // Transit JSON string to JSON object.
 		}
-//		window.alert(ret.retcode + ": " + ret.retinfo);
+
 		if (ret.retcode == RetCode.RETCODE_OK) {
+			generateClassListHtml(ret);
 		} else if (ret.retcode == RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE) {
-			window.alert(ret.retinfo);
+			generateClassTableCreationHtml(ret);
 		} else {
-			window.alert("Retrieve class list no match.");
+			window.alert("handleClassTableSelectResponse(): unknown retcode !");
 		}
 	}
 }
 
-function generateClassTableHtml() {
-	
+// Generate UI(a list of classes) for a successful query.
+function generateClassListHtml(ret) {
+	//
+}
+
+// Generate UI(creation of new class table) when class table doesn't exist.
+function generateClassTableCreationHtml(ret) {
+	var dialoghtml = "";
+	dialoghtml += "<div id='dialog_class_table_creation' title='班级列表'>";
+	dialoghtml += "</div>";
+
+	$(dialoghtml).appendTo('body');
+	$("#dialog_class_table_creation").html("不存在班级sql表格，点击下方<u>创建新sql表格</u>创建！");
+	$("#dialog_class_table_creation").dialog({
+		modal : true,
+		minWidth : 400,
+		minHeight : 200,
+		buttons : [
+			{
+				text : "创建新sql表格",
+				click : function() {
+					onButtonCommitCreateClassTable(ret.retobjx.schoolid);
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
+}
+
+function onButtonCommitCreateClassTable(schoolid) {
+	if (typeof schoolid == 'string') {
+		var url = g_manageclasstables_create_url + "&schoolid=" + schoolid;
+		$.get(url, handleClassTableCreateResponse);
+	} else {
+		throw new error('Please pass a string as an ID!');
+	}
+}
+
+function handleClassTableCreateResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+
+		if (ret.retcode == RetCode.RETCODE_OK) {
+			window.alert("创建成功！");
+			$("#dialog_class_table_creation").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+		} else {
+			window.alert("handleClassTableCreateResponse(): unknown retcode !");
+		}
+	}
 }

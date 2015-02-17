@@ -8,10 +8,11 @@ public class Request {
 	public static final String VALUE_REQFROM_NULL = "null";
 
 	public static final String PARAM_ACTION = "action";
-	public static final String VALUE_ACTION_SELECT = "select";
-	public static final String VALUE_ACTION_INSERT = "insert";
-	public static final String VALUE_ACTION_UPDATE = "update";
-	public static final String VALUE_ACTION_DELETE = "delete";
+	public static final String VALUE_ACTION_CREATE = "create"; // Create new SQL tables.
+	public static final String VALUE_ACTION_SELECT = "select"; // Query
+	public static final String VALUE_ACTION_INSERT = "insert"; // Add new records.
+	public static final String VALUE_ACTION_UPDATE = "update"; // Update existing records.
+	public static final String VALUE_ACTION_DELETE = "delete"; // Delete existing records.
 
 	//
 	// Parameter names for DB action select. Valid for all tables.

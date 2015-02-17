@@ -416,9 +416,9 @@ DO_DB_ACTION:
 	{
 		getServletContext().log("Enter method generatePageBody4WAP().");
 		JSONObject obj = new JSONObject();
-		obj.put("retcode", result.retcode.ordinal()); // Convert enum to int.
+		obj.put("retcode", result.retcode.ordinal()); // Convert enumeration to integer.
 		obj.put("retinfo", result.retinfo);
-		obj.put("schools", result.retobjx);
+		obj.put("retobjx", result.retobjx);
 		obj.put("actionx", result.actionx);
 		obj.put("prvlege", result.prvlege);
 		out.println(obj.toString());
