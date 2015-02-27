@@ -22,6 +22,8 @@ import com.ajh.futurestar.web.common.Return;
 
 /**
  * Servlet implementation class ManageClassTablesServlet
+ * Manage SQL tables of classes from different schools.
+ * Each school has its own SQL table of class.
  */
 @WebServlet(description = "Manage SQL tables of classes.", urlPatterns = { "/manageclasstables.do" })
 public class ManageClassTablesServlet extends ManageServlet {
@@ -94,7 +96,7 @@ public class ManageClassTablesServlet extends ManageServlet {
 			ret.retinfo += "action为空";
 		} else {
 			ret.actionx += action;
-			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) {
+			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // Check if a SQL table of classes exists for specified school.
 				try {
 					doActionSelect(conn, stmt, req, ret);
 				} catch (SQLException e) {
@@ -102,7 +104,7 @@ public class ManageClassTablesServlet extends ManageServlet {
 					ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_SELECT_FAILED;
 					ret.retinfo += e.getMessage();
 				}
-			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_CREATE)) {
+			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_CREATE)) { // Create SQL table of classes for specified school.
 				try {
 					doActionCreate(conn, stmt, req, ret);
 				} catch (SQLException e) {
@@ -167,25 +169,25 @@ public class ManageClassTablesServlet extends ManageServlet {
 			ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID;
 			ret.retinfo += "school id为空！";
 		} else {
-			String q_table_schema = "SELECT * FROM sqlite_master WHERE type='table' AND name='T_CLASS';";
-			ResultSet rsTable = stmt.executeQuery(q_table_schema);
-			if (rsTable.next()) {
-				String tableSchema = rsTable.getString("sql");
+			String qClassTableSchema = "SELECT * FROM sqlite_master WHERE type='table' AND name='T_CLASS';";
+			ResultSet rsTable = stmt.executeQuery(qClassTableSchema);
+			if (rsTable.next()) { // "if" statement due to only one SQL table T_CLASS.
+				String tableSchema = rsTable.getString("sql"); // Get schema of table T_CLASS.
 				String tableSchema_ = tableSchema.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
 				getServletContext().log(tableSchema_);
-				stmt.execute(tableSchema_);
+				stmt.execute(tableSchema_); // Create new SQL table.
 			} else {
-				
+				// TODO
 			}
 			rsTable.close();
 
-			String q_trigger_schema = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name='T_CLASS';";
-			ResultSet rsTrigger = stmt.executeQuery(q_trigger_schema);
-			while (rsTrigger.next()) {
-				String triggerSchema = rsTrigger.getString("sql");
+			String qClassTableTriggersSchema = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name='T_CLASS';";
+			ResultSet rsTrigger = stmt.executeQuery(qClassTableTriggersSchema);
+			while (rsTrigger.next()) { // "while" statement due to possibly more than 1 triggers.
+				String triggerSchema = rsTrigger.getString("sql"); // Get schemas of triggers corresponding to T_CLASS.
 				String triggerSchema_ = triggerSchema.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
 				getServletContext().log(triggerSchema_);
-				stmt.execute(triggerSchema_);
+				stmt.execute(triggerSchema_); // Create new trigger.
 			}
 			rsTrigger.close();
 

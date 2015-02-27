@@ -368,7 +368,45 @@ function handleClassTableSelectResponse(data, status) {
 
 // Generate UI(a list of classes) for a successful query.
 function generateClassListHtml(ret) {
-	//
+//	var schoolid = ret.retobjx.schoolid;
+	var classes = ret.retobjx.classes; // Array of classes.
+	var dialoghtml = "";
+	dialoghtml += "<div id='dialog_class_list' title='班级列表'>";
+	dialoghtml += "</div>";
+
+	$(dialoghtml).appendTo('body');
+	if (classes.length == 0) {
+		$("#dialog_class_list").html("班级列表为空！");
+		$("#dialog_class_list").dialog({
+			modal : true,
+			minWidth : 400,
+			minHeight : 200,
+			buttons : [
+				{
+					text : "创建新班级",
+					click : function() {
+						onButtonCreateClass(ret.retobjx.schoolid);
+					}
+				},
+				{
+					text : "取消",
+					click : function() {
+						$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+					}
+				}
+			]
+		});
+	} else {
+		
+	}
+}
+
+function onButtonCreateClass(schoolid) {
+	$("#dialog_class_list").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+}
+
+function onButtonCommitCreateClass(schoolid) {
+	
 }
 
 // Generate UI(creation of new class table) when class table doesn't exist.
