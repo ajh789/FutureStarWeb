@@ -30,7 +30,7 @@ BEGIN
     UPDATE T_ADMIN SET ID = (SELECT randomblob(8)) WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER T_ADMIN_AutoGenerateTimeStamp
+CREATE TRIGGER T_ADMIN_AutoGenerateCreationTimeStamp
 AFTER INSERT ON T_ADMIN
 WHEN (NEW.CREATION = 'null')
 BEGIN
@@ -73,7 +73,7 @@ BEGIN
     UPDATE T_SCHOOL SET LOGO = 'images/schools/default.png' WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER T_SCHOOL_AutoGenerateTimeStamp
+CREATE TRIGGER T_SCHOOL_AutoGenerateCreationTimeStamp
 AFTER INSERT ON T_SCHOOL
 WHEN (NEW.CREATION = 'null')
 BEGIN
@@ -82,7 +82,7 @@ BEGIN
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER T_SCHOOL_AutoUpdateTimeStamp
+CREATE TRIGGER T_SCHOOL_AutoGenerateUpdateTimeStamp
 AFTER UPDATE ON T_SCHOOL
 BEGIN
     UPDATE T_SCHOOL SET 
@@ -110,6 +110,15 @@ AFTER INSERT ON T_CLASS
 WHEN (NEW.ID = 'null')
 BEGIN
     UPDATE T_CLASS SET ID = (SELECT randomblob(8)) WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER T_CLASS_AutoGenerateCreationTimeStamp
+AFTER INSERT ON T_CLASS
+WHEN (NEW.CREATION = 'null')
+BEGIN
+    UPDATE T_CLASS SET 
+        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+    WHERE rowid = NEW.rowid;
 END;
 
 CREATE TABLE T_PARENT -- Parent logs in with ID.
@@ -153,7 +162,7 @@ FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
 
-CREATE TRIGGER T_TEACHER_AutoGenerateTimeStamp
+CREATE TRIGGER T_TEACHER_AutoGenerateCreationTimeStamp
 AFTER INSERT ON T_TEACHER
 WHEN (NEW.CREATION = 'null')
 BEGIN
