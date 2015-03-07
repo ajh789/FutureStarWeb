@@ -5,8 +5,8 @@ NAME      VARCHAR(255) UNIQUE      NOT NULL, -- Only one root.
 NICKNAME  VARCHAR(255)             NOT NULL,
 LOGO      VARCHAR(255)             NOT NULL DEFAULT 'null', -- Logo image location.
 PASSWORD  VARCHAR(255)             NOT NULL, -- Should be encrypted data.
-CREATION  CHAR(20)                 NOT NULL DEFAULT 'null', -- Time stamp of creation.
-LASTLOGIN CHAR(20)                 NOT NULL DEFAULT 'null', -- Time stamp of last login.
+CREATION  CHAR(26)                 NOT NULL DEFAULT 'null', -- Time stamp of creation.
+LASTLOGIN CHAR(26)                 NOT NULL DEFAULT 'null', -- Time stamp of last login.
 -- PRIVILEGE: 
 ---- Bitwise permission control.
 ---- XXXX (insert|delete|update|select)
@@ -35,7 +35,7 @@ AFTER INSERT ON T_ADMIN
 WHEN (NEW.CREATION = 'null')
 BEGIN
     UPDATE T_ADMIN SET 
-        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
     WHERE rowid = NEW.rowid;
 END;
 
@@ -52,8 +52,8 @@ ID          CHAR(16)     PRIMARY KEY  NOT NULL DEFAULT 'null', -- GUID, e.g. 09D
 NAME        VARCHAR(255) UNIQUE       NOT NULL,
 LOGO        VARCHAR(255)              NOT NULL DEFAULT 'null', -- Logo image location.
 INTRO       VARCHAR(65536)            NOT NULL DEFAULT 'null', -- Introduction
-CREATION    CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of creation.
-LASTUPDATE  CHAR(20)                  NOT NULL DEFAULT 'null', -- Time stamp of last update.
+CREATION    CHAR(26)                  NOT NULL DEFAULT 'null', -- Time stamp of creation.
+LASTUPDATE  CHAR(26)                  NOT NULL DEFAULT 'null', -- Time stamp of last update.
 ISLOCKED    INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
@@ -78,7 +78,7 @@ AFTER INSERT ON T_SCHOOL
 WHEN (NEW.CREATION = 'null')
 BEGIN
     UPDATE T_SCHOOL SET 
-        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
     WHERE rowid = NEW.rowid;
 END;
 
@@ -86,7 +86,7 @@ CREATE TRIGGER T_SCHOOL_AutoGenerateUpdateTimeStamp
 AFTER UPDATE ON T_SCHOOL
 BEGIN
     UPDATE T_SCHOOL SET 
-        LASTUPDATE = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        LASTUPDATE = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
     WHERE ID = NEW.ID;
 END;
 
@@ -96,13 +96,14 @@ CREATE TABLE T_CLASS
 (
 ID        CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
 NAME      VARCHAR(255) UNIQUE      NOT NULL,
-CREATION  CHAR(20)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
+ENROLMENT CHAR(10)                 NOT NULL DEFAULT 'null', -- Date of enrolment, format is yyyy/mm/dd.
+CREATION  CHAR(26)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
 );
 
 -- Use same naming convention as T_CLASS.
 CREATE VIEW V_CLASS AS
 SELECT
-hex(ID) AS ID, NAME, CREATION
+hex(ID) AS ID, NAME, ENROLMENT, CREATION
 FROM T_CLASS;
 
 CREATE TRIGGER T_CLASS_AutoGenerateGUID
@@ -117,7 +118,7 @@ AFTER INSERT ON T_CLASS
 WHEN (NEW.CREATION = 'null')
 BEGIN
     UPDATE T_CLASS SET 
-        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
     WHERE rowid = NEW.rowid;
 END;
 
@@ -156,8 +157,8 @@ CLASS_ID  INTEGER                                        , -- Could be null.
 SCHOOL_ID CHAR(16)                               NOT NULL,
 PRIVILEGE INTEGER                                NOT NULL DEFAULT 2, -- 0 - school admin, 1 - class admin, 2 - none admin
 ISLOCKED  INTEGER                                NOT NULL DEFAULT 1, -- 0 - unlocked, 1 - locked
-CREATION  CHAR(20)                               NOT NULL DEFAULT 'null', -- Time stamp of creation.
-LASTLOGIN CHAR(20)                               NOT NULL DEFAULT 'null', -- Time stamp of last login.
+CREATION  CHAR(26)                               NOT NULL DEFAULT 'null', -- Time stamp of creation.
+LASTLOGIN CHAR(26)                               NOT NULL DEFAULT 'null', -- Time stamp of last login.
 FOREIGN KEY(CLASS_ID) REFERENCES T_CLASS(ID),
 FOREIGN KEY(SCHOOL_ID) REFERENCES T_SCHOOL(ID)
 );
@@ -167,7 +168,7 @@ AFTER INSERT ON T_TEACHER
 WHEN (NEW.CREATION = 'null')
 BEGIN
     UPDATE T_TEACHER SET 
-        CREATION = (SELECT strftime('%Y%m%d%H%M%S%f','now'))
+        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
     WHERE rowid = NEW.rowid;
 END;
 
