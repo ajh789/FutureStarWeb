@@ -364,7 +364,7 @@ DO_DB_ACTION:
 	private void doDbActionInsert(Connection c, Statement stmt, String schoolName) throws SQLException
 	{
 		String sql = "";
-		stmt.execute(sql);
+		stmt.executeUpdate(sql);
 	}
 
 	private void doDbActionUpdate(Connection c, Statement stmt, String sql) throws SQLException

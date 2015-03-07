@@ -172,23 +172,38 @@ public class ManageClassTablesServlet extends ManageServlet {
 			String qClassTableSchema = "SELECT * FROM sqlite_master WHERE type='table' AND name='T_CLASS';";
 			ResultSet rsTable = stmt.executeQuery(qClassTableSchema);
 			if (rsTable.next()) { // "if" statement due to only one SQL table T_CLASS.
-				String tableSchema = rsTable.getString("sql"); // Get schema of table T_CLASS.
-				String tableSchema_ = tableSchema.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
-				getServletContext().log(tableSchema_);
-				stmt.execute(tableSchema_); // Create new SQL table.
+				String tableSchema0 = rsTable.getString("sql") + ';'; // Get schema of table T_CLASS.
+				String tableSchema1 = tableSchema0.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
+				getServletContext().log(tableSchema1);
+				stmt.executeUpdate(tableSchema1); // Create new SQL table.
 			} else {
 				// TODO
 			}
 			rsTable.close();
 
+			String qClassViewSchema = "SELECT * FROM sqlite_master WHERE type='view' AND name='V_CLASS';";
+			ResultSet rsView = stmt.executeQuery(qClassViewSchema);
+			if (rsView.next()) { // "if" statement due to only one SQL view V_CLASS.
+				String viewSchema0 = rsView.getString("sql") + ';';
+				String viewSchema1 = viewSchema0.replaceAll("V_CLASS", "V_CLASS_FROM_SCHOOL_" + schoolid);
+				String viewSchema2 = viewSchema1.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
+				getServletContext().log(viewSchema2);
+				stmt.executeUpdate(viewSchema2);
+			}
+			rsView.close();
+			conn.commit();
 			String qClassTableTriggersSchema = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name='T_CLASS';";
 			ResultSet rsTrigger = stmt.executeQuery(qClassTableTriggersSchema);
+			String triggerSchema = "";
 			while (rsTrigger.next()) { // "while" statement due to possibly more than 1 triggers.
-				String triggerSchema = rsTrigger.getString("sql"); // Get schemas of triggers corresponding to T_CLASS.
-				String triggerSchema_ = triggerSchema.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
-				getServletContext().log(triggerSchema_);
-				stmt.execute(triggerSchema_); // Create new trigger.
+				String triggerSchema0 = rsTrigger.getString("sql") + ';'; // Get schemas of triggers corresponding to T_CLASS.
+				String triggerSchema1 = triggerSchema0.replaceAll("T_CLASS", "T_CLASS_FROM_SCHOOL_" + schoolid);
+//				getServletContext().log(triggerSchema1);
+				triggerSchema += "\n" + triggerSchema1;
+//				stmt.executeUpdate(triggerSchema1); // Create new trigger.
 			}
+			getServletContext().log(triggerSchema);
+			stmt.executeUpdate(triggerSchema);
 			rsTrigger.close();
 
 			conn.commit();
