@@ -191,7 +191,7 @@ public class ManageClassTablesServlet extends ManageServlet {
 				stmt.executeUpdate(viewSchema2);
 			}
 			rsView.close();
-			conn.commit();
+
 			String qClassTableTriggersSchema = "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name='T_CLASS';";
 			ResultSet rsTrigger = stmt.executeQuery(qClassTableTriggersSchema);
 			String triggerSchema = "";

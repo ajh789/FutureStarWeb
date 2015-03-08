@@ -368,7 +368,7 @@ function handleClassTableSelectResponse(data, status) {
 
 // Generate UI(a list of classes) for a successful query.
 function generateClassListHtml(ret) {
-//	var schoolid = ret.retobjx.schoolid;
+	var schoolid = ret.retobjx.schoolid;
 	var classes = ret.retobjx.classes; // Array of classes.
 	var dialoghtml = "";
 	dialoghtml += "<div id='dialog_class_list' title='班级列表'>";
@@ -385,7 +385,7 @@ function generateClassListHtml(ret) {
 				{
 					text : "创建新班级",
 					click : function() {
-						onButtonCreateClass(ret.retobjx.schoolid);
+						onButtonCreateClass(schoolid);
 					}
 				},
 				{
@@ -403,6 +403,32 @@ function generateClassListHtml(ret) {
 
 function onButtonCreateClass(schoolid) {
 	$("#dialog_class_list").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+	var dialoghtml = "";
+	dialoghtml += "<div id='dialog_class_creation' title='班级创建'>";
+	dialoghtml += "  班级名称：<input type='text' id='class_create_name' name='name' value=''><br>";
+	dialoghtml += "  入学年月：<input type='text' id='class_create_enrollment' name='enrollment' value=''>";
+	dialoghtml += "</div>";
+	$(dialoghtml).appendTo('body');
+	$("#class_create_enrollment").datepicker();
+	$("#dialog_class_creation").dialog({
+		modal : true,
+		minWidth : 400,
+		minHeight : 200,
+		buttons : [
+			{
+				text : "创建",
+				click : function() {
+					onButtonCommitCreateClass(schoolid);
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
 }
 
 function onButtonCommitCreateClass(schoolid) {

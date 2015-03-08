@@ -1,0 +1,66 @@
+ManageClassTablesServlet.java:
+
+### Successful query ####
+select : {
+	retcode : RETCODE_OK,
+	retinfo : RETINFO,
+	actionx : "select",
+	prvlege : PRVLEGE,
+	retobjx : {
+		schoolid : SCHOOLID,
+		classes : [
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
+			},
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
+			}
+		]
+	}
+}
+
+### School ID is null ###
+select : {
+	retcode : RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID,
+	retinfo : RETINFO,
+	actionx : "select",
+	prvlege : PRVLEGE,
+	retobjx : {
+	}
+}
+
+### Class SQL table doesn't exist ###
+select : {
+	retcode : RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE,
+	retinfo : RETINFO,
+	actionx : "select",
+	prvlege : PRVLEGE,
+	retobjx : {
+		schoolid : SCHOOLID
+	}
+}
+
+### Successful creation ###
+create : {
+	retcode : RETCODE_OK,
+	retinfo : RETINFO,
+	actionx : "create",
+	prvlege : PRVLEGE,
+	retobjx : {
+		schoolid : SCHOOLID
+	}
+}
+
+### School ID is null ###
+create : {
+	retcode : RETCODE_KO_MANAGE_CLASS_TABLES_NULL_SCHOOLID,
+	retinfo : RETINFO,
+	actionx : "create",
+	prvlege : PRVLEGE,
+	retobjx : {
+	}
+}
