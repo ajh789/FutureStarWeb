@@ -1,0 +1,28 @@
+ManageClassServlet.java:
+
+### Successful query ####
+select : {
+	actionx : "select",
+	retcode : RETCODE_OK,
+	retinfo : RETINFO,
+	curuser : {
+		name : NAME,
+		role : ROLE,
+		privilege : PRIVILEGE
+	},
+	retobjx : {
+		schoolid : SCHOOLID,
+		classes : [
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
+			},
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
+			}
+		]
+	}
+}

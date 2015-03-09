@@ -7,19 +7,7 @@ select : {
 	actionx : "select",
 	prvlege : PRVLEGE,
 	retobjx : {
-		schoolid : SCHOOLID,
-		classes : [
-			{
-				ID : "xxx",
-				NAME : "xxx",
-				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
-			},
-			{
-				ID : "xxx",
-				NAME : "xxx",
-				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
-			}
-		]
+		schoolid : SCHOOLID
 	}
 }
 

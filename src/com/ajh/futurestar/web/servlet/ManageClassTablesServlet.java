@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.ajh.futurestar.web.common.Attribute;
@@ -142,17 +141,18 @@ public class ManageClassTablesServlet extends ManageServlet {
 			ResultSet rs = stmt.executeQuery(qClassTableExistence);
 
 			if (rs.next()) { // Table exists.
-				String qClassList = "select hex(ID) as ID, NAME, CREATION FROM T_CLASS_FROM_SCHOOL_" + schoolid;
-				ResultSet rsClassList = stmt.executeQuery(qClassList);
-				JSONArray classArray = new JSONArray();
-				while (rsClassList.next()) {
-					JSONObject obj = new JSONObject(); // Item in array.
-					obj.put("ID", rs.getString("ID"));
-					obj.put("NAME", rs.getString("NAME"));
-					obj.put("CREATION", rs.getString("CREATION"));
-					classArray.put(obj);
-				}
-				retobjx.put("classes", classArray);
+				// Consider moving class query to ManageClassServlet.
+//				String qClassList = "select hex(ID) as ID, NAME, CREATION FROM T_CLASS_FROM_SCHOOL_" + schoolid;
+//				ResultSet rsClassList = stmt.executeQuery(qClassList);
+//				JSONArray classArray = new JSONArray();
+//				while (rsClassList.next()) {
+//					JSONObject obj = new JSONObject(); // Item in array.
+//					obj.put("ID", rs.getString("ID"));
+//					obj.put("NAME", rs.getString("NAME"));
+//					obj.put("CREATION", rs.getString("CREATION"));
+//					classArray.put(obj);
+//				}
+//				retobjx.put("classes", classArray);
 			} else { // Table doesn't exist.
 				ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE;
 				ret.retinfo += "表格不存在！";
