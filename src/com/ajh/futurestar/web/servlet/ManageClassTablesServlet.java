@@ -17,6 +17,7 @@ import com.ajh.futurestar.web.common.Attribute;
 import com.ajh.futurestar.web.common.DbConn;
 import com.ajh.futurestar.web.common.Request;
 import com.ajh.futurestar.web.common.RetCode;
+import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.Return;
 
 /**
@@ -55,8 +56,8 @@ public class ManageClassTablesServlet extends ManageServlet {
 		String username = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
 		if (username == null || username.equals(""))
 		{
-			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
-			ret.retinfo += "尚未登录或会话超时";
+			ret.retcode  = RetCode.RETCODE_KO_NOT_LOGIN_OR_SESSION_TIMEOUT;
+			ret.retinfo += RetInfo.RETINFO_NOT_LOGIN_OR_SESSION_TIMEOUT;
 			return;
 		} else {
 			Integer privilege = (Integer)session.getAttribute(Attribute.ATTR_USER_PRIVILEGE);

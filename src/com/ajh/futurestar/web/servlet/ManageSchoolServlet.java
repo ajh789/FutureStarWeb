@@ -84,7 +84,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		String username = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
 		if (username == null || username.equals(""))
 		{
-			ret.retcode  = RetCode.RETCODE_KO_NOTLOGIN_OR_TIMEOUT;
+			ret.retcode  = RetCode.RETCODE_KO_NOT_LOGIN_OR_SESSION_TIMEOUT;
 			ret.retinfo += "尚未登录或会话超时";
 			return ret;
 		} else {

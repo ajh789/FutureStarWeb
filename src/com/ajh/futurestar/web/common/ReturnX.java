@@ -5,5 +5,5 @@ public class ReturnX {
 	public RetCode retcode = RetCode.RETCODE_OK;
 	public String  retinfo = new String();
 	public Object  retobjx = null; // JSON object
-	public Object  ucruser = null; // JSON object
+	public Object  curuser = null; // JSON object
 }
