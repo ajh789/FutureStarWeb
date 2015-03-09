@@ -22,6 +22,7 @@ import com.ajh.futurestar.web.common.DbConn;
 import com.ajh.futurestar.web.common.DbVendor;
 import com.ajh.futurestar.web.common.Request;
 import com.ajh.futurestar.web.common.RetCode;
+import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.Return;
 
 /**
@@ -89,7 +90,7 @@ public class ManageTeacherServlet extends HttpServlet {
 		if (username == null || username.equals(""))
 		{
 			ret.retcode  = RetCode.RETCODE_KO_NOT_LOGIN_OR_SESSION_TIMEOUT;
-			ret.retinfo += "尚未登录或会话超时";
+			ret.retinfo += RetInfo.RETINFO_NOT_LOGIN_OR_SESSION_TIMEOUT;
 			return;
 		} else {
 			Integer privilege = (Integer)session.getAttribute(Attribute.ATTR_USER_PRIVILEGE);
@@ -125,7 +126,7 @@ public class ManageTeacherServlet extends HttpServlet {
 		String action = req.getParameter(Request.PARAM_ACTION);
 		if (action == null || action.equals("")) {
 			ret.retcode = RetCode.RETCODE_KO_MANAGE_TEACHER_NULL_ACTION;
-			ret.retinfo = "action为空";
+			ret.retinfo = RetInfo.RETINFO_REQ_PARAM_NULL_ACTION;
 		} else {
 			boolean actionDone = false;
 //DO_DB_ACTION:

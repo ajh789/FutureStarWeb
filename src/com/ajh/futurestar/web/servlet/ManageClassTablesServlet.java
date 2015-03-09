@@ -93,7 +93,7 @@ public class ManageClassTablesServlet extends ManageServlet {
 		String action = req.getParameter(Request.PARAM_ACTION);
 		if (action == null || action.equals("")) {
 			ret.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NULL_ACTION;
-			ret.retinfo += "action为空";
+			ret.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_ACTION;
 		} else {
 			ret.actionx += action;
 			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // Check if a SQL table of classes exists for specified school.
