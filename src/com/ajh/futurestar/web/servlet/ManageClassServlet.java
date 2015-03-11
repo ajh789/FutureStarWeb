@@ -23,6 +23,8 @@ import com.ajh.futurestar.web.common.RetCode;
 import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.ReturnX;
 import com.ajh.futurestar.web.utils.Util;
+import com.ajh.futurestar.web.utils.Util.DbConnectionWrapper;
+import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
 
 /**
  * @author Andy Jiang H
@@ -56,12 +58,26 @@ public class ManageClassServlet extends ManageExServlet {
 		}
 
 		Connection conn = null;
-		if (!Util.getDbConnection(conn, retx)) {
+//		if (!Util.getDbConnection(conn, retx)) {
+//			return;
+//		}
+
+		DbConnectionWrapper wrapperConn = Util.getDbConnection(retx);
+		if (wrapperConn.ok) {
+			conn = wrapperConn.conn;
+		} else {
 			return;
 		}
 
 		Statement stmt = null;
-		if (!Util.getDbStatement(conn, stmt, retx)) {
+//		if (!Util.getDbStatement(conn, stmt, retx)) {
+//			return;
+//		}
+
+		DbStatementWrapper wrapperStmt = Util.getDbStatement(conn, retx);
+		if (wrapperStmt.ok) {
+			stmt = wrapperStmt.stmt;
+		} else {
 			return;
 		}
 
@@ -92,6 +108,7 @@ public class ManageClassServlet extends ManageExServlet {
 				// TODO
 			}
 		}
+
 		Util.closeDbConnectionAndStatement(conn, stmt); // No need to update return code when exception occurs.
 	}
 
@@ -118,6 +135,16 @@ public class ManageClassServlet extends ManageExServlet {
 			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_ENROLMENT;
 			return;
 		}
+
+		// TODO - check enrollment format.
+
+		String strInsert = "insert into T_CLASS_FROM_SCHOOL_" + strSchoolId;
+		strInsert += "(NAME, ENROLMENT) values(";
+		strInsert += "'" + strName + "', ";
+		strInsert += "'" + strEnrolment + "'";
+		strInsert += ");";
+
+		stmt.executeUpdate(strInsert);
 	}
 
 	private void doActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
@@ -130,6 +157,7 @@ public class ManageClassServlet extends ManageExServlet {
 			JSONObject retobjx = new JSONObject();
 			retobjx.put("schoolid", strSchoolId);
 
+			// Query from view instead of table.
 			String strQuery = "select * FROM V_CLASS_FROM_SCHOOL_" + strSchoolId;
 			ResultSet rsClassList = stmt.executeQuery(strQuery);
 			JSONArray arrayClass = new JSONArray();

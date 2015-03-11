@@ -15,6 +15,28 @@ import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.ReturnX;
 
 public class Util {
+	// Static nested class DbConnectionWrapper
+	public static class DbConnectionWrapper {
+		public Connection conn = null;
+		public boolean ok = false;
+
+		public DbConnectionWrapper(Connection conn, boolean ok) {
+			this.conn = conn;
+			this.ok = ok;
+		}
+	}
+
+	// Static nested class DbStatementWrapper
+	public static class DbStatementWrapper {
+		public Statement stmt = null;
+		public boolean ok = false;
+
+		public DbStatementWrapper(Statement stmt, boolean ok) {
+			this.stmt = stmt;
+			this.ok = ok;
+		}
+	}
+
 	/**
 	 * 
 	 * @param session IN PARAM
@@ -44,7 +66,7 @@ public class Util {
 
 	/**
 	 * 
-	 * @param conn OUT PARAM
+	 * @param conn OUT PARAM -- Doesn't work, because OUT parameter can't be null.
 	 * @param retx OUT PARAM
 	 * @return true/false
 	 */
@@ -60,11 +82,25 @@ public class Util {
 
 		return true;
 	}
+	public static DbConnectionWrapper getDbConnection(ReturnX retx) {
+		Connection conn = null;
+
+		try {
+			conn = DbConn.getDbConnection();
+		} catch (ClassNotFoundException | SQLException  e) {
+			e.printStackTrace();
+			retx.retcode  = RetCode.RETCODE_KO_DB_OPEN_CONN_FAILED;
+			retx.retinfo += e.getMessage();
+			return new DbConnectionWrapper(conn, false);
+		}
+
+		return new DbConnectionWrapper(conn, true);
+	}
 
 	/**
 	 * 
 	 * @param conn IN
-	 * @param stmt OUT
+	 * @param stmt OUT -- Doesn't work, because OUT parameter can't be null.
 	 * @param retx OUT
 	 * @return true/false
 	 */
@@ -85,6 +121,26 @@ public class Util {
 
 		return true;
 	}
+	public static DbStatementWrapper getDbStatement(final Connection conn, ReturnX retx) {
+		Statement stmt = null;
+
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				conn.close(); // Close connection.
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			retx.retcode  = RetCode.RETCODE_KO_DB_CREATE_STMT_FAILED;
+			retx.retinfo += e.getMessage();
+			return new DbStatementWrapper(stmt, false);
+		}
+
+		return new DbStatementWrapper(stmt, true);
+	}
+
 	/**
 	 * 
 	 * @param conn IN PARAM

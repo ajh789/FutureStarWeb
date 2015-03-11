@@ -21,6 +21,10 @@ var g_manageclasstables_url = "/futurestar/manageclasstables.do";
 var g_manageclasstables_select_url = g_manageclasstables_url + "?action=select";
 var g_manageclasstables_create_url = g_manageclasstables_url + "?action=create";
 
+var g_manageclass_url = "/futurestar/manageclass.do";
+var g_manageclass_select_url = "/futurestar/manageclass.do" + "?action=select";
+var g_manageclass_create_url = "/futurestar/manageclass.do" + "?action=create";
+
 function reqData()
 {
 	var url = g_manageschool_select_url;
@@ -357,11 +361,34 @@ function handleClassTableSelectResponse(data, status) {
 		}
 
 		if (ret.retcode == RetCode.RETCODE_OK) {
-			generateClassListHtml(ret);
+//			generateClassListHtml(ret);
+			retrieveClassList(ret.retobjx.schoolid);
 		} else if (ret.retcode == RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE) {
 			generateClassTableCreationHtml(ret);
 		} else {
 			window.alert("handleClassTableSelectResponse(): unknown retcode !");
+		}
+	}
+}
+
+function retrieveClassList(schoolid) {
+	var url = g_manageclass_select_url + "&schoolid=" + schoolid;
+	$.get(url, handleClassSelectResponse);
+}
+
+function handleClassSelectResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+
+		if (ret.retcode == RetCode.RETCODE_OK) {
+			generateClassListHtml(ret);
+		} else {
+			window.alert("Error: " + ret.retinfo);
 		}
 	}
 }
@@ -409,7 +436,10 @@ function onButtonCreateClass(schoolid) {
 	dialoghtml += "  入学年月：<input type='text' id='class_create_enrollment' name='enrollment' value=''>";
 	dialoghtml += "</div>";
 	$(dialoghtml).appendTo('body');
-	$("#class_create_enrollment").datepicker();
+	$("#class_create_enrollment").datepicker({
+		changeMonth : true,
+		changeYear  : true
+	});
 	$("#dialog_class_creation").dialog({
 		modal : true,
 		minWidth : 400,
