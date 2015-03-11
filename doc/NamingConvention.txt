@@ -1,0 +1,13 @@
+Naming Conventions:
+
+Variables : {
+	Prefix : {
+		n => integer,
+		str => string,
+		rs => SQL ResultSet,
+		stmt => SQL Statement,
+		conn => SQL Connection,
+		list => all kinds of list,
+		array => all kinds of array,
+	}
+}

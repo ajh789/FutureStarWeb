@@ -15,7 +15,13 @@ import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.ReturnX;
 
 public class Util {
-	public static boolean checkAndSetUserLoginInfo(HttpSession session, ReturnX retx) {
+	/**
+	 * 
+	 * @param session IN PARAM
+	 * @param retx OUT PARAM
+	 * @return true/false
+	 */
+	public static boolean checkAndSetUserLoginInfo(final HttpSession session, ReturnX retx) {
 		String strUserName = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's login name.
 
 		if (strUserName == null || strUserName.equals(""))
@@ -38,9 +44,9 @@ public class Util {
 
 	/**
 	 * 
-	 * @param conn OUT
-	 * @param retx OUT
-	 * @return
+	 * @param conn OUT PARAM
+	 * @param retx OUT PARAM
+	 * @return true/false
 	 */
 	public static boolean getDbConnection(Connection conn, ReturnX retx) {
 		try {
@@ -60,7 +66,7 @@ public class Util {
 	 * @param conn IN
 	 * @param stmt OUT
 	 * @param retx OUT
-	 * @return
+	 * @return true/false
 	 */
 	public static boolean getDbStatement(final Connection conn, Statement stmt, ReturnX retx) {
 		try {

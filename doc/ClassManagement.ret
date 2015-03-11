@@ -16,11 +16,13 @@ select : {
 			{
 				ID : "xxx",
 				NAME : "xxx",
+				ENROLMENT : "yyyy/mm/dd",
 				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
 			},
 			{
 				ID : "xxx",
 				NAME : "xxx",
+				ENROLMENT : "yyyy/mm/dd",
 				CREATION : "%Y/%m/%d/%H:%M:%S:%f"
 			}
 		]

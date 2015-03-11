@@ -34,12 +34,25 @@ public class Request {
 	public static final String PARAM_ACTION_SELECT_FROMID = "fromid";
 	public static final String PARAM_ACTION_SELECT_TOID = "toid";
 
+	//
+	// Parameter names for school management.
+	//
 	public static final String PARAM_SCHOOL_ID = "id";
 	public static final String PARAM_SCHOOL_NAME = "name";
 	public static final String PARAM_SCHOOL_INTRO = "intro";
 
+	//
+	// Parameter names for teacher management.
+	//
 	public static final String PARAM_TEACHER_NAME = "name";
 	public static final String PARAM_TEACHER_MOBILENUM = "mobilenum";
 	public static final String PARAM_TEACHER_SCHOOLNAME = "schoolname";
+
+	//
+	// Parameter names for class management class SQL tables management.
+	//
+	public static final String PARAM_CLASS_SCHOOLID = "schoolid";
+	public static final String PARAM_CLASS_NAME = "name";
+	public static final String PARAM_CLASS_ENROLMENT = "enrolment";
 
 }
