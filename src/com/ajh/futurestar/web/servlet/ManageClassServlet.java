@@ -145,6 +145,8 @@ public class ManageClassServlet extends ManageExServlet {
 		strInsert += ");";
 
 		stmt.executeUpdate(strInsert);
+
+		conn.commit();
 	}
 
 	private void doActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)

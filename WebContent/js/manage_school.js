@@ -404,41 +404,61 @@ function generateClassListHtml(ret) {
 	$(dialoghtml).appendTo('body');
 	if (classes.length == 0) {
 		$("#dialog_class_list").html("班级列表为空！");
-		$("#dialog_class_list").dialog({
-			modal : true,
-			minWidth : 400,
-			minHeight : 200,
-			buttons : [
-				{
-					text : "创建新班级",
-					click : function() {
-						onButtonCreateClass(schoolid);
-					}
-				},
-				{
-					text : "取消",
-					click : function() {
-						$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
-					}
-				}
-			]
-		});
 	} else {
-		
+		var table = "";
+		table += "<table border='1'>";
+		table += "  <tr><th>ID</th><th>Name</th><th>Enrolment</th><th>Creation</th></tr>";
+		for (var i=0; i<classes.length; i++) {
+			table += "<tr>";
+			table += "<td>" + classes[i].ID + "</td>";
+			table += "<td>" + classes[i].NAME + "</td>";
+			table += "<td>" + classes[i].ENROLMENT + "</td>";
+			table += "<td>" + classes[i].CREATION + "</td>";
+			table += "</tr>";
+		}
+		table += "</table>";
+		$("#dialog_class_list").html(table);
 	}
+
+	$("#dialog_class_list").dialog({
+		modal : true,
+		minWidth : 400,
+		minHeight : 200,
+		buttons : [
+			{
+				text : "创建新班级",
+				click : function() {
+					onButtonCreateClass(schoolid);
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
 }
 
 function onButtonCreateClass(schoolid) {
 	$("#dialog_class_list").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
 	var dialoghtml = "";
 	dialoghtml += "<div id='dialog_class_creation' title='班级创建'>";
-	dialoghtml += "  班级名称：<input type='text' id='class_create_name' name='name' value=''><br>";
-	dialoghtml += "  入学年月：<input type='text' id='class_create_enrollment' name='enrollment' value=''>";
+	dialoghtml += "  班级名称：<input type='text' id='class_create_text_name' value=''>";
+	dialoghtml += "            <span id='class_create_label_name'></span><br>";
+	dialoghtml += "  入学年月：<input type='text' id='class_create_text_enrolment' value=''>";
+	dialoghtml += "            <span id='class_create_label_enrolment'></span>";
 	dialoghtml += "</div>";
 	$(dialoghtml).appendTo('body');
-	$("#class_create_enrollment").datepicker({
-		changeMonth : true,
-		changeYear  : true
+	$("#class_create_text_enrolment").datepicker({
+		changeYear         : true,
+		changeMonth        : true,
+		showMonthAfterYear : true,
+		dateFormat         : "yy/mm/dd",
+//		dayNames           : ["日", "一", "二", "三", "四", "五", "六"],
+		dayNamesMin        : ["日", "一", "二", "三", "四", "五", "六"],
+		monthNamesShort    : [ "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" ]
 	});
 	$("#dialog_class_creation").dialog({
 		modal : true,
@@ -462,7 +482,44 @@ function onButtonCreateClass(schoolid) {
 }
 
 function onButtonCommitCreateClass(schoolid) {
-	
+	var name = $("#class_create_text_name").prop("value");
+	var enrolment = $("#class_create_text_enrolment").prop("value");
+	var ok = true;
+
+	if (name === "") {
+		ok = false;
+		$("#class_create_label_name").html("<font color='red'>不能为空！</font>");
+	}
+
+	if (enrolment === "") {
+		ok = false;
+		$("#class_create_label_enrolment").html("<font color='red'>不能为空！</font>");
+	}
+
+	if (ok == false) {
+		return;
+	}
+
+	var url = g_manageclass_create_url + "&schoolid=" + schoolid + "&name=" + name + "&enrolment=" + enrolment;
+	$.get(url, handleClassCreateResponse);
+}
+
+function handleClassCreateResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+
+		if (ret.retcode == RetCode.RETCODE_OK) {
+			window.alert("创建成功！");
+			$("#dialog_class_creation").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+		} else {
+			window.alert("Error: " + ret.retinfo);
+		}
+	}
 }
 
 // Generate UI(creation of new class table) when class table doesn't exist.
