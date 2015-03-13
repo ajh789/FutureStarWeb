@@ -57,6 +57,11 @@ LASTUPDATE  CHAR(26)                  NOT NULL DEFAULT 'null', -- Time stamp of 
 ISLOCKED    INTEGER                   NOT NULL DEFAULT 0 -- 0 - unlocked, 1 - locked
 );
 
+CREATE VIEW V_SCHOOL AS
+SELECT
+hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED
+FROM T_SCHOOL;
+
 -- Use X'' notation to convert hex string to blob data.
 -- Use HEX() method to convert blob data to hex string.
 CREATE TRIGGER T_SCHOOL_AutoGenerateGUID
