@@ -1,0 +1,49 @@
+ManageSchoolServlet.java:
+
+### Successful query ####
+select : {
+	actionx : "select",
+	retcode : RETCODE_OK,
+	retinfo : RETINFO,
+	curuser : {
+		name : NAME,
+		role : ROLE,
+		privilege : PRIVILEGE
+	},
+	retobjx : {
+		schools : [
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				LOGO : "xxx",
+				INTRO : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f",
+				LASTUPDATE : "%Y/%m/%d/%H:%M:%S:%f",
+				ISLOCKED : 0|1
+			},
+			{
+				ID : "xxx",
+				NAME : "xxx",
+				LOGO : "xxx",
+				INTRO : "xxx",
+				CREATION : "%Y/%m/%d/%H:%M:%S:%f",
+				LASTUPDATE : "%Y/%m/%d/%H:%M:%S:%f",
+				ISLOCKED : 0|1
+			}
+		]
+	}
+}
+
+### Successful update ####
+update : {
+	actionx : "update",
+	retcode : RETCODE_OK,
+	retinfo : RETINFO,
+	curuser : {
+		name : NAME,
+		role : ROLE,
+		privilege : PRIVILEGE
+	},
+	retobjx : {
+	}
+}

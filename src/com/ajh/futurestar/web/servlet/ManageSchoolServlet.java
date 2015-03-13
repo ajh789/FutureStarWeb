@@ -18,19 +18,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.ajh.futurestar.web.common.*;
+import com.ajh.futurestar.web.utils.Util;
+import com.ajh.futurestar.web.utils.Util.DbConnectionWrapper;
+import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
 
 /**
  * Servlet implementation class ManageSchoolServlet
  */
 @WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/manageschool.do" })
 public class ManageSchoolServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final String HTML_TITLE = "学校管理";
+	private static final long serialVersionUID = 5826567279826573784L;
 
 	public ManageSchoolServlet()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse rsp)
@@ -54,211 +55,80 @@ public class ManageSchoolServlet extends HttpServlet {
 	{
 		getServletContext().log("Enter method process().");
 
-		Return ret = new Return();
-
+		ReturnX ret = new ReturnX();
 //		req.setCharacterEncoding("UTF-8"); // Doesn't work. Need to set URIEncoding="UTF-8" for Connector in server.xml
-
-		String reqfrom = req.getParameter(Request.PARAM_REQFROM);
-		if (reqfrom == null) {
-			reqfrom = Request.VALUE_REQFROM_NULL;
-			ret.retcode = RetCode.RETCODE_KO_NULL_REQ_SOURCE;
-		} else if (!reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_PC) &&
-				   !reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_WAP)) {
-			reqfrom = Request.VALUE_REQFROM_UNKNOWN;
-			ret.retcode = RetCode.RETCODE_KO_UNKNOWN_REQ_SOURCE;
-		} else {
-			doBusiness(req, rsp, ret);
-		}
-
-		generatePage(rsp, reqfrom, ret);
+		doBusiness(req, rsp, ret);
+		generatePage(rsp, ret);
 
 		getServletContext().log("Leave method process().");
 	}
 
 	// Catch and handle all exceptions in this method and generate return code.
-	private Return doBusiness(HttpServletRequest req, HttpServletResponse rsp, Return ret)
+	private void doBusiness(HttpServletRequest req, HttpServletResponse rsp, ReturnX retx)
 	{
 		getServletContext().log("Enter method doBusiness().");
 
 		HttpSession session = req.getSession();
-		String username = (String)session.getAttribute(Attribute.ATTR_USER_NAME); // User's name of login.
-		if (username == null || username.equals(""))
-		{
-			ret.retcode  = RetCode.RETCODE_KO_NOT_LOGIN_OR_SESSION_TIMEOUT;
-			ret.retinfo += RetInfo.RETINFO_NOT_LOGIN_OR_SESSION_TIMEOUT;
-			return ret;
-		} else {
-			Integer privilege = (Integer)session.getAttribute(Attribute.ATTR_USER_PRIVILEGE);
-			ret.prvlege = privilege.intValue();
+
+		if (!Util.checkAndSetUserLoginInfo(session, retx)) {
+			return;
 		}
 
 		Connection conn = null;
-		try {
-			conn = DbConn.getDbConnection();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-			ret.retcode  = RetCode.RETCODE_KO_DB_OPEN_CONN_FAILED;
-			ret.retinfo += e.getMessage();
-			return ret;
+		DbConnectionWrapper wrapperConn = Util.getDbConnection(retx);
+		if (wrapperConn.ok) {
+			conn = wrapperConn.conn;
+		} else {
+			return;
 		}
 
 		Statement stmt = null;
-		try {
-			stmt = conn.createStatement();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				conn.close(); // Close connection.
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			ret.retcode  = RetCode.RETCODE_KO_DB_CREATE_STMT_FAILED;
-			ret.retinfo += e.getMessage();
-			return ret;
+		DbStatementWrapper wrapperStmt = Util.getDbStatement(conn, retx);
+		if (wrapperStmt.ok) {
+			stmt = wrapperStmt.stmt;
+		} else {
+			return;
 		}
 
 		// DO NOT return when performing action.
 		String action = req.getParameter(Request.PARAM_ACTION);
 		if (action == null || action.equals("")) {
-			ret.retcode = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_ACTION;
-			ret.retinfo = RetInfo.RETINFO_REQ_PARAM_NULL_ACTION;
+			retx.retcode = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_ACTION;
+			retx.retinfo = RetInfo.RETINFO_REQ_PARAM_NULL_ACTION;
 		} else {
-			boolean actionDone = false;
-DO_DB_ACTION:
-			if (!actionDone) { // Start DO_DB_ACTION.
-			ret.actionx += action;
+			retx.actionx += action;
 			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // select
-				//
-				// Get parameters.
-				//
-				int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
-				String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
-				if (mode != null) {
-					nMode = Integer.parseInt(mode);
-				}
-
-				String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
-				if (baseid == null) {
-					baseid = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
-				}
-
-				int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
-				String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
-				if (range != null) {
-					nRange = Integer.parseInt(range);
-				}
-
-				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
-
-				int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
-				String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
-				if (goes != null && goes.equalsIgnoreCase("up")) {
-					nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
-				}
-
-				String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
-				if (fromid == null) {
-					fromid = "0";
-				}
-				String toid = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
-				if (toid == null) {
-					toid = "0";
-				}
-
-				//
-				// Construct query SQL string.
-				//
-				String sql = "";
-				switch (nMode) {
-				case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
-					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, schoolname, nGoes);
-					break;
-				case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
-					sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
-					break;
-				default:
-					break;
-				}
-
-				//
-				// Do query.
-				//
 				try {
-					doDbActionSelect(conn, stmt, ret, sql);
+					doDbActionSelect(conn, stmt, req, retx);
 				} catch (SQLException e) {
 					e.printStackTrace();
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
-					ret.retinfo += e.getMessage();
+					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
+					retx.retinfo += e.getMessage();
 				}
 			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_INSERT)) { // insert
-				String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
-				if (schoolName == null || schoolName.equals("")) {
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
-					ret.retinfo += "学校名称为空";
-				} else {
-					try {
-						doDbActionInsert(conn, stmt, schoolName);
-					} catch (SQLException e) {
-						e.printStackTrace();
-						ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_INSERT_FAILED;
-						ret.retinfo += e.getMessage();
-					}
-				}
-			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_UPDATE)) { // update
-				//
-				// Get parameters.
-				//
-				String id = req.getParameter(Request.PARAM_SCHOOL_ID);
-				if (id == null || id.equals("")) {
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-					ret.retinfo += "学校ID为空";
-					actionDone = true;
-					break DO_DB_ACTION;
-				}
-				String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
-				if (schoolname == null || schoolname.equals("")) {
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-					ret.retinfo += "学校名称为空";
-					actionDone = true;
-					break DO_DB_ACTION;
-				}
-				String intro = req.getParameter(Request.PARAM_SCHOOL_INTRO);
-				if (intro == null || intro.equals("")) {
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-					ret.retinfo += "学校介绍为空";
-					actionDone = true;
-					break DO_DB_ACTION;
-				}
-				//
-				// Construct update SQL string.
-				//
-				String sql = composeSqlStrUpdate(DbVendor.DB_SQLITE, id, schoolname, intro);
-				//
-				// Do update.
-				//
 				try {
-					doDbActionUpdate(conn, stmt, sql);
+					doDbActionInsert(conn, stmt, req, retx);
 				} catch (SQLException e) {
 					e.printStackTrace();
-					ret.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-					ret.retinfo += e.getMessage();
+					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_INSERT_FAILED;
+					retx.retinfo += e.getMessage();
+				}
+			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_UPDATE)) { // update
+				try {
+					doDbActionUpdate(conn, stmt, req, retx);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+					retx.retinfo += e.getMessage();
 				}
 			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_DELETE)) { // delete
 				// TODO
 			} else {
-				ret.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
+				retx.retcode = RetCode.RETCODE_KO_UNKNOWN_DB_ACTION;
 			}
-		} // End DO_DB_ACTION
 		} // End else.
 
-		try {
-			stmt.close();
-			conn.close();
-		} catch (SQLException e) { // No need to update return code.
-			e.printStackTrace();
-		}
-
-		return ret;
+		Util.closeDbConnectionAndStatement(conn, stmt); // No need to update return code when exception occurs.
 	}
 
 	private String composeSqlStrSelectAllFields()
@@ -307,14 +177,65 @@ DO_DB_ACTION:
 		return sql;
 	}
 
-	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String query)
-			throws SQLException
-	{
-		getServletContext().log("Enter method doDbActionSelect(4 PARAMS).");
-		getServletContext().log(query);
+	private void doDbActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+			throws SQLException {
+		//
+		// Get parameters.
+		//
+		int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
+		String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
+		if (mode != null) {
+			nMode = Integer.parseInt(mode);
+		}
 
-		ResultSet rs = stmt.executeQuery(query);
-		JSONArray array = new JSONArray();
+		String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+		if (baseid == null) {
+			baseid = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
+		}
+
+		int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
+		String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
+		if (range != null) {
+			nRange = Integer.parseInt(range);
+		}
+
+		String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
+
+		int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
+		String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
+		if (goes != null && goes.equalsIgnoreCase("up")) {
+			nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
+		}
+
+		String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
+		if (fromid == null) {
+			fromid = "0";
+		}
+		String toid = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
+		if (toid == null) {
+			toid = "0";
+		}
+
+		//
+		// Construct query SQL string.
+		//
+		String sql = "";
+		switch (nMode) {
+		case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
+			sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, schoolname, nGoes);
+			break;
+		case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
+			sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
+			break;
+		default:
+			break;
+		}
+
+		//
+		// Do query.
+		//
+		ResultSet rs = stmt.executeQuery(sql);
+		JSONArray arraySchool = new JSONArray();
 		while (rs.next()) {
 			JSONObject obj = new JSONObject(); // Item in array.
 			obj.put("ID", rs.getString("ID"));
@@ -324,104 +245,93 @@ DO_DB_ACTION:
 			obj.put("CREATION", rs.getString("CREATION"));
 			obj.put("LASTUPDATE", rs.getString("LASTUPDATE"));
 			obj.put("ISLOCKED", rs.getBoolean("ISLOCKED"));
-			array.put(obj);
+			arraySchool.put(obj);
 		}
-		ret.retobjx = array;
 		rs.close();
 
-		getServletContext().log("Leave method doDbActionSelect(4 PARAMS).");
+		JSONObject retobjx = new JSONObject();
+		retobjx.put("schools", arraySchool);
+		retx.retobjx = retobjx;
 	}
 
-//	private void doDbActionSelect(Connection c, Statement stmt, Return ret, String baseid, int range, String name, int goes)
-//			throws SQLException
-//	{
-//		getServletContext().log("Enter method doDbActionSelect(5 PARAMS).");
-//
-//		String sql = "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
-//		if (goes == GOES_DOWN) {
-//			sql += " where CREATION > '" + baseid + "'";
-//			if (name != null && name.compareToIgnoreCase("") != 0) {
-//				getServletContext().log("School name is " + name);
-//				sql += " and NAME like '%" + name + "%'";
-//			}
-//			sql += " order by CREATION asc limit " + range + ";";
-//		} else {
-//			sql += " where CREATION in " + 
-//				"( select CREATION from T_SCHOOL where CREATION < '" + baseid + "'";
-//			if (name != null && name.compareToIgnoreCase("") != 0) {
-//				getServletContext().log("School name is " + name);
-//				sql += " and NAME like '%" + name + "%'";
-//			}
-//			sql += " order by CREATION desc limit " + range +");";
-//		}
-//
-//		getServletContext().log(sql);
-//		doDbActionSelect(c, stmt, ret, sql);
-//
-//		getServletContext().log("Leave method doDbActionSelect(5 PARAMS).");
-//	}
-
-	private void doDbActionInsert(Connection c, Statement stmt, String schoolName) throws SQLException
+	private void doDbActionInsert(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+		throws SQLException
 	{
-		String sql = "";
-		stmt.executeUpdate(sql);
+		String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
+		if (schoolName == null || schoolName.equals("")) {
+			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
+			retx.retinfo += "学校名称为空";
+		} else {
+			String sql = "";
+			stmt.executeUpdate(sql);
+			conn.commit();
+		}
 	}
 
-	private void doDbActionUpdate(Connection c, Statement stmt, String sql) throws SQLException
+	private void doDbActionUpdate(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+		throws SQLException
 	{
+		//
+		// Get parameters.
+		//
+		String id = req.getParameter(Request.PARAM_SCHOOL_ID);
+		if (id == null || id.equals("")) {
+			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+			retx.retinfo += "学校ID为空";
+			return;
+		}
+		String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
+		if (schoolname == null || schoolname.equals("")) {
+			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+			retx.retinfo += "学校名称为空";
+			return;
+		}
+		String intro = req.getParameter(Request.PARAM_SCHOOL_INTRO);
+		if (intro == null || intro.equals("")) {
+			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
+			retx.retinfo += "学校介绍为空";
+			return;
+		}
+
+		//
+		// Construct update SQL string.
+		//
+		String sql = composeSqlStrUpdate(DbVendor.DB_SQLITE, id, schoolname, intro);
+
+		//
+		// Do update.
+		//
 		getServletContext().log(sql);
 		stmt.executeUpdate(sql);
-		c.commit(); // Auto commit is set to false in DbConn.getDbConnection().
+		conn.commit(); // Auto commit is set to false in DbConn.getDbConnection().
 	}
 
-	private void generatePage(HttpServletResponse rsp, String reqfrom, Return result)
+	private void generatePage(HttpServletResponse rsp, ReturnX result)
 			throws IOException
 	{
 		getServletContext().log("Enter method generatePage().");
 
-//		rsp.setHeader("Cache-Control", "no-store");
-//		rsp.setHeader("Pragma", "no-cache");
-//		rsp.setDateHeader("Expires", 0);
-		PrintWriter out = null; // Method getWriter() should be called after setContentType().
-		if (reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_PC)) {
-			rsp.setContentType("text/html; charset=UTF-8");
-			out = rsp.getWriter();
-			out.println("<html>");
-			out.println("<head><title>" + HTML_TITLE + "</title></head>");
-			out.println("<body>");
-			generatePageBody4PC(out, result);
-			out.println("</body>");
-			out.println("</html>");
-		} else if (reqfrom.equalsIgnoreCase(Request.VALUE_REQFROM_WAP)) {
-			rsp.setContentType("application/json; charset=UTF-8");
-//			rsp.setContentType("text/plain; charset=UTF-8");
-			out = rsp.getWriter();
-			generatePageBody4WAP(out, result);
-		} else {
-			rsp.setContentType("text/plain; charset=UTF-8");
-			out = rsp.getWriter();
-			out.println("未知请求来源！");
-		}
+//		PrintWriter out = null; // Method getWriter() should be called after setContentType().
+		rsp.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = rsp.getWriter(); // Method getWriter() should be called after setContentType().
+		generatePageBody(out, result);
 
 		getServletContext().log("Leave method generatePage().");
 	}
 
-	private void generatePageBody4PC(PrintWriter out, Return result)
+	private void generatePageBody(PrintWriter out, ReturnX result)
 			throws IOException
 	{
-	}
+		getServletContext().log("Enter method generatePageBody().");
 
-	private void generatePageBody4WAP(PrintWriter out, Return result)
-			throws IOException
-	{
-		getServletContext().log("Enter method generatePageBody4WAP().");
 		JSONObject obj = new JSONObject();
+		obj.put("actionx", result.actionx); // String
 		obj.put("retcode", result.retcode.ordinal()); // Convert enumeration to integer.
-		obj.put("retinfo", result.retinfo);
-		obj.put("retobjx", result.retobjx);
-		obj.put("actionx", result.actionx);
-		obj.put("prvlege", result.prvlege);
+		obj.put("retinfo", result.retinfo); // String
+		obj.put("retobjx", result.retobjx); // JSON object
+		obj.put("curuser", result.curuser); // JSON object
 		out.println(obj.toString());
-		getServletContext().log("Leave method generatePageBody4WAP().");
+
+		getServletContext().log("Leave method generatePageBody().");
 	}
 }
