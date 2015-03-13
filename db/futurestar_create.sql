@@ -101,14 +101,14 @@ CREATE TABLE T_CLASS
 (
 ID        CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
 NAME      VARCHAR(255) UNIQUE      NOT NULL,
-ENROLMENT CHAR(10)                 NOT NULL DEFAULT 'null', -- Date of enrolment, format is yyyy/mm/dd.
+ENROLLMENT CHAR(10)                 NOT NULL DEFAULT 'null', -- Date of enrollment, format is yyyy/mm/dd.
 CREATION  CHAR(26)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
 );
 
 -- Use same naming convention as T_CLASS.
 CREATE VIEW V_CLASS AS
 SELECT
-hex(ID) AS ID, NAME, ENROLMENT, CREATION
+hex(ID) AS ID, NAME, ENROLLMENT, CREATION
 FROM T_CLASS;
 
 CREATE TRIGGER T_CLASS_AutoGenerateGUID

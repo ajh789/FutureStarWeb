@@ -53,6 +53,6 @@ public class Request {
 	//
 	public static final String PARAM_CLASS_SCHOOLID = "schoolid";
 	public static final String PARAM_CLASS_NAME = "name";
-	public static final String PARAM_CLASS_ENROLMENT = "enrolment";
+	public static final String PARAM_CLASS_ENROLLMENT = "enrollment";
 
 }

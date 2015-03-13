@@ -407,12 +407,12 @@ function generateClassListHtml(ret) {
 	} else {
 		var table = "";
 		table += "<table border='1'>";
-		table += "  <tr><th>ID</th><th>Name</th><th>Enrolment</th><th>Creation</th></tr>";
+		table += "  <tr><th>ID</th><th>Name</th><th>Enrollment</th><th>Creation</th></tr>";
 		for (var i=0; i<classes.length; i++) {
 			table += "<tr>";
 			table += "<td>" + classes[i].ID + "</td>";
 			table += "<td>" + classes[i].NAME + "</td>";
-			table += "<td>" + classes[i].ENROLMENT + "</td>";
+			table += "<td>" + classes[i].ENROLLMENT + "</td>";
 			table += "<td>" + classes[i].CREATION + "</td>";
 			table += "</tr>";
 		}
@@ -447,11 +447,11 @@ function onButtonCreateClass(schoolid) {
 	dialoghtml += "<div id='dialog_class_creation' title='班级创建'>";
 	dialoghtml += "  班级名称：<input type='text' id='class_create_text_name' value=''>";
 	dialoghtml += "            <span id='class_create_label_name'></span><br>";
-	dialoghtml += "  入学年月：<input type='text' id='class_create_text_enrolment' value=''>";
-	dialoghtml += "            <span id='class_create_label_enrolment'></span>";
+	dialoghtml += "  入学年月：<input type='text' id='class_create_text_enrollment' value=''>";
+	dialoghtml += "            <span id='class_create_label_enrollment'></span>";
 	dialoghtml += "</div>";
 	$(dialoghtml).appendTo('body');
-	$("#class_create_text_enrolment").datepicker({
+	$("#class_create_text_enrollment").datepicker({
 		changeYear         : true,
 		changeMonth        : true,
 		showMonthAfterYear : true,
@@ -483,7 +483,7 @@ function onButtonCreateClass(schoolid) {
 
 function onButtonCommitCreateClass(schoolid) {
 	var name = $("#class_create_text_name").prop("value");
-	var enrolment = $("#class_create_text_enrolment").prop("value");
+	var enrollment = $("#class_create_text_enrollment").prop("value");
 	var ok = true;
 
 	if (name === "") {
@@ -491,16 +491,16 @@ function onButtonCommitCreateClass(schoolid) {
 		$("#class_create_label_name").html("<font color='red'>不能为空！</font>");
 	}
 
-	if (enrolment === "") {
+	if (enrollment === "") {
 		ok = false;
-		$("#class_create_label_enrolment").html("<font color='red'>不能为空！</font>");
+		$("#class_create_label_enrollment").html("<font color='red'>不能为空！</font>");
 	}
 
 	if (ok == false) {
 		return;
 	}
 
-	var url = g_manageclass_create_url + "&schoolid=" + schoolid + "&name=" + name + "&enrolment=" + enrolment;
+	var url = g_manageclass_create_url + "&schoolid=" + schoolid + "&name=" + name + "&enrollment=" + enrollment;
 	$.get(url, handleClassCreateResponse);
 }
 

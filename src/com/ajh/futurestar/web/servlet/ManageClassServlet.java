@@ -116,11 +116,11 @@ public class ManageClassServlet extends ManageExServlet {
 		throws SQLException {
 		String strSchoolId = req.getParameter(Request.PARAM_CLASS_SCHOOLID);
 		String strName = req.getParameter(Request.PARAM_CLASS_NAME);
-		String strEnrolment = req.getParameter(Request.PARAM_CLASS_ENROLMENT);
+		String strEnrollment = req.getParameter(Request.PARAM_CLASS_ENROLLMENT);
 
 		if (strSchoolId == null || strSchoolId.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_NULL_SCHOOLID;
-			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOLID;
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_SCHOOLID;
 			return;
 		}
 
@@ -130,18 +130,18 @@ public class ManageClassServlet extends ManageExServlet {
 			return;
 		}
 
-		if (strEnrolment == null || strEnrolment.equals("")) {
-			retx.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_NULL_ENROLMENT;
-			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_ENROLMENT;
+		if (strEnrollment == null || strEnrollment.equals("")) {
+			retx.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_NULL_ENROLLMENT;
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_ENROLLMENT;
 			return;
 		}
 
 		// TODO - check enrollment format.
 
 		String strInsert = "insert into T_CLASS_FROM_SCHOOL_" + strSchoolId;
-		strInsert += "(NAME, ENROLMENT) values(";
+		strInsert += "(NAME, ENROLLMENT) values(";
 		strInsert += "'" + strName + "', ";
-		strInsert += "'" + strEnrolment + "'";
+		strInsert += "'" + strEnrollment + "'";
 		strInsert += ");";
 
 		stmt.executeUpdate(strInsert);
@@ -154,7 +154,7 @@ public class ManageClassServlet extends ManageExServlet {
 		String strSchoolId = req.getParameter("schoolid");
 		if (strSchoolId == null || strSchoolId.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_NULL_SCHOOLID;
-			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOLID;
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_SCHOOLID;
 		} else {
 			JSONObject retobjx = new JSONObject();
 			retobjx.put("schoolid", strSchoolId);
@@ -167,7 +167,7 @@ public class ManageClassServlet extends ManageExServlet {
 				JSONObject obj = new JSONObject(); // Item in array.
 				obj.put("ID", rsClassList.getString("ID"));
 				obj.put("NAME", rsClassList.getString("NAME"));
-				obj.put("ENROLMENT", rsClassList.getString("ENROLMENT"));
+				obj.put("ENROLLMENT", rsClassList.getString("ENROLLMENT"));
 				obj.put("CREATION", rsClassList.getString("CREATION"));
 				arrayClass.put(obj);
 			}

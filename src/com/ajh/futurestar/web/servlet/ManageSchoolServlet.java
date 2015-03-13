@@ -262,7 +262,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
 		if (schoolName == null || schoolName.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_NULL_NAME;
-			retx.retinfo += "学校名称为空";
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOL_NAME;
 		} else {
 			String sql = "";
 			stmt.executeUpdate(sql);
