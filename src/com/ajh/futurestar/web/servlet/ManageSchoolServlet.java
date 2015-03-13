@@ -99,7 +99,7 @@ public class ManageSchoolServlet extends HttpServlet {
 			retx.actionx += action;
 			if (action.equalsIgnoreCase(Request.VALUE_ACTION_SELECT)) { // select
 				try {
-					doDbActionSelect(conn, stmt, req, retx);
+					doActionSelect(conn, stmt, req, retx);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_SELECT_FAILED;
@@ -107,7 +107,7 @@ public class ManageSchoolServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_INSERT)) { // insert
 				try {
-					doDbActionInsert(conn, stmt, req, retx);
+					doActionInsert(conn, stmt, req, retx);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_INSERT_FAILED;
@@ -115,7 +115,7 @@ public class ManageSchoolServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase(Request.VALUE_ACTION_UPDATE)) { // update
 				try {
-					doDbActionUpdate(conn, stmt, req, retx);
+					doActionUpdate(conn, stmt, req, retx);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
@@ -177,65 +177,65 @@ public class ManageSchoolServlet extends HttpServlet {
 		return sql;
 	}
 
-	private void doDbActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+	private void doActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
 			throws SQLException {
 		//
 		// Get parameters.
 		//
 		int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
-		String mode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
-		if (mode != null) {
-			nMode = Integer.parseInt(mode);
+		String strMode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
+		if (strMode != null) {
+			nMode = Integer.parseInt(strMode);
 		}
 
-		String baseid = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
-		if (baseid == null) {
-			baseid = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
+		String strBaseId = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+		if (strBaseId == null) {
+			strBaseId = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
 		}
 
 		int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
-		String range = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
-		if (range != null) {
-			nRange = Integer.parseInt(range);
+		String strRange = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
+		if (strRange != null) {
+			nRange = Integer.parseInt(strRange);
 		}
 
-		String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
+		String strSchoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
 
 		int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
-		String goes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
-		if (goes != null && goes.equalsIgnoreCase("up")) {
+		String strGoes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
+		if (strGoes != null && strGoes.equalsIgnoreCase("up")) {
 			nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
 		}
 
-		String fromid = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
-		if (fromid == null) {
-			fromid = "0";
+		String strFromId = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
+		if (strFromId == null) {
+			strFromId = "0";
 		}
-		String toid = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
-		if (toid == null) {
-			toid = "0";
+		String strToId = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
+		if (strToId == null) {
+			strToId = "0";
 		}
 
 		//
 		// Construct query SQL string.
 		//
-		String sql = "";
+		String strQuery = "";
 		switch (nMode) {
 		case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
-			sql = composeSqlStrSelect(DbVendor.DB_SQLITE, baseid, nRange, schoolname, nGoes);
+			strQuery = composeSqlStrSelect(DbVendor.DB_SQLITE, strBaseId, nRange, strSchoolName, nGoes);
 			break;
 		case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
-			sql = composeSqlStrSelect(DbVendor.DB_SQLITE, fromid, toid);
+			strQuery = composeSqlStrSelect(DbVendor.DB_SQLITE, strFromId, strToId);
 			break;
 		default:
 			break;
 		}
-		getServletContext().log(sql);
+		getServletContext().log(strQuery);
 
 		//
 		// Do query.
 		//
-		ResultSet rs = stmt.executeQuery(sql);
+		ResultSet rs = stmt.executeQuery(strQuery);
 		JSONArray arraySchool = new JSONArray();
 		while (rs.next()) {
 			JSONObject obj = new JSONObject(); // Item in array.
@@ -252,10 +252,11 @@ public class ManageSchoolServlet extends HttpServlet {
 
 		JSONObject retobjx = new JSONObject();
 		retobjx.put("schools", arraySchool);
-		retx.retobjx = retobjx;
+
+		retx.retobjx = retobjx; // Remember to do this assignment.
 	}
 
-	private void doDbActionInsert(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+	private void doActionInsert(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
 		throws SQLException
 	{
 		String schoolName = req.getParameter(Request.PARAM_SCHOOL_NAME);
@@ -269,7 +270,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		}
 	}
 
-	private void doDbActionUpdate(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
+	private void doActionUpdate(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
 		throws SQLException
 	{
 		//
@@ -278,19 +279,19 @@ public class ManageSchoolServlet extends HttpServlet {
 		String id = req.getParameter(Request.PARAM_SCHOOL_ID);
 		if (id == null || id.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-			retx.retinfo += "学校ID为空";
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOL_ID;
 			return;
 		}
 		String schoolname = req.getParameter(Request.PARAM_SCHOOL_NAME);
 		if (schoolname == null || schoolname.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-			retx.retinfo += "学校名称为空";
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOL_NAME;
 			return;
 		}
 		String intro = req.getParameter(Request.PARAM_SCHOOL_INTRO);
 		if (intro == null || intro.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_SCHOOL_UPDATE_FAILED;
-			retx.retinfo += "学校介绍为空";
+			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_SCHOOL_INTRO;
 			return;
 		}
 
