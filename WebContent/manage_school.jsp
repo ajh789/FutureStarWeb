@@ -23,46 +23,47 @@ $(function() {
 <%
 if (session.getAttribute("name") == null) {
 	session.setAttribute("frompage", "/futurestar/manage_school.jsp");
- 	response.sendRedirect("/futurestar/login.jsp");
+	response.sendRedirect("/futurestar/login.jsp");
 }
 %>
 <div id="container">
-<div id="header">
-<h1>Main Title of Web Page</h1>
-</div>
-<div id="menu">
-<h2>菜单</h2>
-<ul>
-<li><a href="manage_school.jsp">学校管理</a></li>
-<li><a href="manage_teacher.jsp">教师管理</a></li>
-<li><a href="manage_parent.jsp">家长管理</a></li>
-<li><a href="manage_student.jsp">学生管理</a></li>
-</ul>
-</div>
-<div id="content">
-	<div id="content_tab">
+	<div id="header">
+		<h1>Main Title of Web Page</h1>
+	</div>
+	<div id="menu">
+		<h2>菜单</h2>
 		<ul>
-			<li><a href="#content_tab_search">查找</a></li>
-			<li><a href="#content_tab_addnew">新增</a></li>
+		<li><a href="manage_school.jsp">学校管理</a></li>
+		<li><a href="manage_teacher.jsp">教师管理</a></li>
+		<li><a href="manage_parent.jsp">家长管理</a></li>
+		<li><a href="manage_student.jsp">学生管理</a></li>
 		</ul>
-		<div id="content_tab_search">
-			<div id="content_tab_search_upper">
-			学校名称：<input id="text_schoolname" type="text" value="南京" />
-			<input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
-			<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
-			<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
-			<span id="span_debugmsg"></span>
-			</div> <!-- content_tab_search_upper -->
-			<br/>
-			<div id="content_tab_search_lower">
-			<span id="span_content"></span>
-			</div> <!-- content_tab_search_lower -->
-		</div> <!-- content_tab_search -->
-		<div id="content_tab_addnew">
-		</div> <!-- content_tab_addnew -->
-	</div> <!-- content_tab -->
-</div> <!-- content -->
-<div id="footer">Copyright FutureStar.com.cn</div>
+	</div>
+	<div id="content">
+		<div id="content_tab"> <!-- jQuery UI tab -->
+			<ul>
+				<li><a href="#content_tab_search">查找</a></li>
+				<li><a href="#content_tab_addnew">新增</a></li>
+			</ul>
+			<div id="content_tab_search">
+				<div id="content_tab_search_upper">
+					学校名称：<input id="text_schoolname" type="text" value="南京" />
+					<input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
+					<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
+					<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+					<span id="span_debugmsg"></span>
+				</div> <!-- content_tab_search_upper -->
+				<br/>
+				<div id="content_tab_search_lower">
+					<span id="span_content"></span>
+				</div> <!-- content_tab_search_lower -->
+			</div> <!-- content_tab_search -->
+			<div id="content_tab_addnew">
+				<span>页面建设中...</span>
+			</div> <!-- content_tab_addnew -->
+		</div> <!-- content_tab -->
+	</div> <!-- content -->
+	<div id="footer">Copyright FutureStar.com.cn</div>
 </div> <!-- container -->
 
 </body>
