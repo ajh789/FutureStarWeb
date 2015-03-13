@@ -102,11 +102,11 @@ function handleSchoolSelectResponse(data, status) {
 		//   retcode -- see enum RetCode
 		//   retinfo -- string
 		//   actionx -- string of action
-		//   retobjx -- JSON array of schools
-		//   prvlege -- privilege of current user
+		//   retobjx -- array of schools
+		//   curuser -- info of current user
 		if (ret.retcode == RetCode.RETCODE_OK) { // OK
-			g_privilege = ret.prvlege;
-			var schools = ret.retobjx; // Array of schools.
+			g_privilege = ret.curuser.privilege;
+			var schools = ret.retobjx.schools; // Array of schools.
 			if (schools.length > 0) {
 				g_schools = new Array(); // Allocate a new array.
 				g_schools = g_schools.concat(schools);

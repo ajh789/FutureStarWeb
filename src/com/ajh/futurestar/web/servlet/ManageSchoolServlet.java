@@ -133,7 +133,7 @@ public class ManageSchoolServlet extends HttpServlet {
 
 	private String composeSqlStrSelectAllFields()
 	{
-		return "select hex(ID) as ID, NAME, LOGO, INTRO, CREATION, LASTUPDATE, ISLOCKED from T_SCHOOL";
+		return "select * from V_SCHOOL";
 	}
 
 	private String composeSqlStrSelect(DbVendor vendor, String baseid, int range, String schoolname, int goes)
@@ -230,6 +230,7 @@ public class ManageSchoolServlet extends HttpServlet {
 		default:
 			break;
 		}
+		getServletContext().log(sql);
 
 		//
 		// Do query.
