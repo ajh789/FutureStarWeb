@@ -56,6 +56,7 @@ if (session.getAttribute("name") == null) {
 				<br/>
 				<div id="content_tab_search_lower">
 					<span id="span_content"></span>
+					<span id="span_content_hidden" style="display:block"></span> <!-- Used for inserting new element to DOM. -->
 				</div> <!-- content_tab_search_lower -->
 			</div> <!-- content_tab_search -->
 			<div id="content_tab_addnew">
