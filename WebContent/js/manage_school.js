@@ -112,7 +112,7 @@ function handleSchoolSelectResponse(data, status) {
 				g_schools = g_schools.concat(schools);
 				g_schools_head = schools[0].CREATION;
 				g_schools_tail = schools[schools.length-1].CREATION;
-				tmp += generateTableOfSchools();
+				tmp += generateSchoolListUI();
 				setSpanContentInnerHTML(tmp);
 //				hideButtonReqData();
 				showButtonReqDataUp();
@@ -146,13 +146,14 @@ function handleSchoolUpdateResponse(data, status) {
 		}
 //		window.alert(ret.retcode + ": " + ret.retinfo);
 		if (ret.retcode == 0) {
+			alert("更新成功！");
 			reqDataFromTo(); // Trigger a query
 			$("#dialog_school_edit").dialog("destroy").remove(); // Destroy and remove dialog.
 		}
 	}
 }
 
-function generateTableOfSchools() {
+function generateSchoolListUI() {
 	var html = "";
 
 	if (g_schools.length > 0) {
@@ -178,8 +179,8 @@ function generateTableOfSchools() {
 		html += "<td>";
 		if (g_privilege & 0x4)
 			html += "<input type='button' value='删除' onclick='onButtonDeleteSchool()' />&nbsp;";
-		if (g_privilege & 0x2)
-			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />&nbsp;";
+//		if (g_privilege & 0x2)
+//			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />&nbsp;";
 		if (g_privilege > 0) {
 			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + g_schools[i].ID + "\")' />&nbsp;";
 			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + g_schools[i].ID + "\")' />";
@@ -282,7 +283,12 @@ function onButtonDeleteSchool()
 function generateSchoolDetailsUI(school)
 {
 	var ui = "";
-	ui += "<div id='div_school_details'>";
+	ui += "<table>";
+	ui += "  <tr style='vertical-align:middle;'>";
+	ui += "    <td>";
+	ui += "  <img class='img_navigation_prev_next' src='images/icons/prev.png' alt='上一个' />"; 
+	ui += "    </td>";
+	ui += "    <td>";
 	ui += "<table class='table_school_edit'>";
 	ui += "  <tr>";
 	ui += "    <td>学校徽标：</td>";
@@ -315,17 +321,24 @@ function generateSchoolDetailsUI(school)
 	ui += "    <td><textarea id='school_details_intro' rows='10' cols='80'></textarea></td>";
 	ui += "  </tr>";
 	ui += "  <tr>";
-	ui += "    <td>&nbsp;&nbsp;</td>";
-	ui += "    <td>";
+	ui += "    <td colspan='2' align='center'>";
 	ui += "      <input type='button' value='更新' onclick='onButtonCommitEditSchool()' />";
 //	ui += "      <input type='button' value='取消' onclick='onButtonCancelEditSchool()' />";
+	ui += "      <input type='button' value='返回列表' onclick='onButtonReturnToSchoolList()' />";
 	ui += "    </td>";
 	ui += "  </tr>";
 	ui += "</table>";
-	ui += "</div>";
+	ui += "    </td>";
+	ui += "    <td>";
+	ui += "  <img class='img_navigation_prev_next' src='images/icons/next.png' alt='下一个' />";
+	ui += "    </td>";
+	ui += "  </tr>";
+	ui += "</table>";
 
 	pushHiddenDOM(ui);
 
+	// All text boxes and radio buttons should update default values as well as values.
+	// Otherwise innerHTML will only contain default value.
 	$("#school_details_id").prop("value", school.ID);
 	$("#school_details_id").prop("defaultValue", school.ID);
 	$("#school_details_logo").prop("src", school.LOGO);
@@ -338,6 +351,10 @@ function generateSchoolDetailsUI(school)
 	$("#school_details_islocked_false").prop("checked", !school.ISLOCKED);
 	$("#school_details_islocked_false").prop("defaultChecked", !school.ISLOCKED);
 	$("#school_details_intro").prop("value", htmlDecode(school.INTRO)); // Remember to do html decode.
+	$("#school_details_intro").prop("defaultValue", htmlDecode(school.INTRO)); // Remember to do html decode.
+
+	$("#div_school_navi_prev").css("height", $("#div_school_details").css("height"));
+	$("#div_school_navi_next").css("height", $("#div_school_details").css("height"));
 
 	return popHiddenDOM();
 }
@@ -407,7 +424,7 @@ function generateEditSchoolUI(school)
 			{
 				text : "更新",
 				click : function() {
-					onButtonCommitEditSchool();
+//					onButtonCommitEditSchool(); // Disabled.
 				}
 			},
 			{
@@ -421,9 +438,9 @@ function generateEditSchoolUI(school)
 }
 
 function onButtonCommitEditSchool() {
-	var id = $("#school_edit_id").prop("value");
-	var name = $("#school_edit_name").prop("value");
-	var intro = $("#school_edit_intro").prop("value");
+	var id = $("#school_details_id").prop("value");
+	var name = $("#school_details_name").prop("value");
+	var intro = $("#school_details_intro").prop("value");
 	intro = htmlEncode(intro); // Remember to do html encode.
 	$.post(
 		g_manageschool_update_url, 
@@ -433,8 +450,11 @@ function onButtonCommitEditSchool() {
 }
 
 function onButtonCancelEditSchool() {
-	var tmp = generateTableOfSchools();
-	setSpanContentInnerHTML(tmp);
+	setSpanContentInnerHTML(generateSchoolListUI());
+}
+
+function onButtonReturnToSchoolList() {
+	setSpanContentInnerHTML(generateSchoolListUI());
 }
 
 function onButtonGetSchoolClassList(schoolid) {

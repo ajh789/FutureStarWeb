@@ -53,7 +53,6 @@ if (session.getAttribute("name") == null) {
 					<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
 					<span id="span_debugmsg"></span>
 				</div> <!-- content_tab_search_upper -->
-				<br/>
 				<div id="content_tab_search_lower">
 					<span id="span_content"></span>
 					<span id="span_content_hidden" style="display:block"></span> <!-- Used for inserting new element to DOM. -->

@@ -1,11 +1,18 @@
-div#container {width:100%}
+html,body{
+  margin: 1px;
+  height: 100%;
+}
+div#container {width:100%; height:100%;}
 div#header    {background-color:#99bbbb;}
 div#menu      {background-color:#ffff99; height:650px; width:15%; float:left; overflow:auto;}
 div#content   {background-color:#EEEEEE; height:650px; width:85%; float:left; overflow:auto;}
 div#content_upper   {background-color:#EEEEEE; height:05%; overflow:auto;}
 div#content_lower   {background-color:#EEEEEE; height:95%; overflow:auto;}
-div#content_tab_search_upper   {height:05%; overflow:auto;}
-div#content_tab_search_lower   {height:95%; overflow:auto;}
+div#content_tab {height: 100%;}
+div#content_tab_search {border: 1px solid gray; height: 100%;}
+div#content_tab_search_upper   {height:05%; overflow:auto; border: 1px solid white;}
+div#content_tab_search_lower   {height:95%; overflow:auto; border: 1px solid white;}
+div#content_tab_addnew {border: 1px solid red; height: 100%;}
 div#footer    {background-color:#99bbbb; clear:both; text-align:center;}
 div#dialog_school_list {display:none;}
 span#span_debugmsg {display:none; color:red; font-weight:bold;}
@@ -21,14 +28,27 @@ table#teachers {font-size:12px; border:1px solid black; border-collapse:collapse
 table#teachers th{border:1px solid black;}
 table#teachers td{border:1px solid black;}
 table#teachers td#teacher_details {width:500px;}
-.table_school_edit {font-size:12px;}
+.table_school_edit {font-size:12px; border:1px solid lightgray;}
 .table_school_edit caption {border:1px solid #fff; font-size:15px; font-weight:bold; background:#dbb768; text-align:left;}
 .table_school_edit tr {vertical-align:top;}
+.table_school_edit td {border:1px solid lightgray;}
 .table_teacher_edit {font-size:12px; border:1px solid blue; border-collapse:collapse;}
 .table_teacher_edit tr {vertical-align:top;}
 .table_teacher_edit td {border:1px solid blue;}
 .img_school_logo {width: 100px; height: 100px;}
 .img_teacher_logo {width: 100px; height: 100px;}
+.img_navigation_prev_next {
+	width: 50px;
+	height: 100px;
+	display: table-cell;
+	vertical-align: middle;
+	}
+.div_child_vertical_middle {
+  border: 1px solid red;
+  display: table-cell;
+  vertical-align: middle;
+  background-color: gray;
+}
 
 .ui-widget {
   font-size:80% !important;
