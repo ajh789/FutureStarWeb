@@ -188,8 +188,8 @@ function generateSchoolListUI() {
 //		if (g_privilege & 0x2)
 //			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools.data[i].ID +"\")' />&nbsp;";
 		if (g_privilege > 0) {
-			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + pos + "\")' />&nbsp;";
-			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + pos + "\")' />";
+			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(" + pos + ")' />&nbsp;";
+			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(" + pos + ")' />";
 		}
 		html += "</td>";
 		html += "</tr>"; // Row ends.
