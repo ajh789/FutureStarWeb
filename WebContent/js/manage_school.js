@@ -21,13 +21,15 @@ g_schools.head = null; // Time stamp of creation for head in school array.
 g_schools.tail = null; // Time stamp of creation for tail in school array.
 g_schools.curpos = -1; // Position of currently visiting school.
 
-var g_manageclasstables_url = "/futurestar/manageclasstables.do";
-var g_manageclasstables_select_url = g_manageclasstables_url + "?action=select";
-var g_manageclasstables_create_url = g_manageclasstables_url + "?action=create";
+var g_manageclasstables_url = {
+	"select" : "/futurestar/manageclasstables.do?action=select",
+	"create" : "/futurestar/manageclasstables.do?action=create"
+};
 
-var g_manageclass_url = "/futurestar/manageclass.do";
-var g_manageclass_select_url = "/futurestar/manageclass.do" + "?action=select";
-var g_manageclass_create_url = "/futurestar/manageclass.do" + "?action=create";
+var g_manageclass_url = {
+	"select" : "/futurestar/manageclass.do?action=select",
+	"create" : "/futurestar/manageclass.do?action=create"
+};
 
 function reqData()
 {
@@ -467,7 +469,7 @@ function onButtonReturnToSchoolList() {
 
 function onButtonGetSchoolClassList(schoolid) {
 	if (typeof schoolid == 'string') {
-		var url = g_manageclasstables_select_url + "&schoolid=" + schoolid;
+		var url = g_manageclasstables_url.select + "&schoolid=" + schoolid;
 		$.get(url, handleClassTableSelectResponse);
 	} else {
 		throw new error('Please pass a string as an ID!');
@@ -495,7 +497,7 @@ function handleClassTableSelectResponse(data, status) {
 }
 
 function retrieveClassList(schoolid) {
-	var url = g_manageclass_select_url + "&schoolid=" + schoolid;
+	var url = g_manageclass_url.select + "&schoolid=" + schoolid;
 	$.get(url, handleClassSelectResponse);
 }
 
@@ -623,7 +625,7 @@ function onButtonCommitCreateClass(schoolid) {
 		return;
 	}
 
-	var url = g_manageclass_create_url + "&schoolid=" + schoolid + "&name=" + name + "&enrollment=" + enrollment;
+	var url = g_manageclass_url.create + "&schoolid=" + schoolid + "&name=" + name + "&enrollment=" + enrollment;
 	$.get(url, handleClassCreateResponse);
 }
 
@@ -676,7 +678,7 @@ function generateClassTableCreationHtml(ret) {
 
 function onButtonCommitCreateClassTable(schoolid) {
 	if (typeof schoolid == 'string') {
-		var url = g_manageclasstables_create_url + "&schoolid=" + schoolid;
+		var url = g_manageclasstables_url.create + "&schoolid=" + schoolid;
 		$.get(url, handleClassTableCreateResponse);
 	} else {
 		throw new error('Please pass a string as an ID!');
