@@ -283,10 +283,12 @@ function onButtonDeleteSchool()
 function generateSchoolDetailsUI(school)
 {
 	var ui = "";
-	ui += "<table>";
+	ui += "<table>"; // Use table to do layout.
 	ui += "  <tr style='vertical-align:middle;'>";
 	ui += "    <td>";
-	ui += "  <img class='img_navigation_prev_next' src='images/icons/prev.png' alt='上一个' />"; 
+	ui += "      <a href='#' onclick='onButtonSchoolNaviPrev()'>";
+	ui += "        <img class='img_navigation_prev_next' src='images/icons/prev.png' alt='上一个' />";
+	ui += "      </a>";
 	ui += "    </td>";
 	ui += "    <td>";
 	ui += "<table class='table_school_edit'>";
@@ -330,7 +332,9 @@ function generateSchoolDetailsUI(school)
 	ui += "</table>";
 	ui += "    </td>";
 	ui += "    <td>";
-	ui += "  <img class='img_navigation_prev_next' src='images/icons/next.png' alt='下一个' />";
+	ui += "      <a href='#' onclick='onButtonSchoolNaviNext()'>";
+	ui += "        <img class='img_navigation_prev_next' src='images/icons/next.png' alt='下一个' />";
+	ui += "      </a>";
 	ui += "    </td>";
 	ui += "  </tr>";
 	ui += "</table>";
