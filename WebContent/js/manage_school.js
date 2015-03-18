@@ -165,22 +165,22 @@ function generateSchoolListUI() {
 	if (g_schools.data.length > 0) {
 		html += "<table id='schools' border='1'>";
 		html += "<tr>";
-		html += "<th>&nbsp;</th>";       // Column 1
-		html += "<th>学&nbsp;校</th>"; // Column 2
+		html += "<th>学校徽标</th>";       // Column 1
+		html += "<th>学校名称</th>";       // Column 2
 		html += "<th>操&nbsp;作</th>";     // Column 3
 		html += "</tr>";
 	}
 
-	for (var i=0; i<g_schools.data.length; i++) {
+	for (var pos=0; pos<g_schools.data.length; pos++) {
 		html += "<tr>"; // Row stars.
 		// Column 1
-		if (g_schools.data[i].LOGO != "" && g_schools.data[i].LOGO != "null") {
-			html += "<td><img src='" + g_schools.data[i].LOGO +"' alt='logo' class='img_school_logo' /></td>";
+		if (g_schools.data[pos].LOGO != "" && g_schools.data[pos].LOGO != "null") {
+			html += "<td><img src='" + g_schools.data[pos].LOGO +"' alt='logo' class='img_school_logo' /></td>";
 		} else {
-			html += "<td>" + g_schools.data[i].LOGO + "</td>";
+			html += "<td>" + g_schools.data[pos].LOGO + "</td>";
 		}
 		// Column 2
-		html += "<td id='school_details'><b>" + g_schools.data[i].NAME + "</b>(" + g_schools.data[i].ID + ")<br/>" + g_schools.data[i].CREATION +"<br/>" + g_schools.data[i].INTRO + "</td>";
+		html += "<td id='school_details'><b>" + g_schools.data[pos].NAME + "</b>(" + g_schools.data[pos].ID + ")<br/>" + g_schools.data[pos].CREATION +"<br/>" + g_schools.data[pos].INTRO + "</td>";
 		// Column 3
 		html += "<td>";
 		if (g_privilege & 0x4)
@@ -188,8 +188,8 @@ function generateSchoolListUI() {
 //		if (g_privilege & 0x2)
 //			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools.data[i].ID +"\")' />&nbsp;";
 		if (g_privilege > 0) {
-			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + g_schools.data[i].ID + "\")' />&nbsp;";
-			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + g_schools.data[i].ID + "\")' />";
+			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + pos + "\")' />&nbsp;";
+			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + pos + "\")' />";
 		}
 		html += "</td>";
 		html += "</tr>"; // Row ends.
@@ -267,17 +267,16 @@ function findSchool(id) {
 	}
 }
 
-function onButtonShowSchoolDetails(id)
+function onButtonShowSchoolDetails(pos)
 {
 	try {
-		var obj = findSchool(id);
-		if (obj.found) {
-			hideSpanDebugMsg();
-			var ui = generateSchoolDetailsUI(obj.school);
-			setSpanContentInnerHTML(ui);
-		}
+		var ui = generateSchoolDetailsUI(pos);
+		hideSpanDebugMsg();
+		setSpanContentInnerHTML(ui);
 	} catch (e) {
-		window.alert(e);
+//		window.alert(e);
+		setSpanDebugMsgInnerHTML("没有更多数据可显示！");
+		showSpanDebugMsg();
 	}
 }
 
@@ -286,13 +285,17 @@ function onButtonDeleteSchool()
 	window.alert("暂不支持删除操作！");
 }
 
-function generateSchoolDetailsUI(school)
+function generateSchoolDetailsUI(pos)
 {
+	if ((pos < 0) || (pos >= g_schools.data.length)) {
+		throw new Error("School array index out of boundary!");
+	}
+
 	var ui = "";
 	ui += "<table>"; // Use table to do layout.
 	ui += "  <tr style='vertical-align:middle;'>";
 	ui += "    <td>";
-	ui += "      <a href='#' onclick='onButtonSchoolNaviPrev()'>";
+	ui += "      <a href='#' onclick='onButtonSchoolNaviPrev(" + pos + ")'>";
 	ui += "        <img class='img_navigation_prev_next' src='images/icons/prev.png' alt='上一个' />";
 	ui += "      </a>";
 	ui += "    </td>";
@@ -338,14 +341,18 @@ function generateSchoolDetailsUI(school)
 	ui += "</table>";
 	ui += "    </td>";
 	ui += "    <td>";
-	ui += "      <a href='#' onclick='onButtonSchoolNaviNext()'>";
+	ui += "      <a href='#' onclick='onButtonSchoolNaviNext(" + pos + ")'>";
 	ui += "        <img class='img_navigation_prev_next' src='images/icons/next.png' alt='下一个' />";
 	ui += "      </a>";
 	ui += "    </td>";
 	ui += "  </tr>";
 	ui += "</table>";
 
+	clearSpanContentInnerHTML(); // Must clear content here due to IDs collision.
+
 	pushHiddenDOM(ui);
+
+	var school = g_schools.data[pos];
 
 	// All text boxes and radio buttons should update default values as well as values.
 	// Otherwise innerHTML will only contain default value.
@@ -362,9 +369,6 @@ function generateSchoolDetailsUI(school)
 	$("#school_details_islocked_false").prop("defaultChecked", !school.ISLOCKED);
 	$("#school_details_intro").prop("value", htmlDecode(school.INTRO)); // Remember to do html decode.
 	$("#school_details_intro").prop("defaultValue", htmlDecode(school.INTRO)); // Remember to do html decode.
-
-	$("#div_school_navi_prev").css("height", $("#div_school_details").css("height"));
-	$("#div_school_navi_next").css("height", $("#div_school_details").css("height"));
 
 	return popHiddenDOM();
 }
@@ -467,12 +471,16 @@ function onButtonReturnToSchoolList() {
 	setSpanContentInnerHTML(generateSchoolListUI());
 }
 
-function onButtonGetSchoolClassList(schoolid) {
-	if (typeof schoolid == 'string') {
-		var url = g_manageclasstables_url.select + "&schoolid=" + schoolid;
-		$.get(url, handleClassTableSelectResponse);
+function onButtonGetSchoolClassList(pos) {
+	if (typeof pos == 'number') {
+		if ((pos >=0) && (pos < g_schools.data.length)) {
+			var url = g_manageclasstables_url.select + "&schoolid=" + g_schools.data[pos].ID;
+			$.get(url, handleClassTableSelectResponse);
+		} else {
+			throw new Error("School array index out of boundary!");
+		}
 	} else {
-		throw new error('Please pass a string as an ID!');
+		throw new Error('Please pass a number as a postion!');
 	}
 }
 
@@ -712,4 +720,12 @@ function popHiddenDOM() {
 	var html = $("#span_content_hidden").html();
 	$("#span_content_hidden").html("");
 	return html;
+}
+
+function onButtonSchoolNaviPrev(pos) {
+	onButtonShowSchoolDetails(pos-1);
+}
+
+function onButtonSchoolNaviNext(pos) {
+	onButtonShowSchoolDetails(pos+1);
 }
