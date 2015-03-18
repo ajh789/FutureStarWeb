@@ -12,10 +12,13 @@ var g_manageschool_insert_url = g_manageschool_url + "&action=insert";
 var g_manageschool_update_url = g_manageschool_url + "&action=update";
 var g_manageschool_delete_url = g_manageschool_url + "&action=delete";
 
-var g_schools = null; // Array of schools.
-var g_schools_head = null; // Current head.
-var g_schools_tail = null; // Current tail.
 var g_privilege = 0;
+
+var g_schools = {};
+g_schools.data = null; // Array of schools.
+g_schools.head = null; // Time stamp of creation for head in school array.
+g_schools.tail = null; // Time stamp of creation for tail in school array.
+g_schools.curpos = -1; // Position of currently visiting school.
 
 var g_manageclasstables_url = "/futurestar/manageclasstables.do";
 var g_manageclasstables_select_url = g_manageclasstables_url + "?action=select";
@@ -29,8 +32,8 @@ function reqData()
 {
 	var url = g_manageschool_select_url;
 
-//	if (g_schools_tail != null) {
-//		url += "&baseid=" + g_schools_tail;
+//	if (g_schools.tail != null) {
+//		url += "&baseid=" + g_schools.tail;
 //	}
 
 	var schoolname = $("#text_schoolname").val();
@@ -45,8 +48,8 @@ function reqDataUp()
 {
 	var url = g_manageschool_select_url;
 
-	if (g_schools_head != null) {
-		url += "&baseid=" + g_schools_head + "&goes=up";
+	if (g_schools.head != null) {
+		url += "&baseid=" + g_schools.head + "&goes=up";
 	}
 
 	var schoolname = $("#text_schoolname").val();
@@ -61,8 +64,8 @@ function reqDataDown()
 {
 	var url = g_manageschool_select_url;
 
-	if (g_schools_tail != null) {
-		url += "&baseid=" + g_schools_tail;
+	if (g_schools.tail != null) {
+		url += "&baseid=" + g_schools.tail;
 	}
 
 	var schoolname = $("#text_schoolname").val();
@@ -77,11 +80,11 @@ function reqDataFromTo()
 {
 	var url = g_manageschool_select_url + "&mode=1";
 
-	if (g_schools_head != null)
-		url += "&fromid=" + g_schools_head;
+	if (g_schools.head != null)
+		url += "&fromid=" + g_schools.head;
 
-	if (g_schools_tail != null)
-		url += "&toid=" + g_schools_tail;
+	if (g_schools.tail != null)
+		url += "&toid=" + g_schools.tail;
 
 	$.get(url, handleSchoolSelectResponse);
 }
@@ -108,10 +111,10 @@ function handleSchoolSelectResponse(data, status) {
 			g_privilege = ret.curuser.privilege;
 			var schools = ret.retobjx.schools; // Array of schools.
 			if (schools.length > 0) {
-				g_schools = new Array(); // Allocate a new array.
-				g_schools = g_schools.concat(schools);
-				g_schools_head = schools[0].CREATION;
-				g_schools_tail = schools[schools.length-1].CREATION;
+				g_schools.data = new Array(); // Allocate a new array.
+				g_schools.data = g_schools.data.concat(schools);
+				g_schools.head = schools[0].CREATION;
+				g_schools.tail = schools[schools.length-1].CREATION;
 				tmp += generateSchoolListUI();
 				setSpanContentInnerHTML(tmp);
 //				hideButtonReqData();
@@ -156,7 +159,7 @@ function handleSchoolUpdateResponse(data, status) {
 function generateSchoolListUI() {
 	var html = "";
 
-	if (g_schools.length > 0) {
+	if (g_schools.data.length > 0) {
 		html += "<table id='schools' border='1'>";
 		html += "<tr>";
 		html += "<th>&nbsp;</th>";       // Column 1
@@ -165,31 +168,31 @@ function generateSchoolListUI() {
 		html += "</tr>";
 	}
 
-	for (var i=0; i<g_schools.length; i++) {
+	for (var i=0; i<g_schools.data.length; i++) {
 		html += "<tr>"; // Row stars.
 		// Column 1
-		if (g_schools[i].LOGO != "" && g_schools[i].LOGO != "null") {
-			html += "<td><img src='" + g_schools[i].LOGO +"' alt='logo' class='img_school_logo' /></td>";
+		if (g_schools.data[i].LOGO != "" && g_schools.data[i].LOGO != "null") {
+			html += "<td><img src='" + g_schools.data[i].LOGO +"' alt='logo' class='img_school_logo' /></td>";
 		} else {
-			html += "<td>" + g_schools[i].LOGO + "</td>";
+			html += "<td>" + g_schools.data[i].LOGO + "</td>";
 		}
 		// Column 2
-		html += "<td id='school_details'><b>" + g_schools[i].NAME + "</b>(" + g_schools[i].ID + ")<br/>" + g_schools[i].CREATION +"<br/>" + g_schools[i].INTRO + "</td>";
+		html += "<td id='school_details'><b>" + g_schools.data[i].NAME + "</b>(" + g_schools.data[i].ID + ")<br/>" + g_schools.data[i].CREATION +"<br/>" + g_schools.data[i].INTRO + "</td>";
 		// Column 3
 		html += "<td>";
 		if (g_privilege & 0x4)
 			html += "<input type='button' value='删除' onclick='onButtonDeleteSchool()' />&nbsp;";
 //		if (g_privilege & 0x2)
-//			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools[i].ID +"\")' />&nbsp;";
+//			html += "<input type='button' value='修改' onclick='onButtonEditSchool(\"" + g_schools.data[i].ID +"\")' />&nbsp;";
 		if (g_privilege > 0) {
-			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + g_schools[i].ID + "\")' />&nbsp;";
-			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + g_schools[i].ID + "\")' />";
+			html += "<input type='button' value='详细信息' onclick='onButtonShowSchoolDetails(\"" + g_schools.data[i].ID + "\")' />&nbsp;";
+			html += "<input type='button' value='班级列表' onclick='onButtonGetSchoolClassList(\"" + g_schools.data[i].ID + "\")' />";
 		}
 		html += "</td>";
 		html += "</tr>"; // Row ends.
 	}
 
-	if (g_schools.length > 0) {
+	if (g_schools.data.length > 0) {
 		html += "</table>";
 	}
 
@@ -245,10 +248,10 @@ function findSchool(id) {
 	if (typeof id == 'string') {
 		var found = false;
 		var school = null;
-		for (var i=0; i<g_schools.length; i++) {
-			if (g_schools[i].ID == id) {
+		for (var i=0; i<g_schools.data.length; i++) {
+			if (g_schools.data[i].ID == id) {
 				found = true;
-				school = g_schools[i];
+				school = g_schools.data[i];
 				break;
 			}
 		}
