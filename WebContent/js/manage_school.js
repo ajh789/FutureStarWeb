@@ -6,11 +6,12 @@ document.getElementByIdx_x = function(id) {
 	}
 };
 
-var g_manageschool_url = "/futurestar/manageschool.do?reqfrom=wap";
-var g_manageschool_select_url = g_manageschool_url + "&action=select";
-var g_manageschool_insert_url = g_manageschool_url + "&action=insert";
-var g_manageschool_update_url = g_manageschool_url + "&action=update";
-var g_manageschool_delete_url = g_manageschool_url + "&action=delete";
+var g_manageschool_url = {
+	"select" : "/futurestar/manageschool.do?reqfrom=wap&action=select",
+	"insert" : "/futurestar/manageschool.do?reqfrom=wap&action=insert",
+	"update" : "/futurestar/manageschool.do?reqfrom=wap&action=update",
+	"delete" : "/futurestar/manageschool.do?reqfrom=wap&action=delete"
+};
 
 var g_privilege = 0;
 
@@ -30,7 +31,7 @@ var g_manageclass_create_url = "/futurestar/manageclass.do" + "?action=create";
 
 function reqData()
 {
-	var url = g_manageschool_select_url;
+	var url = g_manageschool_url.select;
 
 //	if (g_schools.tail != null) {
 //		url += "&baseid=" + g_schools.tail;
@@ -46,7 +47,7 @@ function reqData()
 
 function reqDataUp()
 {
-	var url = g_manageschool_select_url;
+	var url = g_manageschool_url.select;
 
 	if (g_schools.head != null) {
 		url += "&baseid=" + g_schools.head + "&goes=up";
@@ -62,7 +63,7 @@ function reqDataUp()
 
 function reqDataDown()
 {
-	var url = g_manageschool_select_url;
+	var url = g_manageschool_url.select;
 
 	if (g_schools.tail != null) {
 		url += "&baseid=" + g_schools.tail;
@@ -78,7 +79,7 @@ function reqDataDown()
 
 function reqDataFromTo()
 {
-	var url = g_manageschool_select_url + "&mode=1";
+	var url = g_manageschool_url.select + "&mode=1";
 
 	if (g_schools.head != null)
 		url += "&fromid=" + g_schools.head;
@@ -450,7 +451,7 @@ function onButtonCommitEditSchool() {
 	var intro = $("#school_details_intro").prop("value");
 	intro = htmlEncode(intro); // Remember to do html encode.
 	$.post(
-		g_manageschool_update_url, 
+		g_manageschool_url.update, 
 		{"id":id, "name":name, "intro":intro}, 
 		handleSchoolUpdateResponse
 	);
