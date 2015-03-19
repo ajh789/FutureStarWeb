@@ -494,10 +494,10 @@ function handleClassTableSelectResponse(data, status) {
 		}
 
 		if (ret.retcode == RetCode.RETCODE_OK) {
-//			generateClassListHtml(ret);
+//			generateClassListUI(ret);
 			retrieveClassList(ret.retobjx.schoolid);
 		} else if (ret.retcode == RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE) {
-			generateClassTableCreationHtml(ret);
+			generateClassTableCreationUI(ret);
 		} else {
 			window.alert("handleClassTableSelectResponse(): unknown retcode !");
 		}
@@ -519,7 +519,7 @@ function handleClassSelectResponse(data, status) {
 		}
 
 		if (ret.retcode == RetCode.RETCODE_OK) {
-			generateClassListHtml(ret);
+			generateClassListUI(ret);
 		} else {
 			window.alert("Error: " + ret.retinfo);
 		}
@@ -527,14 +527,14 @@ function handleClassSelectResponse(data, status) {
 }
 
 // Generate UI(a list of classes) for a successful query.
-function generateClassListHtml(ret) {
+function generateClassListUI(ret) {
 	var schoolid = ret.retobjx.schoolid;
 	var classes = ret.retobjx.classes; // Array of classes.
-	var dialoghtml = "";
-	dialoghtml += "<div id='dialog_class_list' title='班级列表'>";
-	dialoghtml += "</div>";
+	var ui = "";
+	ui += "<div id='dialog_class_list' title='班级列表'>";
+	ui += "</div>";
 
-	$(dialoghtml).appendTo('body');
+	$(ui).appendTo('body');
 	if (classes.length == 0) {
 		$("#dialog_class_list").html("班级列表为空！");
 	} else {
@@ -555,7 +555,7 @@ function generateClassListHtml(ret) {
 
 	$("#dialog_class_list").dialog({
 		modal : true,
-		minWidth : 400,
+		minWidth : 500,
 		minHeight : 200,
 		buttons : [
 			{
@@ -656,7 +656,7 @@ function handleClassCreateResponse(data, status) {
 }
 
 // Generate UI(creation of new class table) when class table doesn't exist.
-function generateClassTableCreationHtml(ret) {
+function generateClassTableCreationUI(ret) {
 	var dialoghtml = "";
 	dialoghtml += "<div id='dialog_class_table_creation' title='班级列表'>";
 	dialoghtml += "</div>";
