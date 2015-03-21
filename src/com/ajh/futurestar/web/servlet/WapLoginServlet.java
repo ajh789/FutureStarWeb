@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import com.ajh.futurestar.web.utils.Authenticate;
 
-@WebServlet("/waplogin")
+@WebServlet("/waplogin.do")
 public class WapLoginServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = 1315400829044423376L;
@@ -92,7 +92,7 @@ public class WapLoginServlet extends HttpServlet
 					user.put("islocked", ((Boolean)session.getAttribute("islocked")).booleanValue());
 					jo.put("retcode", RETCODE_OK);
 					jo.put("retinfo", "已经登录");
-					jo.put("user", user);
+					jo.put("curuser", user);
 				} else {
 					jo.put("retcode", RETCODE_KO_NOTLOGIN_OR_TIMEOUT);
 					jo.put("retinfo", "尚未登录或会话超时");
