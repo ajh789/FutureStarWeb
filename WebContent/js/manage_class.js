@@ -7,19 +7,25 @@ function onPageLoad() {
 	g_schoolid = getParamSchoolId();
 	if (g_schoolid == "") {
 		alert('学校ID为空，请从"学校管理"页面进入。');
-		window.location.href = g_webpages_url.manageschool; // Redirect to page school management.
+		redirectToSchoolManagement();
 	}
+
+	getLoginInfo();
+}
+
+function redirectToSchoolManagement() {
+	window.location.href = g_webpages_url.manageschool; // Redirect to page school management.
 }
 
 function getLoginInfo() {
-	$.get(url, handleSchoolSelectResponse);
+	$.get(g_waplogin_do_url.getstatus, handleLoginResponse);
 }
 
 function redirecToLoginPage() {
 	window.location.href = g_webpages_url.login;
 }
 
-function handleLoginResponse() {
+function handleLoginResponse(data, status) {
 	var ret = null;
 	if (status == "success") { // 200 OK
 		if (typeof data == "object") { // object
@@ -30,15 +36,23 @@ function handleLoginResponse() {
 	} else {
 		console.log("ERR: Get login info failed.");
 		console.log("ERR: Redirect to login page.");
+		alert("Exception 1");
 		redirecToLoginPage();
 		return;
 	}
 
 	if (ret.retcode == RetCode.RETCODE_OK) {
 		g_user = ret.curuser;
+		var uiUserInfo = "";
+		uiUserInfo += g_user.name;
+		uiUserInfo += '(';
+		uiUserInfo += g_user.role;
+		uiUserInfo += ')';
+		$("#span_user_info").html(uiUserInfo);
 	} else {
 		console.log("INFO: Not login or sesseion timeouts.");
 		console.log("INFO: Redirect to login page.");
+		alert("Exception 2");
 		redirecToLoginPage();
 	}
 }
