@@ -166,3 +166,83 @@ function onButtonLogin() {
 	$.get(url, null); // No response function.
 	redirectToLoginPage();
 }
+
+function onButtonCreateClass() {
+	var uiDialog = "";
+	uiDialog += "<div id='dialog_class_creation' title='班级创建'>";
+	uiDialog += "  班级名称：<input type='text' id='class_creation_text_name' value=''>";
+	uiDialog += "            <span id='class_creation_label_name'></span><br>";
+	uiDialog += "  入学年月：<input type='text' id='class_creation_text_enrollment' value=''>";
+	uiDialog += "            <span id='class_creation_label_enrollment'></span>";
+	uiDialog += "</div>";
+	$(uiDialog).appendTo('body');
+	$("#class_creation_text_enrollment").datepicker({
+		changeYear         : true,
+		changeMonth        : true,
+		showMonthAfterYear : true,
+		dateFormat         : "yy/mm/dd",
+//		dayNames           : ["日", "一", "二", "三", "四", "五", "六"],
+		dayNamesMin        : ["日", "一", "二", "三", "四", "五", "六"],
+		monthNamesShort    : [ "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" ]
+	});
+	$("#dialog_class_creation").dialog({
+		modal : true,
+		minWidth : 400,
+		minHeight : 200,
+		buttons : [
+			{
+				text : "创建",
+				click : function() {
+					onButtonCommitCreateClass(g_schoolid);
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
+}
+
+function onButtonCommitCreateClass(schoolid) {
+	var name = $("#class_creation_text_name").prop("value");
+	var enrollment = $("#class_creation_text_enrollment").prop("value");
+	var ok = true;
+
+	if (name === "") {
+		ok = false;
+		$("#class_creation_label_name").html("<font color='red'>不能为空！</font>");
+	}
+
+	if (enrollment === "") {
+		ok = false;
+		$("#class_creation_label_enrollment").html("<font color='red'>不能为空！</font>");
+	}
+
+	if (ok == false) {
+		return;
+	}
+
+	var url = g_manageclass_do_url.create + "&schoolid=" + schoolid + "&name=" + name + "&enrollment=" + enrollment;
+	$.get(url, handleClassCreateResponse);
+}
+
+function handleClassCreateResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+
+		if (ret.retcode == RetCode.RETCODE_OK) {
+			window.alert("创建成功！");
+			$("#dialog_class_creation").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+		} else {
+			window.alert("错误: " + ret.retinfo);
+		}
+	}
+}
