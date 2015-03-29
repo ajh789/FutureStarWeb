@@ -1,6 +1,7 @@
 package com.ajh.futurestar.web.servlet;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -57,7 +58,7 @@ public class LoginServlet extends HttpServlet
 					out.println("islocked: " + session.getAttribute("islocked") + "<br/>");
 					String frompage = (String) session.getAttribute("frompage");
 					if (frompage != null) {
-						rsp.sendRedirect(frompage);
+						rsp.sendRedirect(URLDecoder.decode(frompage, "UTF-8"));
 					}
 				} else {
 					out.println("用户名或密码错误.<br/>");

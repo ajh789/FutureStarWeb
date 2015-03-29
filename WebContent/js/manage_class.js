@@ -21,7 +21,7 @@ function getLoginInfo() {
 	$.get(g_waplogin_do_url.getstatus, handleLoginResponse);
 }
 
-function redirecToLoginPage() {
+function redirectToLoginPage() {
 	window.location.href = g_webpages_url.login;
 }
 
@@ -37,7 +37,7 @@ function handleLoginResponse(data, status) {
 		console.log("ERR: Get login info failed.");
 		console.log("ERR: Redirect to login page.");
 		alert("Exception 1");
-		redirecToLoginPage();
+//		redirectToLoginPage();
 		return;
 	}
 
@@ -52,8 +52,11 @@ function handleLoginResponse(data, status) {
 	} else {
 		console.log("INFO: Not login or sesseion timeouts.");
 		console.log("INFO: Redirect to login page.");
-		alert("Exception 2");
-		redirecToLoginPage();
+//		var uiLogin = "<a href='";
+//		uiLogin += g_webpages_url.login;
+//		uiLogin += "'>点击登录</a>";
+		var uiLogin = "<input type='button' value='点击登录' onclick='onButtonLogin()' />";
+		$("#span_user_info").html(uiLogin);
 	}
 }
 
@@ -154,4 +157,12 @@ function generateClassListUI(ret) {
 //			}
 //		]
 //	});
+}
+
+function onButtonLogin() {
+	var frompage = g_webpages_url.manageclass + "?schoolid=" + g_schoolid;
+	var url = g_setfrompage_do_url + "?frompage=" + encodeURIComponent(frompage);
+	console.log(url);
+	$.get(url, null); // No response function.
+	redirectToLoginPage();
 }

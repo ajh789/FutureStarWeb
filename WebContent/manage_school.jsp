@@ -20,9 +20,12 @@ $(function() {
 </script>
 </head>
 <body>
+<%@ page import="java.net.URLEncoder" %>
 <%
 if (session.getAttribute("name") == null) {
-	session.setAttribute("frompage", "/futurestar/manage_school.jsp");
+	String strFromPage = "/futurestar/manage_school.jsp";
+	String strFromPageEncoded = URLEncoder.encode(strFromPage, "UTF-8");
+	session.setAttribute("frompage", strFromPageEncoded);
 	response.sendRedirect("/futurestar/login.jsp");
 }
 %>
