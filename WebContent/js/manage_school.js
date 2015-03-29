@@ -496,7 +496,7 @@ function handleClassTableSelectResponse(data, status) {
 		if (ret.retcode == RetCode.RETCODE_OK) {
 //			generateClassListUI(ret);
 //			retrieveClassList(ret.retobjx.schoolid);
-			window.location.href = g_webpages_url.manageclass + "?schoolid=" + ret.retobjx.schoolid;
+			window.location.href = g_webpages_url.classmgmt + "?schoolid=" + ret.retobjx.schoolid;
 		} else if (ret.retcode == RetCode.RETCODE_KO_MANAGE_CLASS_TABLES_NO_EXISTENCE) {
 			generateClassTableCreationUI(ret);
 		} else {

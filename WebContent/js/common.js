@@ -3,7 +3,7 @@ var g_login_page_url = "/futurestar/login.jsp";
 var g_webpages_url = {
 	login        : "/futurestar/login.jsp",
 	manageschool : "/futurestar/manage_school.jsp",
-	manageclass  : "/futurestar/manage_class.html"
+	classmgmt    : "/futurestar/classmgmt.html"
 };
 var g_waplogin_do_url = {
 	"login"     : "/futurestar/waplogin.do?action=login",

@@ -160,7 +160,7 @@ function generateClassListUI(ret) {
 }
 
 function onButtonLogin() {
-	var frompage = g_webpages_url.manageclass + "?schoolid=" + g_schoolid;
+	var frompage = g_webpages_url.classmgmt + "?schoolid=" + g_schoolid;
 	var url = g_setfrompage_do_url + "?frompage=" + encodeURIComponent(frompage);
 	console.log(url);
 	$.get(url, null); // No response function.
