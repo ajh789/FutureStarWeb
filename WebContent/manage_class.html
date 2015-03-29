@@ -4,17 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>班级管理</title>
 <link rel="stylesheet" type="text/css" href="js/jquery/ui/1.11.2/themes/smoothness/jquery-ui.css" />
-<link rel="stylesheet" type="text/css" href="css/manage.css" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="css/manage_class.css" />
 <script type="text/javascript" src="js/jquery/jquery-1.10.2.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/jquery/ui/1.11.2/jquery-ui.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/common.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/retcode.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/manage_class.js" charset="UTF-8"></script>
-<script type="text/javascript">
-$(function() {
-  $("#content_tab").tabs();
-});
-</script>
 </head>
 <body>
 <div id="container">
@@ -28,7 +24,7 @@ $(function() {
 	</div>
 	<div id="body">
 		<div id="menu">
-			<h2>菜单</h2>
+			<span style="background-color:lightgray; display:block; font-size:20px; font-weight:bold; padding:5px 0px 5px 5px;">功能菜单</span>
 			<ul>
 				<li><a href="manage_school.jsp">学校管理</a></li>
 				<li><a href="manage_teacher.jsp">教师管理</a></li>
@@ -37,29 +33,20 @@ $(function() {
 			</ul>
 		</div>
 		<div id="content">
-			<div id="content_tab"> <!-- jQuery UI tab -->
-				<ul>
-					<li><a href="#content_tab_search">查找</a></li>
-					<li><a href="#content_tab_addnew">新增</a></li>
-				</ul>
-				<div id="content_tab_search">
-					<div id="content_tab_search_upper">
-						班级名称：<input id="text_classname" type="text" value="" />
-						<input id="button_reqdata" type="button" value="查找" onclick="reqClassList()" />
-						<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
-						<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
-						<span id="span_debugmsg"></span>
-					</div> <!-- content_tab_search_upper -->
-					<div id="content_tab_search_lower">
-						<span id="span_content"></span>
-						<span id="span_content_hidden" style="display:block"></span> <!-- Used for inserting new element to DOM. -->
-					</div> <!-- content_tab_search_lower -->
-				</div> <!-- content_tab_search -->
-				<div id="content_tab_addnew">
-					<span>页面建设中...</span>
-				</div> <!-- content_tab_addnew -->
-			</div> <!-- content_tab -->
+			<div id="content_upper"></div>
+			<div id="content_middle">
+				班级名称：<input id="text_classname" type="text" value="" />
+				<input id="button_reqdata" type="button" value="查找" onclick="reqClassList()" />
+				<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
+				<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+				<span id="span_debugmsg"></span>
+			</div> <!-- content_tab_search_upper -->
+			<div id="content_lower">
+				<span id="span_content"></span>
+				<span id="span_content_hidden" style="display:block"></span> <!-- Used for inserting new element to DOM. -->
+			</div> <!-- content_tab_search_lower -->
 		</div> <!-- content -->
+		<div id="misc"></div>
 	</div> <!-- body -->
 	<div id="footer">Copyright FutureStar.com.cn</div>
 </div> <!-- container -->

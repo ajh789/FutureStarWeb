@@ -1,0 +1,16 @@
+html,body{
+  margin: 1px;
+  height: 100%;
+}
+
+/* jQuery UI customized style */
+.ui-widget {
+  font-size:80% !important;
+}
+.ui-button-text {
+  font-size:12px; /* change font size */
+  padding:1px 1px 1px 1px; /* change padding */
+}
+.ui-dialog-titlebar-close { /* Hide close button X for all jQuery dialogs. */
+  visibility: hidden;
+}

@@ -1,0 +1,48 @@
+div#container {height:100%; padding:5px;}
+div#header    {background-color:#99bbbb; margin:5px; border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;}
+div#body      {background-color:#fff; height:650px; margin:5px; padding:5px 0px 5px 0px; border:1px solid gray; border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;}
+div#menu      {background-color:#fff; height:100%; width:15%; float:left; overflow:auto; padding:0px 0px 0px 1px;}
+div#content   {background-color:#eee; height: 99%; width:74%; float:left; overflow:auto; padding:1px;}
+div#misc      {background-color:#fff; height:100%; width:10%; float:left; overflow:auto;}
+div#content_upper   {background-color:#d0d0d0; height:05%; overflow:auto;}
+div#content_middle  {background-color:#ffffff; height:05%; overflow:auto; padding:5px 0px 0px 5px;}
+div#content_lower   {background-color:#ffffff; height:89%; overflow:auto;}
+div#footer    {background-color:#99bbbb; margin:5px; clear:both; text-align:center; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}
+div#dialog_school_list {display:none;}
+div#header_left_part  {float:left; width:80%; height:35px; line-height:35px; font-size:32px; font-weight:bold;}
+div#header_right_part {float:left; width:20%; height:35px; line-height:35px; text-align:center; background-color:green;}
+span#span_user_info {display:inline-block; vertical-align:middle; line-height:normal;}
+span#span_debugmsg {display:none; color:red; font-weight:bold;}
+input#button_reqdata_up   {display:none;}
+input#button_reqdata_down {display:none;}
+h1 {margin-bottom:0;}
+h2 {margin-bottom:0; font-size:14px;}
+ul {margin:0;}
+li {list-style:none;}
+table#schools {font-size:12px;}
+table#schools td#school_details {width:700px;}
+table#teachers {font-size:12px; border:1px solid black; border-collapse:collapse;}
+table#teachers th{border:1px solid black;}
+table#teachers td{border:1px solid black;}
+table#teachers td#teacher_details {width:500px;}
+.table_school_edit {font-size:12px; border:1px solid lightgray;}
+.table_school_edit caption {border:1px solid #fff; font-size:15px; font-weight:bold; background:#dbb768; text-align:left;}
+.table_school_edit tr {vertical-align:top;}
+.table_school_edit td {border:1px solid lightgray;}
+.table_teacher_edit {font-size:12px; border:1px solid blue; border-collapse:collapse;}
+.table_teacher_edit tr {vertical-align:top;}
+.table_teacher_edit td {border:1px solid blue;}
+.img_school_logo {width: 100px; height: 100px;}
+.img_teacher_logo {width: 100px; height: 100px;}
+.img_navigation_prev_next {
+	width: 50px;
+	height: 100px;
+	display: table-cell;
+	vertical-align: middle;
+	}
+.div_child_vertical_middle {
+  border: 1px solid red;
+  display: table-cell;
+  vertical-align: middle;
+  background-color: gray;
+}
