@@ -10,6 +10,11 @@ var g_waplogin_do_url = {
 	"getstatus" : "/futurestar/waplogin.do?action=getstatus"
 };
 
+var g_manageclass_do_url = {
+	"select" : "/futurestar/manageclass.do?action=select",
+	"create" : "/futurestar/manageclass.do?action=create"
+};
+
 function htmlEncode(value) {
   //create a in-memory div, set it's inner text(which jQuery automatically encodes)
   //then grab the encoded contents back out.  The div never exists on the page.

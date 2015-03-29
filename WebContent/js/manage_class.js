@@ -43,11 +43,11 @@ function handleLoginResponse(data, status) {
 
 	if (ret.retcode == RetCode.RETCODE_OK) {
 		g_user = ret.curuser;
-		var uiUserInfo = "";
+		var uiUserInfo = "<a href='#'>";
 		uiUserInfo += g_user.name;
 		uiUserInfo += '(';
 		uiUserInfo += g_user.role;
-		uiUserInfo += ')';
+		uiUserInfo += ')</a>';
 		$("#span_user_info").html(uiUserInfo);
 	} else {
 		console.log("INFO: Not login or sesseion timeouts.");
@@ -64,7 +64,7 @@ function getPageParams() {
 	var paramsString = url.substring(offset+1, len);
 	console.log("Params string is " + paramsString);
 	var params = paramsString.split("&");
-	return params;
+	return params; // Array
 }
 
 /**
@@ -79,9 +79,79 @@ function getParamSchoolId() {
 		var key = pairs[0];
 		var value = pairs[1];
 		if (key == "schoolid") {
-			return value;
+			return value; // string
 		}
 	}
 	
 	return "";
+}
+
+function reqClassList() {
+	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid;
+	$.get(url, handleClassSelectResponse);
+}
+
+function handleClassSelectResponse(data, status) {
+	if (status == "success") {
+		var ret = null;
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+
+		if (ret.retcode == RetCode.RETCODE_OK) {
+			generateClassListUI(ret);
+		} else {
+			window.alert("Error: " + ret.retinfo);
+		}
+	}
+}
+
+// Generate UI(a list of classes) for a successful query.
+function generateClassListUI(ret) {
+	var schoolid = ret.retobjx.schoolid;
+	var classes = ret.retobjx.classes; // Array of classes.
+	var ui = "";
+	ui += "<div id='dialog_class_list' title='班级列表'>";
+	ui += "</div>";
+
+	$(ui).appendTo('#span_content');
+	if (classes.length == 0) {
+		$("#dialog_class_list").html("班级列表为空！");
+	} else {
+		var table = "";
+		table += "<table border='1'>";
+		table += "  <tr><th>ID</th><th>Name</th><th>Enrollment</th><th>Creation</th></tr>";
+		for (var i=0; i<classes.length; i++) {
+			table += "<tr>";
+			table += "<td>" + classes[i].ID + "</td>";
+			table += "<td>" + classes[i].NAME + "</td>";
+			table += "<td>" + classes[i].ENROLLMENT + "</td>";
+			table += "<td>" + classes[i].CREATION + "</td>";
+			table += "</tr>";
+		}
+		table += "</table>";
+		$("#dialog_class_list").html(table);
+	}
+
+//	$("#dialog_class_list").dialog({
+//		modal : true,
+//		minWidth : 500,
+//		minHeight : 200,
+//		buttons : [
+//			{
+//				text : "创建新班级",
+//				click : function() {
+//					onButtonCreateClass(schoolid);
+//				}
+//			},
+//			{
+//				text : "取消",
+//				click : function() {
+//					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+//				}
+//			}
+//		]
+//	});
 }
