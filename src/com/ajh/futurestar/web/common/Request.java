@@ -49,7 +49,7 @@ public class Request {
 	public static final String PARAM_TEACHER_SCHOOLNAME = "schoolname";
 
 	//
-	// Parameter names for class management class SQL tables management.
+	// Parameter names for class management and class SQL tables management.
 	//
 	public static final String PARAM_CLASS_SCHOOLID = "schoolid";
 	public static final String PARAM_CLASS_NAME = "name";

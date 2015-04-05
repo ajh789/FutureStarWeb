@@ -37,14 +37,14 @@
 			<div id="content_middle">
 				班级名称：<input id="text_classname" type="text" value="" />
 				<input id="button_reqdata" type="button" value="查找" onclick="reqClassList()" />
-				<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
-				<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+				<input id="button_reqdata_up" type="button" value="上一页" onclick="reqClassListPageUp()" />
+				<input id="button_reqdata_down" type="button" value="下一页" onclick="reqClassListPageDown()" />
 				<span id="span_debugmsg"></span>
-			</div> <!-- content_tab_search_upper -->
+			</div> <!-- content_middle -->
 			<div id="content_lower">
-				<span id="span_content"></span>
-				<span id="span_content_hidden" style="display:block"></span> <!-- Used for inserting new element to DOM. -->
-			</div> <!-- content_tab_search_lower -->
+				<div id="content_body"></div>
+				<div id="content_body_hidden_dom" style="display:block"></div> <!-- Used for inserting new element to DOM. -->
+			</div> <!-- content_lower -->
 		</div> <!-- content -->
 		<div id="misc">
 			<input type="button" value="创建新班级" onclick="onButtonCreateClass()" />

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.ajh.futurestar.web.common.DbVendor;
 import com.ajh.futurestar.web.common.Request;
 import com.ajh.futurestar.web.common.RetCode;
 import com.ajh.futurestar.web.common.RetInfo;
@@ -37,6 +38,7 @@ public class ManageClassServlet extends ManageExServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 8273769336541772993L;
+	private String strSchoolId = null;
 
 	@Override
 	protected void generatePageBody(PrintWriter out, ReturnX result) {
@@ -151,32 +153,129 @@ public class ManageClassServlet extends ManageExServlet {
 
 	private void doActionSelect(Connection conn, Statement stmt, HttpServletRequest req, ReturnX retx)
 		throws SQLException {
+		//
+		// Get parameters.
+		//
 		String strSchoolId = req.getParameter("schoolid");
 		if (strSchoolId == null || strSchoolId.equals("")) {
 			retx.retcode  = RetCode.RETCODE_KO_MANAGE_CLASS_NULL_SCHOOLID;
 			retx.retinfo += RetInfo.RETINFO_REQ_PARAM_NULL_CLASS_SCHOOLID;
+			return;
 		} else {
-			JSONObject retobjx = new JSONObject();
-			retobjx.put("schoolid", strSchoolId);
-
-			// Query from view instead of table.
-			String strQuery = "select * FROM V_CLASS_FROM_SCHOOL_" + strSchoolId;
-			ResultSet rsClassList = stmt.executeQuery(strQuery);
-			JSONArray arrayClass = new JSONArray();
-			while (rsClassList.next()) {
-				JSONObject obj = new JSONObject(); // Item in array.
-				obj.put("ID", rsClassList.getString("ID"));
-				obj.put("NAME", rsClassList.getString("NAME"));
-				obj.put("ENROLLMENT", rsClassList.getString("ENROLLMENT"));
-				obj.put("CREATION", rsClassList.getString("CREATION"));
-				arrayClass.put(obj);
-			}
-			retobjx.put("classes", arrayClass);
-
-			retx.retobjx = retobjx;
-
-			rsClassList.close();
+			this.strSchoolId = strSchoolId;
 		}
+
+		int nMode = Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT;
+		String strMode = req.getParameter(Request.PARAM_ACTION_SELECT_MODE);
+		if (strMode != null) {
+			nMode = Integer.parseInt(strMode);
+		}
+
+		String strBaseId = req.getParameter(Request.PARAM_ACTION_SELECT_BASEID);
+		if (strBaseId == null) {
+			strBaseId = "" + Request.VALUE_ACTION_SELECT_BASEID_DEFAULT;
+		}
+
+		int nRange = Request.VALUE_ACTION_SELECT_RANGE_DEFAULT;
+		String strRange = req.getParameter(Request.PARAM_ACTION_SELECT_RANGE);
+		if (strRange != null) {
+			nRange = Integer.parseInt(strRange);
+		}
+
+		String strClassName = req.getParameter(Request.PARAM_CLASS_NAME);
+
+		int nGoes = Request.VALUE_ACTION_SELECT_GOES_DOWN; // Default to goes down.
+		String strGoes = req.getParameter(Request.PARAM_ACTION_SELECT_GOES);
+		if (strGoes != null && strGoes.equalsIgnoreCase("up")) {
+			nGoes = Request.VALUE_ACTION_SELECT_GOES_UP;
+		}
+
+		String strFromId = req.getParameter(Request.PARAM_ACTION_SELECT_FROMID);
+		if (strFromId == null) {
+			strFromId = "0";
+		}
+		String strToId = req.getParameter(Request.PARAM_ACTION_SELECT_TOID);
+		if (strToId == null) {
+			strToId = "0";
+		}
+
+		//
+		// Construct query SQL string.
+		//
+		String strQuery = "";
+		switch (nMode) {
+		case Request.VALUE_ACTION_SELECT_MODE_BASEID_AND_INCREMENT:
+			strQuery = composeSqlStrSelect(DbVendor.DB_SQLITE, strBaseId, nRange, strClassName, nGoes);
+			break;
+		case Request.VALUE_ACTION_SELECT_MODE_FROM_TO:
+			strQuery = composeSqlStrSelect(DbVendor.DB_SQLITE, strFromId, strToId);
+			break;
+		default:
+			break;
+		}
+
+		JSONObject retobjx = new JSONObject();
+//		retobjx.put("schoolid", strSchoolId);
+
+		// Query from view instead of table.
+//		String strQuery = "select * FROM V_CLASS_FROM_SCHOOL_" + strSchoolId;
+		getServletContext().log(strQuery);
+		ResultSet rsClassList = stmt.executeQuery(strQuery);
+		JSONArray arrayClass = new JSONArray();
+		while (rsClassList.next()) {
+			JSONObject obj = new JSONObject(); // Item in array.
+			obj.put("ID", rsClassList.getString("ID"));
+			obj.put("NAME", rsClassList.getString("NAME"));
+			obj.put("ENROLLMENT", rsClassList.getString("ENROLLMENT"));
+			obj.put("CREATION", rsClassList.getString("CREATION"));
+			arrayClass.put(obj);
+		}
+
+		retobjx.put("schoolid", strSchoolId);
+		retobjx.put("classes", arrayClass);
+
+		retx.retobjx = retobjx;
+
+		rsClassList.close();
+
 	}
 
+	private String composeSqlStrSelectAllFields()
+	{
+		// Query from view instead of table.
+		return "select * FROM V_CLASS_FROM_SCHOOL_" + this.strSchoolId;
+	}
+
+	private String composeSqlStrSelect(DbVendor vendor, String baseid, int range, String classname, int goes)
+	{
+		String sql = composeSqlStrSelectAllFields();
+		if (goes == Request.VALUE_ACTION_SELECT_GOES_DOWN) {
+			sql += " where CREATION > '" + baseid + "'";
+			if (classname != null && !classname.equals("")) {
+//				getServletContext().log("School name is " + schoolname);
+				sql += " and NAME like '%" + classname + "%'";
+			}
+			sql += " order by CREATION asc limit " + range + ";";
+		} else {
+			sql += " where CREATION in " + 
+				"( select CREATION from V_CLASS_FROM_SCHOOL_" + this.strSchoolId + " where CREATION < '" + baseid + "'";
+			if (classname != null && !classname.equals("")) {
+//				getServletContext().log("School name is " + schoolname);
+				sql += " and NAME like '%" + classname + "%'";
+			}
+			sql += " order by CREATION desc limit " + range +");";
+		}
+
+		return sql;
+	}
+
+	private String composeSqlStrSelect(DbVendor vendor, String fromid, String toid)
+	{
+		String sql = composeSqlStrSelectAllFields();
+		sql += " where CREATION >= '" + fromid + "' AND CREATION <= '" + toid + "';";
+
+		return sql;
+	}
 }
+
+

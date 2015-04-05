@@ -99,10 +99,10 @@ END;
 -- Naming convention is T_CLASS_FROM_SCHOOL_XXX, where XXX is school id.
 CREATE TABLE T_CLASS
 (
-ID        CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
-NAME      VARCHAR(255) UNIQUE      NOT NULL,
+ID         CHAR(8)      PRIMARY KEY NOT NULL DEFAULT 'null',
+NAME       VARCHAR(255) UNIQUE      NOT NULL,
 ENROLLMENT CHAR(10)                 NOT NULL DEFAULT 'null', -- Date of enrollment, format is yyyy/mm/dd.
-CREATION  CHAR(26)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
+CREATION   CHAR(26)                 NOT NULL DEFAULT 'null' -- Time stamp of creation.
 );
 
 -- Use same naming convention as T_CLASS.

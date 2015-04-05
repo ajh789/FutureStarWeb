@@ -19,6 +19,9 @@ h1 {margin-bottom:0;}
 h2 {margin-bottom:0; font-size:14px;}
 ul {margin:0;}
 li {list-style:none;}
+table#classlist {font-size:14px; border:1px solid black; border-collapse:collapse;}
+table#classlist th {border:1px solid black; font-size:16px; background-color:yellow;}
+table#classlist td {border:1px solid black; padding:5px;}
 table#schools {font-size:12px;}
 table#schools td#school_details {width:700px;}
 table#teachers {font-size:12px; border:1px solid black; border-collapse:collapse;}
