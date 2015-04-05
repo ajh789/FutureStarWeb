@@ -39,6 +39,12 @@
 				<input id="button_reqdata" type="button" value="查找" onclick="reqClassList()" />
 				<input id="button_reqdata_up" type="button" value="上一页" onclick="reqClassListPageUp()" />
 				<input id="button_reqdata_down" type="button" value="下一页" onclick="reqClassListPageDown()" />
+				<select id="text_num_per_page" onchange="onChangeNumPerPage()">
+					<option value ="5" selected="selected">5</option>
+					<option value ="10">10</option>
+					<option value="20">20</option>
+					<option value="50">50</option>
+				</select>条/页
 				<span id="span_debugmsg"></span>
 			</div> <!-- content_middle -->
 			<div id="content_lower">

@@ -196,12 +196,16 @@ BIRTH_MONTH   INTEGER                  NOT NULL CHECK(BIRTH_MONTH>=1 AND BIRTH_M
 BIRTH_DAY     INTEGER                  NOT NULL CHECK(BIRTH_DAY>=1 AND BIRTH_DAY<=31),
 PARENT_ID_DAD INTEGER                          , -- Could be null? Or one of PARENT_ID_DAD & PARENT_ID_MOM could be null?
 PARENT_ID_MOM INTEGER                          , -- Could be null?
+SCHOOL_ID     INTEGER                  NOT NULL,
 CLASS_ID      INTEGER                  NOT NULL,
 /* This creates a circular/cyclic dependency between T_PARENET and T_CHILD.
 FOREIGN KEY(PARENT_ID_DAD) REFERENCES T_PARENT(ID),
 FOREIGN KEY(PARENT_ID_MOM) REFERENCES T_PARENT(ID),
 */
+FOREIGN KEY(SCHOOL_ID)     REFERENCES T_SCHOOL(ID)
+/* Each school has its own class SQL table T_CLASS_FROM_SCHOOL_XXX
 FOREIGN KEY(CLASS_ID)      REFERENCES T_CLASS(ID)
+*/
 );
 
 CREATE TABLE T_CATALOG -- Catalog of posters.

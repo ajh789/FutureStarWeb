@@ -9,6 +9,8 @@ g_classes.head = null; // Time stamp of creation for head in school array.
 g_classes.tail = null; // Time stamp of creation for tail in school array.
 g_classes.curpos = -1; // Position of currently visiting school.
 
+var g_numPerPage = 5;
+
 function onPageLoad() {
 	g_schoolid = getParamSchoolId();
 	if (g_schoolid == "") {
@@ -97,8 +99,16 @@ function getParamSchoolId() {
 	return "";
 }
 
+function onChangeNumPerPage() {
+//	var objNumPerPage = $("#text_num_per_page"); // Why doesn't this work?
+	var objNumPerPage = document.getElementById("text_num_per_page");
+//	console.log(objNumPerPage.options[objNumPerPage.selectedIndex].value);
+	g_numPerPage = objNumPerPage.options[objNumPerPage.selectedIndex].value;
+
+}
+
 function reqClassList() {
-	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid;
+	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid + "&range=" + g_numPerPage;
 
 	var classname = $("#text_classname").prop("value");
 	if (classname != "") {
@@ -111,7 +121,7 @@ function reqClassList() {
 }
 
 function reqClassListPageDown() {
-	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid;
+	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid + "&range=" + g_numPerPage;
 
 	if (g_classes.tail != null) {
 		url += "&baseid=" + g_classes.tail;
@@ -126,7 +136,7 @@ function reqClassListPageDown() {
 }
 
 function reqClassListPageUp() {
-	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid;
+	var url = g_manageclass_do_url.select + "&schoolid=" + g_schoolid + "&range=" + g_numPerPage;
 
 	if (g_classes.head != null) {
 		url += "&baseid=" + g_classes.head + "&goes=up";
