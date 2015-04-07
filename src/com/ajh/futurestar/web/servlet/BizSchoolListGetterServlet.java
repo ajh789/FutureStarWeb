@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import com.ajh.futurestar.web.common.DbConn;
 
 @WebServlet(name = "GetSchoolListServlet", description = "GetSchoolListServlet", urlPatterns = { "/getschools.do" })
-public class GetSchoolListServlet extends HttpServlet {
+public class BizSchoolListGetterServlet extends HttpServlet {
 
 	/**
 	 * 

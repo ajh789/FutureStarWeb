@@ -32,7 +32,7 @@ import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
  *
  */
 @WebServlet("/manageclass.do")
-public class ManageClassServlet extends ManageExServlet {
+public class BizClassMgmtServlet extends ManageExServlet {
 
 	/**
 	 * 

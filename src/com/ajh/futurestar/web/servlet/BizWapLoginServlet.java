@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import com.ajh.futurestar.web.utils.Authenticate;
 
 @WebServlet("/waplogin.do")
-public class WapLoginServlet extends HttpServlet 
+public class BizWapLoginServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = 1315400829044423376L;
 	private static final int RETCODE_OK = 0;

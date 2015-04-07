@@ -29,13 +29,13 @@ import com.ajh.futurestar.web.common.Return;
  * Servlet implementation class ManageTeacherServlet
  */
 @WebServlet("/manageteacher.do")
-public class ManageTeacherServlet extends HttpServlet {
+public class BizTeacherMgmtServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ManageTeacherServlet()
+    public BizTeacherMgmtServlet()
     {
         super();
         // TODO Auto-generated constructor stub

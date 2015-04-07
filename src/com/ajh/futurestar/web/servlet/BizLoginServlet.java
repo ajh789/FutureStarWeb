@@ -10,7 +10,7 @@ import javax.servlet.http.*;
 import com.ajh.futurestar.web.utils.Authenticate;
 
 @WebServlet("/login.do")
-public class LoginServlet extends HttpServlet 
+public class BizLoginServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = 1382075836716659538L;
 

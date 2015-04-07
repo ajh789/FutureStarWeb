@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet implementation class SetFromPageServlet
  */
 @WebServlet("/setfrompage.do")
-public class SetFromPageServlet extends HttpServlet {
+public class BizFromPageSetterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetFromPageServlet() {
+    public BizFromPageSetterServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
