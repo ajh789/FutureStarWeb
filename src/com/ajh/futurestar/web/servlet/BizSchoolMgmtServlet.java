@@ -25,7 +25,7 @@ import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
 /**
  * Servlet implementation class ManageSchoolServlet
  */
-@WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/manageschool.do" })
+@WebServlet(name = "ManageSchoolServlet", description = "ManageSchoolServlet", urlPatterns = { "/schoolmgmt.do" })
 public class BizSchoolMgmtServlet extends HttpServlet {
 	private static final long serialVersionUID = 5826567279826573784L;
 

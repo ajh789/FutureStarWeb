@@ -25,7 +25,7 @@ import com.ajh.futurestar.web.common.Return;
  * Manage SQL tables of classes from different schools.
  * Each school has its own SQL table of class.
  */
-@WebServlet(description = "Manage SQL tables of classes.", urlPatterns = { "/manageclasstables.do" })
+@WebServlet(description = "Manage SQL tables of classes.", urlPatterns = { "/classtablesmgmt.do" })
 public class BizClassTablesMgmtServlet extends ManageServlet {
     /**
 	 * 

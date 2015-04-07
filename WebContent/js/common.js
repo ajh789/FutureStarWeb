@@ -11,8 +11,8 @@ var g_waplogin_do_url = {
 };
 
 var g_manageclass_do_url = {
-	"select" : "/futurestar/manageclass.do?action=select",
-	"create" : "/futurestar/manageclass.do?action=create"
+	"select" : "/futurestar/classmgmt.do?action=select",
+	"create" : "/futurestar/classmgmt.do?action=create"
 };
 
 var g_setfrompage_do_url = "/futurestar/setfrompage.do";

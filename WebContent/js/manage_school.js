@@ -7,10 +7,10 @@ document.getElementByIdx_x = function(id) {
 };
 
 var g_manageschool_url = {
-	"select" : "/futurestar/manageschool.do?reqfrom=wap&action=select",
-	"insert" : "/futurestar/manageschool.do?reqfrom=wap&action=insert",
-	"update" : "/futurestar/manageschool.do?reqfrom=wap&action=update",
-	"delete" : "/futurestar/manageschool.do?reqfrom=wap&action=delete"
+	"select" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=select",
+	"insert" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=insert",
+	"update" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=update",
+	"delete" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=delete"
 };
 
 var g_privilege = 0;
@@ -22,13 +22,13 @@ g_schools.tail = null; // Time stamp of creation for tail in school array.
 g_schools.curpos = -1; // Position of currently visiting school.
 
 var g_manageclasstables_url = {
-	"select" : "/futurestar/manageclasstables.do?action=select",
-	"create" : "/futurestar/manageclasstables.do?action=create"
+	"select" : "/futurestar/classtablesmgmt.do?action=select",
+	"create" : "/futurestar/classtablesmgmt.do?action=create"
 };
 
 var g_manageclass_url = {
-	"select" : "/futurestar/manageclass.do?action=select",
-	"create" : "/futurestar/manageclass.do?action=create"
+	"select" : "/futurestar/classmgmt.do?action=select",
+	"create" : "/futurestar/classmgmt.do?action=create"
 };
 
 function reqData()

@@ -28,7 +28,7 @@ import com.ajh.futurestar.web.common.Return;
 /**
  * Servlet implementation class ManageTeacherServlet
  */
-@WebServlet("/manageteacher.do")
+@WebServlet("/teachermgmt.do")
 public class BizTeacherMgmtServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

@@ -6,7 +6,7 @@ document.getElementByIdx_x = function(id) {
 	}
 };
 
-var g_manageteacher_url = "/futurestar/manageteacher.do?reqfrom=wap";
+var g_manageteacher_url = "/futurestar/teachermgmt.do?reqfrom=wap";
 var g_manageteacher_select_url = g_manageteacher_url + "&action=select";
 var g_manageteacher_insert_url = g_manageteacher_url + "&action=insert";
 var g_manageteacher_update_url = g_manageteacher_url + "&action=update";

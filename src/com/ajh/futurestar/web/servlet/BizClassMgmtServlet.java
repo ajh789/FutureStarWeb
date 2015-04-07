@@ -31,7 +31,7 @@ import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
  * @author Andy Jiang H
  *
  */
-@WebServlet("/manageclass.do")
+@WebServlet("/classmgmt.do")
 public class BizClassMgmtServlet extends ManageExServlet {
 
 	/**
