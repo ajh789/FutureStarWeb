@@ -26,3 +26,15 @@ function htmlEncode(value) {
 function htmlDecode(value) {
   return $('<div/>').html(value).text();
 }
+
+function generateNaviMenu() {
+	var uiMenu = "";
+	uiMenu += '<span style="background-color:lightgray; display:block; font-size:20px; font-weight:bold; padding:5px 0px 5px 5px;">功能菜单</span>';
+	uiMenu += '<ul>';
+	uiMenu += '  <li><a href="manage_school.jsp">学校管理</a></li>';
+	uiMenu += '  <li><a href="manage_teacher.jsp">教师管理</a></li>';
+	uiMenu += '  <li><a href="manage_parent.jsp">家长管理</a></li>';
+	uiMenu += '  <li><a href="childmgmt.html">学生管理</a></li>';
+	uiMenu += '</ul>';
+	return uiMenu;
+}

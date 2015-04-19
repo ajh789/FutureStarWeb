@@ -34,13 +34,7 @@ if (session.getAttribute("name") == null) {
 		<h1>Main Title of Web Page</h1>
 	</div>
 	<div id="menu">
-		<h2>菜单</h2>
-		<ul>
-		<li><a href="manage_school.jsp">学校管理</a></li>
-		<li><a href="manage_teacher.jsp">教师管理</a></li>
-		<li><a href="manage_parent.jsp">家长管理</a></li>
-		<li><a href="manage_student.jsp">学生管理</a></li>
-		</ul>
+		<!-- Place holder of menu. -->
 	</div>
 	<div id="content">
 		<div id="content_tab"> <!-- jQuery UI tab -->

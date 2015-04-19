@@ -6,6 +6,8 @@ document.getElementByIdx_x = function(id) {
 	}
 };
 
+window.onload = onPageLoad;
+
 var g_manageschool_url = {
 	"select" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=select",
 	"insert" : "/futurestar/schoolmgmt.do?reqfrom=wap&action=insert",
@@ -30,6 +32,11 @@ var g_manageclass_url = {
 	"select" : "/futurestar/classmgmt.do?action=select",
 	"create" : "/futurestar/classmgmt.do?action=create"
 };
+
+function onPageLoad() {
+	var menu = generateNaviMenu();
+	$(menu).appendTo('#menu');
+}
 
 function reqData()
 {

@@ -3,6 +3,11 @@ html,body{
   height: 100%;
 }
 
+.span_font_red_bold {
+	color: red;
+	font-weight: bold;
+}
+
 /* jQuery UI customized style */
 .ui-widget {
   font-size:80% !important;
