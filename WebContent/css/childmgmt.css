@@ -21,7 +21,7 @@ ul {margin:0;}
 li {list-style:none;}
 table#table_child_add {border:1px solid gray; border-collapse:collapse;}
 table#table_child_add th {border:1px solid gray; font-size:16px; background-color:yellow;}
-table#table_child_add td {border:1px solid gray; padding:5px;}
+table#table_child_add td {border:1px solid gray; padding:5px; word-break: keep-all;}
 table#classlist {font-size:14px; border:1px solid black; border-collapse:collapse;}
 table#classlist th {border:1px solid black; font-size:16px; background-color:yellow;}
 table#classlist td {border:1px solid black; padding:5px;}
@@ -34,6 +34,7 @@ table#classlist td {border:1px solid black; padding:5px;}
 .table_teacher_edit td {border:1px solid blue;}
 .img_school_logo {width: 100px; height: 100px;}
 .img_teacher_logo {width: 100px; height: 100px;}
+.img_user_avatar {width: 100px; height: 100px;}
 .img_navigation_prev_next {
 	width: 50px;
 	height: 100px;

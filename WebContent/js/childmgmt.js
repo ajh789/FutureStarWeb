@@ -209,7 +209,7 @@ function onButtonLogin() {
 
 function onButtonAddChild() {
 	var uiDialog = "";
-	uiDialog += "<div id='dialog_child_add' title='添加学生'>";
+	uiDialog += "<div id='dialog_child_add' title='添加学生' style='overflow:auto;'>";
 	uiDialog += "<span class='span_font_red_bold'>&nbsp;*&nbsp;</span>必填项";
 	uiDialog += "<table id='table_child_add'>";
 	uiDialog += "  <tr>";
@@ -224,9 +224,16 @@ function onButtonAddChild() {
 	uiDialog += "  </tr>";
 	uiDialog += "  <tr>";
 	uiDialog += "    <td>性别<span class='span_font_red_bold'>&nbsp;*</span></td>";
-	uiDialog += "    <td><input type='radio' id='teacher_edit_gender_male' name='gender' value='0' checked='checked' />男";
-	uiDialog += "        <input type='radio' id='teacher_edit_gender_male' name='gender' value='1' />女</td>";
+	uiDialog += "    <td><input type='radio' id='child_add_gender_male' name='gender' value='0' checked='checked' />男";
+	uiDialog += "        <input type='radio' id='child_add_gender_male' name='gender' value='1' />女</td>";
 	uiDialog += "    <td><span id='child_add_label_gender'></span></td>";
+	uiDialog += "  </tr>";
+	uiDialog += "  <tr>";
+	uiDialog += "    <td>照片</td>";
+	uiDialog += "    <td><image src='images/students/default.png' alt='头像' class='img_user_avatar' /><br/>";
+	uiDialog += "        <input type='file' id='child_add_file_avatar' class='filestyle' data-buttonText='选择...' /><br/>";
+	uiDialog += "        <input type='button' id='child_add_button_avatar' value='上传' onclick='onButtonChooseAvatar()'/></td>";
+	uiDialog += "    <td></td>";
 	uiDialog += "  </tr>";
 	uiDialog += "  <tr>";
 	uiDialog += "    <td>出生日期<span class='span_font_red_bold'>&nbsp;*</span></td>";
@@ -235,8 +242,8 @@ function onButtonAddChild() {
 	uiDialog += "  </tr>";
 	uiDialog += "  <tr>";
 	uiDialog += "    <td>父母信息</td>";
-	uiDialog += "    <td>父&nbsp;<input type='text' id='child_add_text_parent_dad' value='' /><br/>";
-	uiDialog += "        母&nbsp;<input type='text' id='child_add_text_parent_mom' value='' /></td>";
+	uiDialog += "    <td>父：<input type='text' id='child_add_text_parent_dad' value='' /><br/>";
+	uiDialog += "        母：<input type='text' id='child_add_text_parent_mom' value='' /></td>";
 	uiDialog += "    <td><span id='child_add_label_parents'></span></td>";
 	uiDialog += "  </tr>";
 	uiDialog += "  <tr>";
@@ -263,7 +270,7 @@ function onButtonAddChild() {
 	});
 	$("#dialog_child_add").dialog({
 		modal : true,
-		minWidth : 560,
+		minWidth : 700,
 		minHeight : 200,
 		buttons : [
 			{
@@ -280,6 +287,14 @@ function onButtonAddChild() {
 			}
 		]
 	});
+}
+
+function onButtonChooseAvatar() {
+//	$('#child_add_file_avatar').trigger('click');
+}
+
+function onButtonUploadAvatar() {
+	
 }
 
 function onButtonCommitCreateClass(schoolid) {

@@ -190,6 +190,7 @@ CREATE TABLE T_CHILD
 (
 ID            INTEGER      PRIMARY KEY NOT NULL, -- Use id number on ID card.
 NAME          VARCHAR(255)             NOT NULL, -- Use name on ID card.
+LOGO          VARCHAR(255)             NOT NULL DEFAULT 'null',
 GENDER        INTEGER                  NOT NULL DEFAULT 0, -- 0 - male, 1 - female
 BIRTH_YEAR    INTEGER                  NOT NULL CHECK(BIRTH_YEAR>1950),
 BIRTH_MONTH   INTEGER                  NOT NULL CHECK(BIRTH_MONTH>=1 AND BIRTH_MONTH<=12),
@@ -207,6 +208,15 @@ FOREIGN KEY(SCHOOL_ID)     REFERENCES T_SCHOOL(ID)
 FOREIGN KEY(CLASS_ID)      REFERENCES T_CLASS(ID)
 */
 );
+
+CREATE TRIGGER T_CHILD_SetDefaultLogo
+AFTER INSERT ON T_CHILD
+WHEN (NEW.LOGO = 'null')
+BEGIN
+    UPDATE T_CHILD SET 
+        LOGO = 'images/students/default.png'
+    WHERE rowid = NEW.rowid;
+END;
 
 CREATE TABLE T_CATALOG -- Catalog of posters.
 (
