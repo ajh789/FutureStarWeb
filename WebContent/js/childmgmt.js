@@ -1,6 +1,6 @@
 window.onload = onPageLoad;
 
-var g_user = null;
+// var g_user = null; // Moved to common.js
 
 var g_classes = {};
 g_classes.data = null; // Array of schools.
@@ -31,7 +31,7 @@ function getLoginInfo() {
 function redirectToLoginPage() {
 	window.location.href = g_webpages_url.login;
 }
-
+/* Moved to common.js
 function handleLoginResponse(data, status) {
 	var ret = null;
 	if (status == "success") { // 200 OK
@@ -57,6 +57,7 @@ function handleLoginResponse(data, status) {
 		uiUserInfo += ')</a>';
 		$("#span_user_info").html(uiUserInfo);
 	} else {
+		g_user = null;
 		console.log("INFO: Not login or sesseion timeouts.");
 		console.log("INFO: Redirect to login page.");
 //		var uiLogin = "<a href='";
@@ -66,7 +67,7 @@ function handleLoginResponse(data, status) {
 		$("#span_user_info").html(uiLogin);
 	}
 }
-
+*/
 function getPageParams() {
 	var url = window.location.href;
 	var len = url.length;
@@ -200,11 +201,12 @@ function generateClassListUI() {
 }
 
 function onButtonLogin() {
-	var frompage = g_webpages_url.classmgmt + "?schoolid=" + g_schoolid;
-	var url = g_setfrompage_do_url + "?frompage=" + encodeURIComponent(frompage);
-	console.log(url);
-	$.get(url, null); // No response function.
-	redirectToLoginPage();
+//	var frompage = g_webpages_url.childmgmt;
+//	var url = g_setfrompage_do_url + "?frompage=" + encodeURIComponent(frompage);
+//	console.log(url);
+//	$.get(url, null); // No response function.
+//	redirectToLoginPage();
+	promptLoginDialog();
 }
 
 function onButtonAddChild() {

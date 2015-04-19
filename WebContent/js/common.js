@@ -1,11 +1,14 @@
+var g_user = null;
 var g_manageschool_page_url = "/futurestar/manage_school.jsp";
 var g_login_page_url = "/futurestar/login.jsp";
 var g_webpages_url = {
 	login        : "/futurestar/login.jsp",
 	manageschool : "/futurestar/manage_school.jsp",
-	classmgmt    : "/futurestar/classmgmt.html"
+	classmgmt    : "/futurestar/classmgmt.html",
+	childmgmt    : "/futurestar/childmgmt.html"
 };
 var g_waplogin_do_url = {
+	"plain"     : "/futurestar/waplogin.do",
 	"login"     : "/futurestar/waplogin.do?action=login",
 	"getstatus" : "/futurestar/waplogin.do?action=getstatus"
 };
@@ -37,4 +40,95 @@ function generateNaviMenu() {
 	uiMenu += '  <li><a href="childmgmt.html">学生管理</a></li>';
 	uiMenu += '</ul>';
 	return uiMenu;
+}
+
+function promptLoginDialog() {
+	var uiDialog = "";
+	uiDialog += "<div id='dialog_login' title='登录框'>";
+	uiDialog += "<p>登录名称: <input type='text' id='login_text_name' /><span id='login_label_name'></span></p>";
+	uiDialog += "<p>登录密码: <input type='password' id='login_text_password' /><span id='login_label_password'></span></p>";
+	uiDialog += "<p>选择角色: ";
+	uiDialog += "  <input type='radio' name='login_radio_role' value='admin' checked='checked' />管理员";
+	uiDialog += "  <input type='radio' name='login_radio_role' value='teacher' />老&nbsp;师";
+	uiDialog += "  <input type='radio' name='login_radio_role' value='parent' />家&nbsp;长";
+	uiDialog += "</p>";
+	uiDialog += "</div>";
+	$(uiDialog).appendTo('body');
+	$("#dialog_login").dialog({
+		modal : true,
+		minWidth : 400,
+		minHeight : 200,
+		buttons : [
+			{
+				text : "创建",
+				click : function() {
+					var name = $("#login_text_name").prop("value");
+					var password = $("#login_text_password").prop("value");
+					var role = $("input[name='login_radio_role']:checked").prop("value"); // Cool!
+					var hasError = false;
+					if (name == "") {
+						$("#login_label_name").html("<font color='red'>输入名称</font>");
+						hasError = true;
+					} else {
+						$("#login_label_name").html("");
+					}
+					if (password == "") {
+						$("#login_label_password").html("<font color='red'>输入密码</font>");
+						hasError = true;
+					} else {
+						$("#login_label_password").html("");
+					}
+//					console.log("name=" + name + ", password=" + password + ", role=" + role);
+
+					if (hasError) return;
+
+					$.post(
+							g_waplogin_do_url.plain, 
+							{"action": "login", "name": name, "password": password, "role": role}, 
+							handleLoginResponse
+						);
+				}
+			},
+			{
+				text : "取消",
+				click : function() {
+					$(this).dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+				}
+			}
+		]
+	});
+}
+
+function handleLoginResponse(data, status) {
+	$("#dialog_login").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
+
+	var ret = null;
+	if (status == "success") { // 200 OK
+		if (typeof data == "object") { // object
+			ret = data;
+		} else { // string
+			ret = eval("("+data+")"); // Transit JSON string to JSON object.
+		}
+	} else {
+		console.log("ERR: Get login info failed.");
+		console.log("ERR: Redirect to login page.");
+		alert("Exception 1");
+		return;
+	}
+
+	if (ret.retcode == RetCode.RETCODE_OK) {
+		g_user = ret.curuser;
+		var uiUserInfo = "<a href='#'>";
+		uiUserInfo += g_user.name;
+		uiUserInfo += '(';
+		uiUserInfo += g_user.role;
+		uiUserInfo += ')</a>';
+		$("#span_user_info").html(uiUserInfo);
+	} else {
+		g_user = null;
+		console.log("INFO: Not login or sesseion timeouts.");
+		console.log("INFO: Redirect to login page.");
+		var uiLogin = "<input type='button' value='点击登录' onclick='onButtonLogin()' />";
+		$("#span_user_info").html(uiLogin);
+	}
 }

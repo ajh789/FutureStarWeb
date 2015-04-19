@@ -41,7 +41,8 @@ public class BizWapLoginServlet extends HttpServlet
 		String name     = req.getParameter("name");
 		String password = req.getParameter("password");
 		String role     = req.getParameter("role");
-		rsp.setContentType("text/plain; charset=UTF-8"); // DO NOT use "application/json; charset=UTF-8".
+//		rsp.setContentType("text/plain; charset=UTF-8"); // DO NOT use "application/json; charset=UTF-8".
+		rsp.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = rsp.getWriter();
 		JSONObject jo = new JSONObject();
 		if (action == null) {
@@ -50,8 +51,8 @@ public class BizWapLoginServlet extends HttpServlet
 		} else {
 			if (action.equalsIgnoreCase("login")) { // Do login.
 				if (name     != null && 
-					password != null &&
-					role     != null) {
+					 password != null &&
+					 role     != null) {
 					try {
 						if (Authenticate.authenticate(name, password, role, session)) {
 							JSONObject user = new JSONObject();
@@ -62,7 +63,7 @@ public class BizWapLoginServlet extends HttpServlet
 							user.put("islocked", ((Boolean)session.getAttribute("islocked")).booleanValue());
 							jo.put("retcode", RETCODE_OK);
 							jo.put("retinfo", "登录成功");
-							jo.put("user", user);
+							jo.put("curuser", user);
 						} else {
 							jo.put("retcode", RETCODE_KO_LOGIN_FAILED);
 							jo.put("retinfo", "用户名或密码不正确");
