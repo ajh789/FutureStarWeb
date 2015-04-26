@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>教师管理</title>
+<style type="text/css">
+@import "js/jquery/ui/1.11.2/themes/smoothness/jquery-ui.css";
+@import "css/common.css";
+@import "css/teachermgmt.css";
+</style>
+<script type="text/javascript" src="js/jquery/jquery-1.10.2.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/jquery/ui/1.11.2/jquery-ui.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/global.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/common.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/retcode.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/teachermgmt.js" charset="UTF-8"></script>
+
+</head>
+<body>
+
+<div id="container">
+	<div id="header">
+		<table style="width:100%;">
+			<tr>
+				<td width="90%" style="font-size:32px; font-weight:bold;">教师管理</td>
+				<td width="10%" style="text-align:center;" valign="middle"><span id="span_user_info"></span></td>
+			</tr>
+		</table>
+	</div>
+	<div id="body">
+		<div id="menu">
+			<!-- Place holder. -->
+		</div>
+		<div id="content">
+			<div id="content_upper"></div>
+			<div id="content_middle">
+				姓名：<input id="text_teacher_name" type="text" value="" />
+				手机号：<input id="text_teacher_mobilenum" type="text" value="" />
+				所属学校：<input id="text_teacher_schoolname" type="text" value="" />
+				<input id="button_reqdata" type="button" value="查找" onclick="reqData()" />
+				<input id="button_reqdata_up" type="button" value="上一页" onclick="reqDataUp()" />
+				<input id="button_reqdata_down" type="button" value="下一页" onclick="reqDataDown()" />
+				<span id="span_debugmsg"></span>
+			</div>
+			<div id="content_lower">
+				<div id="content_body"></div>
+				<div id="content_body_hidden_dom" style="display:block"></div> <!-- Used for inserting new element to DOM. -->
+			</div>
+		</div> <!-- content -->
+	</div>
+	<div id="footer">Copyright FutureStar.com.cn</div>
+</div> <!-- container -->
+</body>
+</html>
