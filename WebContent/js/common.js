@@ -15,7 +15,7 @@ Common.generateNaviMenu = function() {
 	uiMenu += '<span style="background-color:lightgray; display:block; font-size:20px; font-weight:bold; padding:5px 0px 5px 5px;">功能菜单</span>';
 	uiMenu += '<ul>';
 	uiMenu += '  <li><a href="manage_school.jsp">学校管理</a></li>';
-	uiMenu += '  <li><a href="manage_teacher.jsp">教师管理</a></li>';
+	uiMenu += '  <li><a href="teachermgmt.html">教师管理</a></li>';
 	uiMenu += '  <li><a href="manage_parent.jsp">家长管理</a></li>';
 	uiMenu += '  <li><a href="childmgmt.html">学生管理</a></li>';
 	uiMenu += '</ul>';
@@ -40,7 +40,7 @@ Common.promptLoginDialog = function() {
 		minHeight : 200,
 		buttons : [
 			{
-				text : "创建",
+				text : "登录",
 				click : function() {
 					var name = $("#login_text_name").prop("value");
 					var password = $("#login_text_password").prop("value");
@@ -80,6 +80,7 @@ Common.promptLoginDialog = function() {
 };
 
 Common.handleLoginResponse = function(data, status) {
+	// No login dialog if it's from getLoginInfo().
 	$("#dialog_login").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
 
 	var ret = null;
@@ -108,9 +109,17 @@ Common.handleLoginResponse = function(data, status) {
 		g_user = null;
 		console.log("INFO: Not login or sesseion timeouts.");
 		console.log("INFO: Redirect to login page.");
-		var uiLogin = "<input type='button' value='点击登录' onclick='onButtonLogin()' />";
+		var uiLogin = "<input type='button' value='点击登录' onclick='Common.onButtonLogin()' />";
 		$("#span_user_info").html(uiLogin);
 	}
+};
+
+Common.onButtonLogin =  function() {
+	Common.promptLoginDialog();
+};
+
+Common.getLoginInfo = function() {
+	$.get(g_waplogin_do_url.getstatus, Common.handleLoginResponse);
 };
 
 Common.isLogin = function() {

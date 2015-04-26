@@ -173,7 +173,7 @@ AFTER INSERT ON T_TEACHER
 WHEN (NEW.CREATION = 'null')
 BEGIN
     UPDATE T_TEACHER SET 
-        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now'))
+        CREATION = (SELECT strftime('%Y/%m/%d/%H:%M:%S:%f','now')) -- Character '/' & ':' are URL delimiters, how to encode/decode?
     WHERE rowid = NEW.rowid;
 END;
 

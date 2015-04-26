@@ -17,6 +17,16 @@ var g_teachers_head = null; // Current head.
 var g_teachers_tail = null; // Current tail.
 var g_privilege = 0;
 
+window.onload = onPageLoad;
+
+function onPageLoad() {
+	Common.getLoginInfo();
+
+	// Generate navigation menu.
+	var uiMenu = Common.generateNaviMenu();
+	$(uiMenu).appendTo('#menu');
+}
+
 function reqData()
 {
 	var url = g_manageteacher_select_url;
@@ -96,10 +106,10 @@ function reqDataFromTo()
 	var url = g_manageteacher_select_url + "&mode=1";
 
 	if (g_teachers_head != null)
-		url += "&fromid=" + g_teachers_head;
+		url += "&fromid=" + encodeURIComponent(g_teachers_head);
 
 	if (g_teachers_tail != null)
-		url += "&toid=" + g_teachers_tail;
+		url += "&toid=" + encodeURIComponent(g_teachers_tail);
 
 	$.get(url, handleSelectResponse);
 }
@@ -126,7 +136,7 @@ function handleSelectResponse(data, status) {
 				g_teachers_head = teachers[0].CREATION;
 				g_teachers_tail = teachers[teachers.length-1].CREATION;
 				tmp += generateTableOfTeachers();
-				setSpanContentInnerHTML(tmp);
+				seContentBodyInnerHTML(tmp);
 //				hideButtonReqData();
 				showButtonReqDataUp();
 				showButtonReqDataDown();
@@ -233,8 +243,8 @@ function setSpanDebugMsgInnerHTML(innerHTML) {
 	$("#span_debugmsg").html(innerHTML);
 }
 
-function setSpanContentInnerHTML(innerHTML) {
-	$("#span_content").html(innerHTML);
+function seContentBodyInnerHTML(innerHTML) {
+	$("#content_body").html(innerHTML);
 }
 
 function onButtonEditTeacher(id) {
@@ -273,14 +283,14 @@ function generateEditTeacherHtml(teacher)
 	html += "  <tr>";
 	html += "    <td>姓名：</td>";
 	html += "    <td>";
-	html += "      <input id='teacher_edit_id' type='hidden' name='id' value='' />";
-	html += "      <input id='teacher_edit_name' type='text' name='name' value=''/>";
+	html += "      <input id='teacher_edit_id'   type='text' name='id'   value='' style='display:none;'/>"; // Not use type='hidden'
+	html += "      <input id='teacher_edit_name' type='text' name='name' value='' />";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
 	html += "    <td>性别：</td>";
 	html += "    <td>";
-	html += "      <input id='teacher_edit_gender_male'  type='radio' name='gender' value='male' />男";
+	html += "      <input id='teacher_edit_gender_male'   type='radio' name='gender' value='male' />男";
 	html += "      <input id='teacher_edit_gender_female' type='radio' name='gender' value='female' />女";
 	html += "    </td>";
 	html += "  </tr>";
@@ -304,7 +314,7 @@ function generateEditTeacherHtml(teacher)
 	html += "    <td>所属学校：</td>";
 	html += "    <td>";
 	html += "      <input id='teacher_edit_schoolname' type='text' name='schoolname' value='' disabled />&nbsp;";
-	html += "      <input id='teacher_edit_schoolid' type='hidden' name='schoolid' value='' />";
+	html += "      <input id='teacher_edit_schoolid'   type='text' name='schoolid'   value='' style='display:none;' />"; // Not use type='hidden'
 	html += "      <input type='button' value='更改...' onclick='onButtonGetSchoolList()'/>";
 	html += "    </td>";
 	html += "  </tr>";
@@ -312,7 +322,7 @@ function generateEditTeacherHtml(teacher)
 	html += "    <td>所属班级：</td>";
 	html += "    <td>";
 	html += "      <intput id='teacher_edit_classname' type='text' value='' disabled />";
-	html += "      <intput id='teacher_edit_classid' type='hidden' value='' />";
+	html += "      <intput id='teacher_edit_classid'   type='text' value='' style='display:none;' />";
 	html += "    </td>";
 	html += "  </tr>";
 	html += "  <tr>";
@@ -323,7 +333,7 @@ function generateEditTeacherHtml(teacher)
 	html += "    </td>";
 	html += "  </tr>";
 	html += "</table>";
-	setSpanContentInnerHTML(html);
+	seContentBodyInnerHTML(html);
 	$("#teacher_edit_id").prop("value", teacher.ID);
 	$("#teacher_edit_logo").prop("src", teacher.LOGO);
 	$("#teacher_edit_name").prop("value", teacher.NAME);
@@ -336,6 +346,7 @@ function generateEditTeacherHtml(teacher)
 	$("#teacher_edit_schoolname").prop("value", teacher.SCHOOL_NAME);
 	$("#teacher_edit_schoolid").prop("value", teacher.SCHOOL_ID);
 	$("#teacher_edit_classname").prop("value", teacher.CLASS_NAME);
+	$("#teacher_edit_classid").prop("value", teacher.CLASS_ID);
 }
 
 function onButtonCommitEditTeacher() {
@@ -352,7 +363,7 @@ function onButtonCommitEditTeacher() {
 
 function onButtonCancelEditTeacher() {
 	var tmp = generateTableOfTeachers();
-	setSpanContentInnerHTML(tmp);
+	seContentBodyInnerHTML(tmp);
 }
 
 function onButtonGetSchoolList() {
