@@ -2,16 +2,17 @@ window.onload = onPageLoad;
 
 // var g_user = null; // Moved to common.js
 
-var g_classes = {};
-g_classes.data = null; // Array of schools.
-g_classes.head = null; // Time stamp of creation for head in school array.
-g_classes.tail = null; // Time stamp of creation for tail in school array.
-g_classes.curpos = -1; // Position of currently visiting school.
+var ChildMgmt = {}; // Name space of child management.
+ChildMgmt.classes = {};
+ChildMgmt.classes.data = null; // Array of schools.
+ChildMgmt.classes.head = null; // Time stamp of creation for head in school array.
+ChildMgmt.classes.tail = null; // Time stamp of creation for tail in school array.
+ChildMgmt.classes.curpos = -1; // Position of currently visiting school.
 
-var g_numPerPage = 5;
+ChildMgmt.numPerPage = 5; // Records per page.
 
 function onPageLoad() {
-	getLoginInfo();
+	ChildMgmt.getLoginInfo();
 
 	// Generate navigation menu.
 	var uiMenu = Common.generateNaviMenu();
@@ -24,9 +25,9 @@ function redirectToSchoolManagement() {
 	window.location.href = g_webpages_url.manageschool; // Redirect to page school management.
 }
 
-function getLoginInfo() {
+ChildMgmt.getLoginInfo = function() {
 	$.get(g_waplogin_do_url.getstatus, Common.handleLoginResponse);
-}
+};
 
 function redirectToLoginPage() {
 	window.location.href = g_webpages_url.login;
@@ -209,7 +210,7 @@ function onButtonLogin() {
 	Common.promptLoginDialog();
 }
 
-function onButtonAddChild() {
+ChildMgmt.onButtonAddChild = function() {
 	var uiDialog = "";
 	uiDialog += "<div id='dialog_child_add' title='添加学生' style='overflow:auto;'>";
 	uiDialog += "<span class='span_font_red_bold'>&nbsp;*&nbsp;</span>必填项";
@@ -278,7 +279,7 @@ function onButtonAddChild() {
 			{
 				text : "创建",
 				click : function() {
-					onButtonCommitCreateClass(g_schoolid);
+					ChildMgmt.onButtonCommitAddChild(g_schoolid);
 				}
 			},
 			{
@@ -289,7 +290,7 @@ function onButtonAddChild() {
 			}
 		]
 	});
-}
+};
 
 function onButtonChooseAvatar() {
 //	$('#child_add_file_avatar').trigger('click');
@@ -299,7 +300,7 @@ function onButtonUploadAvatar() {
 	
 }
 
-function onButtonCommitCreateClass(schoolid) {
+ChildMgmt.onButtonCommitAddChild = function(schoolid) {
 	var name = $("#class_creation_text_name").prop("value");
 	var enrollment = $("#class_creation_text_enrollment").prop("value");
 	var ok = true;
@@ -320,7 +321,7 @@ function onButtonCommitCreateClass(schoolid) {
 
 	var url = g_manageclass_do_url.create + "&schoolid=" + schoolid + "&name=" + name + "&enrollment=" + enrollment;
 	$.get(url, handleClassCreateResponse);
-}
+};
 
 function handleClassCreateResponse(data, status) {
 	if (status == "success") {

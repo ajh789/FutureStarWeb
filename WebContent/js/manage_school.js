@@ -34,7 +34,7 @@ var g_manageclass_url = {
 };
 
 function onPageLoad() {
-	var menu = generateNaviMenu();
+	var menu = Common.generateNaviMenu();
 	$(menu).appendTo('#menu');
 }
 
