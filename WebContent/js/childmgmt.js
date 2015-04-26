@@ -14,7 +14,7 @@ function onPageLoad() {
 	getLoginInfo();
 
 	// Generate navigation menu.
-	var uiMenu = generateNaviMenu();
+	var uiMenu = Common.generateNaviMenu();
 	$(uiMenu).appendTo('#menu');
 
 //	reqClassList();
@@ -25,7 +25,7 @@ function redirectToSchoolManagement() {
 }
 
 function getLoginInfo() {
-	$.get(g_waplogin_do_url.getstatus, handleLoginResponse);
+	$.get(g_waplogin_do_url.getstatus, Common.handleLoginResponse);
 }
 
 function redirectToLoginPage() {
@@ -206,7 +206,7 @@ function onButtonLogin() {
 //	console.log(url);
 //	$.get(url, null); // No response function.
 //	redirectToLoginPage();
-	promptLoginDialog();
+	Common.promptLoginDialog();
 }
 
 function onButtonAddChild() {

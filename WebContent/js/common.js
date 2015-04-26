@@ -30,7 +30,9 @@ function htmlDecode(value) {
   return $('<div/>').html(value).text();
 }
 
-function generateNaviMenu() {
+var Common = {}; // Use Common as a naming space.
+
+Common.generateNaviMenu = function() {
 	var uiMenu = "";
 	uiMenu += '<span style="background-color:lightgray; display:block; font-size:20px; font-weight:bold; padding:5px 0px 5px 5px;">功能菜单</span>';
 	uiMenu += '<ul>';
@@ -40,9 +42,9 @@ function generateNaviMenu() {
 	uiMenu += '  <li><a href="childmgmt.html">学生管理</a></li>';
 	uiMenu += '</ul>';
 	return uiMenu;
-}
+};
 
-function promptLoginDialog() {
+Common.promptLoginDialog = function() {
 	var uiDialog = "";
 	uiDialog += "<div id='dialog_login' title='登录框'>";
 	uiDialog += "<p>登录名称: <input type='text' id='login_text_name' /><span id='login_label_name'></span></p>";
@@ -85,7 +87,7 @@ function promptLoginDialog() {
 					$.post(
 							g_waplogin_do_url.plain, 
 							{"action": "login", "name": name, "password": password, "role": role}, 
-							handleLoginResponse
+							Common.handleLoginResponse
 						);
 				}
 			},
@@ -97,9 +99,9 @@ function promptLoginDialog() {
 			}
 		]
 	});
-}
+};
 
-function handleLoginResponse(data, status) {
+Common.handleLoginResponse = function(data, status) {
 	$("#dialog_login").dialog("destroy").remove(); // Remove dialog div from its parent after destroy.
 
 	var ret = null;
@@ -131,4 +133,11 @@ function handleLoginResponse(data, status) {
 		var uiLogin = "<input type='button' value='点击登录' onclick='onButtonLogin()' />";
 		$("#span_user_info").html(uiLogin);
 	}
-}
+};
+
+Common.isLogin = function() {
+	if (g_user == null)
+		return false;
+	else
+		return true;
+};
