@@ -24,8 +24,7 @@ import com.ajh.futurestar.web.common.RetCode;
 import com.ajh.futurestar.web.common.RetInfo;
 import com.ajh.futurestar.web.common.ReturnX;
 import com.ajh.futurestar.web.utils.Util;
-import com.ajh.futurestar.web.utils.Util.DbConnectionWrapper;
-import com.ajh.futurestar.web.utils.Util.DbStatementWrapper;
+import com.ajh.futurestar.web.utils.Util.DbConnectionAndStatementWrapper;
 
 /**
  * @author Andy Jiang H
@@ -54,31 +53,33 @@ public class BizClassMgmtServlet extends ManageExServlet {
 	@Override
 	protected void doBusiness(HttpServletRequest req, HttpServletResponse rsp, ReturnX retx) {
 		HttpSession session = req.getSession();
-
-		if (!Util.checkAndSetUserLoginInfo(session, retx)) {
-			return;
-		}
-
 		Connection conn = null;
-//		if (!Util.getDbConnection(conn, retx)) {
-//			return;
-//		}
-
-		DbConnectionWrapper wrapperConn = Util.getDbConnection(retx);
-		if (wrapperConn.ok) {
-			conn = wrapperConn.conn;
-		} else {
-			return;
-		}
-
 		Statement stmt = null;
-//		if (!Util.getDbStatement(conn, stmt, retx)) {
+
+//		if (!Util.checkAndSetUserLoginInfo(session, retx)) {
+//			return;
+//		}
+//
+//		Connection conn = null;
+//		DbConnectionWrapper wrapperConn = Util.getDbConnection(retx);
+//		if (wrapperConn.ok) {
+//			conn = wrapperConn.conn;
+//		} else {
+//			return;
+//		}
+//
+//		Statement stmt = null;
+//		DbStatementWrapper wrapperStmt = Util.getDbStatement(conn, retx);
+//		if (wrapperStmt.ok) {
+//			stmt = wrapperStmt.stmt;
+//		} else {
 //			return;
 //		}
 
-		DbStatementWrapper wrapperStmt = Util.getDbStatement(conn, retx);
-		if (wrapperStmt.ok) {
-			stmt = wrapperStmt.stmt;
+		DbConnectionAndStatementWrapper wrapperDbMgmt = Util.checkPreconditionBeforeDoingBusiness(session, retx);
+		if (wrapperDbMgmt.ok) {
+			conn = wrapperDbMgmt.conn;
+			stmt = wrapperDbMgmt.stmt;
 		} else {
 			return;
 		}

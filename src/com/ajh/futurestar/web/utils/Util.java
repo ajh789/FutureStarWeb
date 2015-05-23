@@ -37,6 +37,18 @@ public class Util {
 		}
 	}
 
+	public static class DbConnectionAndStatementWrapper {
+		public Connection conn = null;
+		public Statement stmt = null;
+		public boolean ok = false;
+
+		public DbConnectionAndStatementWrapper(Connection conn, Statement stmt, boolean ok) {
+			this.conn = conn;
+			this.stmt = stmt;
+			this.ok = ok;
+		}
+	}
+
 	/**
 	 * 
 	 * @param session IN PARAM
@@ -153,5 +165,29 @@ public class Util {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static DbConnectionAndStatementWrapper checkPreconditionBeforeDoingBusiness(HttpSession session, ReturnX retx) {
+		if (!Util.checkAndSetUserLoginInfo(session, retx)) {
+			return new DbConnectionAndStatementWrapper(null, null, false);
+		}
+
+		Connection conn = null;
+		DbConnectionWrapper wrapperConn = Util.getDbConnection(retx);
+		if (wrapperConn.ok) {
+			conn = wrapperConn.conn;
+		} else {
+			return new DbConnectionAndStatementWrapper(null, null, false);
+		}
+
+		Statement stmt = null;
+		DbStatementWrapper wrapperStmt = Util.getDbStatement(conn, retx);
+		if (wrapperStmt.ok) {
+			stmt = wrapperStmt.stmt;
+		} else {
+			return new DbConnectionAndStatementWrapper(conn, null, false);
+		}
+
+		return new DbConnectionAndStatementWrapper(conn, stmt, true);
 	}
 }
