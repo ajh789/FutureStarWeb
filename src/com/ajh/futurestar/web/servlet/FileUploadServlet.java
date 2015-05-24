@@ -95,9 +95,20 @@ public class FileUploadServlet extends HttpServlet {
 		//   Content-Type: text/plain
 		//   
 		//   Data from sample file
+		// Notice:
+		//   IE sends full path as filename.
 		for (String content : part.getHeader("content-disposition").split(";")) {
 			if (content.trim().startsWith("filename")) {
-				return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+				String strFileName = content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+				// To match a backslash(\) in Java regular expression, double backslash(\\) are needed.
+				// To create double backslash(\\) in Java string, quadruple backslash(\\\\) are needed.
+				if (strFileName.matches("^[a-zA-Z]:\\\\.+")) { // A Windows full file path from IE
+					logger.log(Level.INFO, "Get a Windows full file path from IE: {0}", strFileName);
+					String strItems[] = strFileName.split("\\\\"); // Method split() also uses Java regular expression.
+					return strItems[strItems.length-1]; // Last item
+				} else { // A pure file name from non-IE browsers
+					return strFileName;
+				}
 			}
 		}
 
